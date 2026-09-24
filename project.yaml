@@ -1,0 +1,17 @@
+# Card metadata consumed by https://amishchadha.com
+name: WaterWatch
+slug: waterwatch
+area: Water Security
+status: concept          # concept | design | prototype | tested | released
+shortlisted: false
+pitch: >-
+  Solar sentinel sensor that logs turbidity, free chlorine and temperature at a tap or tank and alerts over GSM or LoRa.
+problem: >-
+  Rural water points go untested between rare lab visits.
+budget_usd: 300
+difficulty: 3  # 1 easiest, 5 hardest
+hero_image: media/hero.png
+licenses:
+  hardware: CERN-OHL-S-2.0
+  software: MIT
+tags: [water-security, open-hardware, cern-ohl-s]
