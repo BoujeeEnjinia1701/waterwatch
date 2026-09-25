@@ -3,7 +3,7 @@ doc_id: WWT-PRB-001
 title: WaterWatch problem statement
 project: WaterWatch
 doc_type: Problem statement
-version: "0.2"
+version: "0.3"
 status: Draft
 date: '2026-09-25'
 author: Amish Chadha
@@ -17,6 +17,10 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: Populate to TRL 2 (problem, users, context, constraints, prior work, open questions)
+- version: "0.3"
+  date: '2026-09-25'
+  author: Amish Chadha
+  change: For TRL 3, record Amish's decisions from WWT-DDR-001 (tapstands first, default thresholds); partner and region left open
 ---
 
 # WaterWatch problem statement
@@ -72,6 +76,7 @@ Typical site: a public tapstand or a storage tank outlet on a piped rural scheme
 
 ## Open questions
 
-- Which partner and region first? Proposed, awaiting Amish (see WWT-PRC-001).
-- Tapstand only, or also storage tank outlets and kiosks? Proposed: tapstands first, awaiting Amish.
-- Which alert thresholds should be defaults? Proposed: free chlorine below 0.2 mg/L and turbidity above 5 NTU, site-adjustable, awaiting Amish and partner input.
+- Which partner and region first? Open, awaiting Amish: community designs pick co-design partners per area later (WWT-DDR-001, O1).
+- Tapstand only, or also storage tank outlets and kiosks? Decided by Amish, 2026-09-25: tapstands first, tank outlets and kiosks later (WWT-DDR-001, D8).
+- Which alert thresholds should be defaults? Decided by Amish, 2026-09-25: free chlorine below 0.2 mg/L and turbidity above 5 NTU, confirmed by two consecutive readings and adjustable per site (WWT-DDR-001, D6). Partners may still ask for other site values.
+- Alert language, recipients and data ownership stay open for co-design (WWT-DDR-001, O2 and O3).

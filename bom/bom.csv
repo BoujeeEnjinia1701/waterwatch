@@ -1,17 +1,18 @@
 item,qty,spec,supplier,unit_cost_usd,make_buy,notes
-1 Mounting pole and clamps,1,"48 mm galvanized steel tube, 2.1 m above ground plus footing, 4 U-bolt clamps",Local hardware or steel supplier,35.00,buy,Indicative price; concrete for the footing supplied on site
+1 Mounting pole and clamps,1,"40 NB galvanized steel tube, 48.3 x 3.2 mm, 2.7 m (2.1 m above ground, 0.6 m in a 300 mm footing), 4 U-bolt clamps, enclosure and cell mounting plates",Local hardware or steel supplier,35.00,buy,Indicative price; concrete for the footing supplied on site
 "2 Solar panel, 5 W, with bracket",1,"5 W monocrystalline, about 250 x 190 mm, 6 V class, with tilt bracket",Online retailer,18.00,buy,Indicative price
 3 Enclosure base,1,"IP66 polycarbonate, about 200 x 120 x 260 mm, UV-stabilized, with vent plug and 3 cable glands",Electrical distributor,22.00,buy,Indicative price; sold with item 4
 4 Enclosure lid and gasket,1,Supplied with item 3; tamper-resistant screws,Electrical distributor,0.00,buy,Included in item 3
 5 LiFePO4 battery,1,"1S2P 32700 cells, 3.2 V, 6 Ah (19.2 Wh), protection board, NTC, fuse holder",Battery distributor,20.00,buy,Indicative price
 6 Controller board,1,"ESP32-S3 module, LiFePO4 solar charger with temperature cut-off, LMP91000-class potentiostat, 12 V boost valve driver, microSD, RTC, on a carrier board",Electronics distributor,32.00,buy,Indicative price; custom PCB is TRL 4 work
-7 Cellular modem,1,"LTE-M and NB-IoT with 2G fallback (SIM7000G class), SIM holder",Electronics distributor,30.00,buy,Indicative price; LoRaWAN module variant about $12 (proposed; awaiting Amish)
+7 Cellular modem,1,"LTE-M and NB-IoT with 2G fallback (SIM7000G class), SIM holder",Electronics distributor,30.00,buy,Indicative price; LoRaWAN module variant about $12 (WWT-DDR-001, D3)
 8 Antenna,1,External LTE and GSM whip with bulkhead and pigtail,Electronics distributor,8.00,buy,Indicative price
-9 Flow-through cell,1,"Opaque black PVC or printed ASA block, about 120 x 60 x 90 mm, 0.37 L, baffle, tool-free lid, 6 mm inlet and 12 mm outlet fittings",Self,12.00,make,Material and fittings only
+9 Flow-through cell,1,"Opaque black PVC or printed ASA block, 96 x 54 x 74 mm body with 10 mm top plate, 0.19 L water volume, baffle, tool-free lid, 1/4 in inlet at the bottom and 12 mm outlet near the top",Self,12.00,make,"Material and fittings only; smaller than the TRL 2 cell so the flush clears it (WWT-CAL-001, D)"
 10 Turbidity head,1,"860 nm IR LED, two light-to-frequency detectors (90 degree scatter, 180 degree reference), light trap",Self with electronics distributor parts,12.00,make,Indicative price; after Kelley et al. (2014)
-11 Free chlorine sensor,1,"Membrane-free three-electrode sensor: graphite working, Ag/AgCl reference, stainless counter, PVC holder",Self with lab supplier parts,25.00,make,Indicative price; choice proposed and awaiting Amish; long-term accuracy unproven
+11 Free chlorine sensor,1,"Membrane-free three-electrode sensor: graphite working, Ag/AgCl reference, stainless counter, PVC holder",Self with lab supplier parts,25.00,make,Indicative price; choice decided in WWT-DDR-001, D1; long-term accuracy unproven
 12 Temperature probe,1,DS18B20 in stainless sheath with 1 m cable,Online retailer,5.00,buy,Indicative price
-13 Latching solenoid valve,1,"12 V latching, normally closed, 6 mm (1/4 in) port, food-safe wetted parts",Online retailer,18.00,buy,Indicative price
-"14 Sample line, tee and strainer",1,"25 mm saddle tee, isolation ball valve, strainer, check valve, 0.5 L/min restrictor, 2 m of 6 mm PE tube",Plumbing supplier,15.00,buy,Indicative price
-15 Drain hose,1,2 m of 12 mm PVC hose with clamp,Plumbing supplier,4.00,buy,Indicative price
+13 Latching solenoid valve,1,"12 V latching, direct acting (no minimum pressure), normally closed, 1/4 in port, food-safe wetted parts",Online retailer,18.00,buy,Indicative price
+"14 Sample line, tee and strainer",1,"25 mm saddle tee, isolation ball valve, strainer, check valve, pressure-compensating 0.5 L/min flow regulator, 2 m of 1/4 in (6.35 mm) food-grade PE tube",Plumbing supplier,18.00,buy,"Indicative price; regulator replaces the TRL 2 fixed restrictor (WWT-CAL-001, D)"
+15 Drain hose,1,"2 m of 12 mm bore PVC hose with clamp, outlet elbow with open air-break vent",Plumbing supplier,5.00,buy,Indicative price
 "16 Cables, glands and fuse",1,"Sensor and panel cables, IP68 glands, battery fuse, connectors, fixings",Electrical distributor,14.00,buy,Indicative price
+17 Sun shield,1,"White powder-coated aluminum hood, 1.5 to 2 mm, 25 mm ventilated gap over the enclosure top, sides and front, lifts off",Local sheet metal shop,8.00,buy,Indicative price; added at TRL 3 so the battery can charge on hot days (WWT-CAL-001, C)
