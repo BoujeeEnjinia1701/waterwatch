@@ -6,30 +6,35 @@
 
 Solar sentinel sensor that logs turbidity, free chlorine and temperature at a tap or tank and alerts over GSM or LoRa.
 
+![WaterWatch concept](media/hero.png)
+
+[Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [Review note](docs/REVIEW.md)
+
 ## Problem
 
-Rural water points go untested between rare lab visits.
+Rural water points go untested between rare lab visits, so a chlorinator that runs dry or a storm that clouds the source can go unnoticed for weeks. Full problem statement: [docs/01-problem.md](docs/01-problem.md)
 
 ## Concept
 
-Solar sentinel sensor that logs turbidity, free chlorine and temperature at a tap or tank and alerts over GSM or LoRa.
+A pole-mounted sentinel beside a village tapstand flushes a small sample through a dark flow-through cell once an hour, measures turbidity, free chlorine and temperature, logs the readings and sends them over cellular (LTE-M, NB-IoT or 2G; LoRaWAN as a variant). An SMS goes to the caretaker and operator when chlorine drops below 0.2 mg/L or turbidity passes 5 NTU. Estimates: about 0.5 Wh per day, about 30 days on battery without sun, about 18 L per day of flushed water and about $270 in parts. The low-cost chlorine sensor is unproven over months of unattended use, so the chlorine accuracy requirement is not yet met.
 
 Full design precis: [docs/02-concept.md](docs/02-concept.md)
 
 ## Key components
 
-- IR turbidity sensor
-- Amperometric chlorine probe
-- Flow-through cell
-- ESP32
-- Cellular or LoRa modem
-- PV panel
+- Infrared (860 nm) nephelometric turbidity head
+- Membrane-free three-electrode free chlorine sensor with a potentiostat front end (proposed)
+- Temperature probe
+- Opaque flow-through cell fed by a latching solenoid valve from a tee on the tapstand riser
+- ESP32 controller with microSD logging
+- Cellular modem (LTE-M, NB-IoT, 2G fallback), LoRaWAN as a variant
+- 5 W solar panel and 3.2 V, 6 Ah LiFePO4 battery
 
 The working bill of materials is in [bom/bom.csv](bom/bom.csv).
 
 ## Safety
 
-> A sensor alert does not replace accredited lab testing.
+> A sensor alert does not replace accredited lab testing, and a normal reading does not mean the water is safe to drink. Contains a LiFePO4 battery: use a protection board, a fuse and charging temperature cut-offs. The sample line connects to a pressurized drinking water supply: fit an isolation valve and a check valve so nothing flows back into the supply.
 
 ## Repository layout
 
