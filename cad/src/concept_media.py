@@ -80,7 +80,7 @@ render_all(
                  "Hourly 90 s flush at 0.5 L/min; 18 L/day to drain (WWT-CAL-001)",
                  "About 0.54 Wh/day; about 29 days on battery (WWT-CAL-001)",
                  "5 W panel, 3.2 V 6 Ah LiFePO4, sun shield; cellular with SMS",
-                 "$282 in parts (indicative), budget $300"],
+                 "$283 in parts (indicative), budget $300"],
     cut_exclude=("Existing tapstand (not in BOM)", "Mounting pole, clamps and plates", "Solar panel, 5 W, with bracket",
                  "Drain hose and air break", "Sample line, tee and regulator", "Latching solenoid valve", "Antenna",
                  "Cables, glands and fuse", "Sun shield, ventilated"),

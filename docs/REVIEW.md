@@ -37,6 +37,8 @@ At risk: R2 (turbidity accuracy under fouling and bubbles in continuous use) and
 
 ### Proposed, awaiting Amish
 
+(Record of the TRL 2 run. Items 1 to 8 and 10 were decided by Amish, 2026-09-25: go with recommendation (WWT-DDR-001, D1 to D10); item 9, the first partner, stays proposed, awaiting Amish (WWT-DDR-001, O1).)
+
 1. **Chlorine sensor.** (a) Membrane-free graphite three-electrode sensor with a potentiostat front end, about $25; (b) industrial membrane amperometric probe, about $1,900, over budget; (c) ORP probe as a proxy, about $175 as a kit, loose correlation. Recommendation: (a), with a monthly DPD comparison.
 2. **pH.** (a) Site pH entered at installation and checked monthly; (b) add a pH probe (about $60 to $100, estimate), raising parts to about $330 to $370, over the $300 budget. Recommendation: (a) now, (b) as a documented variant. If Amish prefers (b), the budget in `project.yaml` would need to rise to about $375; that change is proposed only, and `project.yaml` is unchanged at $300.
 3. **Connectivity.** Cellular LTE-M and NB-IoT with 2G fallback and SMS alerts (recommended), with a LoRaWAN module as a swappable variant.
@@ -105,10 +107,10 @@ Decided by Amish, 2026-09-25, going with the recommendation: D1 membrane-free gr
 
 1. **O1, first co-design partner and region.** Left open by Amish's direction that community designs pick partners per area later.
 2. **O2, alert language and recipients; O3, data ownership.** No recommendation was made; for co-design.
-3. **New, R1 target.** Options: (a) keep ±0.1 mg/L and accept that R1 is not met; (b) relax to ±0.2 mg/L or ±25 %, whichever is greater, which the design meets with site pH up to pH 7.5 at zero drift (WWT-CAL-001, E6); (c) keep the target and make the pH probe standard, which exceeds the budget. Recommendation: (b), because the DPD field reference alone takes ±0.07 of the ±0.1 mg/L budget. Not applied.
-4. **New, pH probe trigger.** Recommendation: fit the pH probe variant at sites whose pH is above 7.5 or moves more than 0.2 between visits. Not applied.
+3. **New, R1 target.** Options: (a) keep ±0.1 mg/L and accept that R1 is not met; (b) relax to ±0.2 mg/L or ±25 %, whichever is greater, which the design meets with site pH up to pH 7.5 at zero drift (WWT-CAL-001, E6); (c) keep the target and make the pH probe standard, which exceeds the budget. Recommendation: (b), because the DPD field reference alone takes ±0.07 of the ±0.1 mg/L budget. Decided by Amish, 2026-09-25: go with recommendation (WWT-DDR-002, D11).
+4. **New, pH probe trigger.** Recommendation: fit the pH probe variant at sites whose pH is above 7.5 or moves more than 0.2 between visits. Decided by Amish, 2026-09-25: go with recommendation (WWT-DDR-002, D12).
 
-Suggestions only, not in the repo: a confirming reading 15 min after a first threshold crossing would cut the worst case from event to SMS from 122 min to 77 min (WWT-CAL-001, H2); casting the footing on a survey visit would bring installation to about 65 min.
+Suggestions at the time (now decided by Amish, 2026-09-25: go with recommendation, WWT-DDR-002, D13 and D14): a confirming reading 15 min after a first threshold crossing would cut the worst case from event to SMS from 122 min to 77 min (WWT-CAL-001, H2); casting the footing on a survey visit would bring installation to about 65 min.
 
 ### Safety concerns
 
@@ -127,3 +129,52 @@ Suggestions only, not in the repo: a confirming reading 15 min after a first thr
 ### Recommended next step
 
 TRL 4 is on hold by Amish's instruction; this repo stops at TRL 3. Amish's review is needed on the R1 target and the pH probe trigger above. For the record only, TRL 4 would need: a bench build of the flow cell, chlorine sensor and turbidity head; a lab test report (TST, `environment: lab`) of chlorine accuracy and drift against DPD over pH 6.5 to 8.5, turbidity against stabilized standards with bubbles and fouling, and enclosure temperature with and without the shield in sun; and build log entries. None of this has been started.
+
+## Session 2026-09-25: recommendations accepted
+
+Amish wrote on 2026-09-25: "i accept all your recommendations, go with them across all repos." Every item with a recommendation is now decided by Amish, 2026-09-25: go with recommendation. Items without one stay proposed, awaiting Amish. Recorded in `docs/decisions/0002-recommendations-accepted.md` (WWT-DDR-002 v0.1).
+
+### Decisions applied and what changed
+
+| # | Decision | Before | After |
+| --- | --- | --- | --- |
+| D11 | Relax R1 to ±0.2 mg/L or ±25 %, whichever is greater | ±0.1 mg/L below 1.0 mg/L, ±15 % above; 2 of 8 cases met at zero drift; 0.038 mg/L left for drift | 8 of 8 cases met at 25 °C and zero drift (with D12); at least 0.130 mg/L left for drift; R10 drift allowance about 0.13 mg/L per month (was 0.04) |
+| D12 | pH probe variant where site pH is above 7.5 or moves more than 0.2 between visits | No port for a probe | Spare 12 mm port with blanking plug in the cell lid; BOM item 9 $12 to $13; parts $282 to $283; variant site $343 to $383, priced outside the base-unit budget (R12 restated) |
+| D13 | Confirming reading 15 min after a first threshold crossing (firmware rule) | 122 min worst case from event to SMS | 77 min; 9.7 mWh and 0.75 L per event |
+| D14 | Cast the pole footing on the survey visit | 140 min critical path on installation day | 65 min; R11 restated as 2 h on installation day |
+
+Budget: `budget_usd` unchanged at $300; no budget change was recommended. Pitch and problem in `project.yaml` unchanged; `trl: 3` and `trl_target: 3`.
+
+Files changed: `cad/src/model.py` (plugged pH port; STEP and STL re-exported), `cad/src/sheets.py` and WWT-DWG-001 (Rev P1 to P2), `bom/bom.csv` and `bom/bom-notes.md`, `docs/04-calcs/sizing.py` and WWT-CAL-001 (v0.1 to v0.2: new sections E4 to E8, H2, H3, J2, K2 and Table 4), WWT-REQ-001 (v0.3 to v0.4: R1, R5, R11 and R12 restated), WWT-PRC-001 (v0.3 to v0.4), WWT-DDR-001 (v0.1 to v0.2), `cad/src/concept_media.py` and all of `media/` regenerated, `README.md` (new write-up sections before "Problem"), `project.yaml` (DDR-002 added to the evidence list), all PDFs in `docs/pdf/` rebuilt.
+
+### Requirement status (WWT-CAL-001 v0.2)
+
+0 not met, 4 at risk, 6 met on paper, 3 met by design (before: 2 not met, 3 at risk, 5 met on paper, 3 met by design).
+
+| ID | Status | Key number |
+| --- | --- | --- |
+| R1 Free chlorine | **At risk** (was not met) | 8 of 8 cases at 25 °C before drift; 1.5 mg/L at pH 7.5 and 40 °C with site pH misses by 0.006 mg/L; drift unknown |
+| R10 Maintenance | **At risk** (was not met) | Visit 30 min, at the limit; needs drift below about 0.13 mg/L per month, unverified |
+| R2 Turbidity | At risk | Window fouling unknown |
+| R9 Outdoors | At risk | 50.8 °C inside on a 45 °C day with the shield; shield factor assumed |
+| R11 Installation | Met on paper (was at risk) | 65 min on installation day |
+| R5, R6, R7, R8, R12 | Met on paper | 13.0 min to SMS (77 min from the event); 0.86 MB/month; 28.6 days; 18.0 L/day; $283 of $300 |
+| R3, R4, R13 | Met by design | |
+
+### Still awaiting Amish
+
+- O1, first co-design partner and region (no choice made; partners are picked per area later).
+- O2, alert language and recipients; O3, data ownership. No recommendation was made for either.
+
+### Cross-repo actions
+
+None. No decision in this repo needs a change in another repo.
+
+### Other changes in this session
+
+- Every generated file was re-rendered so that the footer shows designmolecule.com: `docs/pdf/`, WWT-DWG-001 and `media/`. The hero, blueprint and exploded images were checked after rendering.
+- `README.md` gained "Concept rationale", "Burning platform", "Where it could be used" and "What sparked the idea". The inspiration point is the Walkerton, Ontario outbreak of May 2000 and Part One of the Walkerton Inquiry (2002). The inquiry report itself could not be opened from this environment (access blocked); its figures are cited as summarized, with the report's archive link.
+
+### TRL 4
+
+TRL 4 remains on hold by Amish's instruction. Nothing was built, bought, tested or programmed. D13 is recorded as a firmware rule only. The drift test that would settle R1 and R10 is TRL 4 work and has not started.

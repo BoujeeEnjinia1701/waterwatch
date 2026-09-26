@@ -3,7 +3,7 @@ doc_id: WWT-DDR-001
 title: WaterWatch TRL 2 review decisions
 project: WaterWatch
 doc_type: Design decision record
-version: "0.1"
+version: "0.2"
 status: Draft
 date: '2026-09-25'
 author: Amish Chadha
@@ -13,6 +13,10 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: Record Amish's decisions on the TRL 2 review items and the items that remain open
+- version: "0.2"
+  date: '2026-09-25'
+  author: Amish Chadha
+  change: Recommendations accepted by Amish (DDR-002)
 ---
 
 # 0001: TRL 2 review decisions
@@ -58,5 +62,5 @@ The options for each item are those listed in `docs/REVIEW.md` (session 2026-09-
 - `project.yaml`: unchanged apart from the TRL fields. No budget, pitch or problem change was recommended, so `budget_usd` stays at $300 and the pitch still reads "alerts over GSM or LoRa".
 - WWT-PRB-001, WWT-PRC-001 and WWT-REQ-001 are revised to v0.3. The key design choices in the precis are no longer "proposed". No requirement target changes as a result of these decisions; the 5 NTU and 0.2 mg/L defaults in R5 are now decided rather than proposed.
 - The TRL 3 calculations (WWT-CAL-001) led to four design changes within these decisions: a smaller flow cell, a pressure-compensating flow regulator, a 30 s settling wait and a ventilated sun shield. They add $12 to the parts cost, now $282.
-- WWT-CAL-001 shows that R1 is not met with D2's site pH at pH 7.5 and above. A relaxed R1 target and a trigger for the pH probe variant are proposed in `docs/REVIEW.md` and await Amish; this record does not decide them.
+- WWT-CAL-001 v0.1 showed that R1 is not met with D2's site pH at pH 7.5 and above. The relaxed R1 target and the trigger for the pH probe variant that were then proposed are now decided by Amish, 2026-09-25: go with recommendation (WWT-DDR-002). D2 stands for sites at or below pH 7.5 whose pH stays within 0.2 between visits.
 - TRL 4 is on hold by Amish's instruction. Nothing in this record authorizes building or testing.

@@ -1,4 +1,4 @@
-"""WaterWatch sizing calculations, WWT-CAL-001 v0.1 (TRL 3).
+"""WaterWatch sizing calculations, WWT-CAL-001 v0.2 (TRL 3; R1, R5, R11 and R12 updated for WWT-DDR-002).
 
 Run from the repo root:  python docs/04-calcs/sizing.py
 Prints every number quoted in docs/04-calcs/01-sizing.md. Each line carries a tag such as
@@ -44,7 +44,7 @@ PSH = 4.5              # peak sun hours, clear day
 PSH_WET = 2.5          # peak sun hours, overcast rainy-season day
 DERATE = 0.60          # heat, dust, angle, small-charger losses
 
-print("WaterWatch sizing, WWT-CAL-001 v0.1")
+print("WaterWatch sizing, WWT-CAL-001 v0.2")
 print(f"Geometry from cad/src/model.py: cell cavity {P['cell_in']} mm, enclosure {P['enc']} mm, pole {P['pole_od']} x {P['pole_wall']} mm")
 
 # ------------------------------------------------------------------ A. Energy (R7, R4)
@@ -199,23 +199,56 @@ def ph_err(ph, dph, t_c=25):
     return max(abs(f_hocl(ph + s * dph, t_c) / f_hocl(ph, t_c) - 1) for s in (-1, 1))
 
 
-rows = []
-for fc, target in ((0.5, 0.10), (1.5, 0.225)):
-    for ph in (7.0, 7.5, 8.0, 8.5):
-        for dph, label in ((0.2, "site pH, +/-0.2 between visits"), (0.1, "pH probe, +/-0.1")):
-            rel = math.sqrt(ph_err(ph, dph) ** 2 + (TCOEF * T_ERR) ** 2 + stale(Q, t_cl) ** 2)
-            tot = math.sqrt(REF ** 2 + (fc * rel) ** 2)
-            room = math.sqrt(target ** 2 - tot ** 2) if tot < target else 0.0
-            rows.append((fc, ph, label, tot, target, room))
-            tag("E4", f"FC {fc} mg/L, pH {ph}, {label}: pH term {ph_err(ph, dph) * 100:.0f} %, total +/-{tot:.3f} mg/L vs +/-{target:.3f}; "
-                      f"room for drift {room:.3f} mg/L" + ("" if tot < target else "  NOT MET at zero drift"))
-n_ok = sum(1 for r in rows if r[3] < r[4] and "site" in r[2])
-tag("E5", f"with site pH: {n_ok} of {sum(1 for r in rows if 'site' in r[2])} cases meet R1 at zero sensor drift; the sensor's monthly drift is unknown (no verified long-term data)")
 
-relaxed = [(fc, ph) for fc, ph, label, tot, target, room in rows
-           if "site" in label and tot <= max(0.2, 0.25 * fc)]
-tag("E6", "relaxed target +/-0.2 mg/L or +/-25 %, whichever is greater, met with site pH at zero drift for: "
-    + ", ".join(f"{fc} mg/L pH {ph}" for fc, ph in relaxed))
+
+def r1_target(fc, relaxed=True):
+    """R1 target: v0.3 was +/-0.1 mg/L below 1.0 mg/L and +/-15 % above; DDR-002 relaxed it to
+    +/-0.2 mg/L or +/-25 %, whichever is greater."""
+    if relaxed:
+        return max(0.2, 0.25 * fc)
+    return 0.10 if fc < 1.0 else 0.15 * fc
+
+
+def budget(fc, ph, dph, t_c=25):
+    rel = math.sqrt(ph_err(ph, dph, t_c) ** 2 + (TCOEF * T_ERR) ** 2 + stale(Q, t_cl) ** 2)
+    return math.sqrt(REF ** 2 + (fc * rel) ** 2)
+
+
+PH_TRIGGER = 7.5     # DDR-002: pH probe variant where site pH is above 7.5 or moves more than 0.2 between visits
+
+
+def method(ph):
+    return (0.1, "pH probe") if ph > PH_TRIGGER else (0.2, "site pH")
+
+
+rows = []
+for fc in (0.5, 1.5):
+    for ph in (7.0, 7.5, 8.0, 8.5):
+        site, probe = budget(fc, ph, 0.2), budget(fc, ph, 0.1)
+        dph, used = method(ph)
+        tot = budget(fc, ph, dph)
+        tgt, old = r1_target(fc), r1_target(fc, relaxed=False)
+        room = math.sqrt(tgt ** 2 - tot ** 2) if tot < tgt else 0.0
+        rows.append((fc, ph, used, tot, tgt, room, site, probe, old))
+        tag("E4", f"FC {fc} mg/L, pH {ph}: site pH +/-{site:.3f}, pH probe +/-{probe:.3f} mg/L; rule uses {used} (+/-{tot:.3f}) "
+                  f"vs relaxed target +/-{tgt:.3f} (v0.3 target +/-{old:.3f}); room for drift {room:.3f} mg/L"
+                  + ("" if tot < tgt else "  NOT MET at zero drift"))
+n_old = sum(1 for r in rows if r[6] < r[8])
+tag("E5", f"v0.3 target with site pH everywhere: {n_old} of {len(rows)} cases met at zero drift (superseded by DDR-002)")
+n_new = sum(1 for r in rows if r[3] < r[4])
+tag("E6", f"relaxed target with the pH probe rule: {n_new} of {len(rows)} cases met at zero drift; "
+          f"site pH alone at pH 8.0 would give +/-{budget(0.5, 8.0, 0.2):.3f} mg/L at 0.5 mg/L against +/-0.200")
+hot_rows = []
+for fc in (0.5, 1.5):
+    for ph in (6.5, 7.0, 7.5, 8.0, 8.5):
+        dph, used = method(ph)
+        tot = budget(fc, ph, dph, t_c=40)
+        hot_rows.append((fc, ph, tot, r1_target(fc)))
+worst40 = max(hot_rows, key=lambda r: r[2] / r[3])
+tag("E7", f"at 40 degC (pKa {pka(40):.2f}) with the rule, worst case FC {worst40[0]} mg/L pH {worst40[1]}: +/-{worst40[2]:.3f} vs +/-{worst40[3]:.3f} mg/L; "
+          f"{sum(1 for r in hot_rows if r[2] < r[3])} of {len(hot_rows)} cases met")
+drift_room = min(r[5] for r in rows)
+tag("E8", f"smallest room for sensor drift under the rule at 25 degC: {drift_room:.3f} mg/L (was 0.038 mg/L at pH 7.0 only under the v0.3 target)")
 
 # ------------------------------------------------------------------ F. Turbidity: bubbles and settling (R2)
 print("\nF. Turbidity reading: bubble clearance and settling")
@@ -251,7 +284,11 @@ print("\nH. Alert latency")
 attach_s, sms_s, retry_s, tries = 120, 20, 180, 3
 worst = attach_s + sms_s + (tries - 1) * (retry_s + attach_s + sms_s)
 tag("H1", f"confirmation to SMS: {attach_s + sms_s} s first try; {worst / 60:.1f} min with {tries} tries at {retry_s / 60:.0f} min spacing (R5 limit 15 min)")
-tag("H2", f"event onset to SMS worst case: {(2 * 3600 + attach_s + sms_s) / 60:.0f} min at hourly sampling; {(3600 + 900 + attach_s + sms_s) / 60:.0f} min with a 15 min confirming reading (suggestion)")
+CONFIRM_S = 900    # DDR-002 firmware rule: confirming reading 15 min after a first threshold crossing
+tag("H2", f"event onset to SMS worst case: {(2 * 3600 + attach_s + sms_s) / 60:.0f} min with the next hourly reading as confirmation (v0.1); "
+          f"{(3600 + CONFIRM_S + attach_s + sms_s) / 60:.0f} min with the 15 min confirming reading (DDR-002)")
+e_conf = e_read + 2 * v * i * t / eta / 3600
+tag("H3", f"each confirming reading costs {e_conf * 1000:.1f} mWh and {v_flush:.2f} L; ten a month add {10 * e_conf / 30 * 1000:.1f} mWh/day ({10 * e_conf / 30 / e_day * 100:.1f} % of the daily need)")
 
 # ------------------------------------------------------------------ I. Pole and footing in wind
 print("\nI. Pole and footing in wind")
@@ -285,8 +322,11 @@ install = [("dig 300 mm x 600 mm hole", 25, "A"), ("set pole plumb in fast-set c
            ("commission: first flush, DPD calibration, site pH, test SMS", 25, "A")]
 pm = sum(m for _, m, w in install if w != "wait")
 crit = sum(m for n, m, w in install if w in ("A", "wait"))
-tag("J1", f"installation: {pm} person-minutes; critical path (dig, set, cure, mount, cable, commission) {crit} min against 120 min")
-tag("J2", f"with the footing cast on an earlier visit: critical path {crit - 75:.0f} min for mounting and commissioning, plumbing in parallel")
+survey = sum(m for n, m, w in install[:3])
+crit_day = crit - survey
+tag("J1", f"installation in one visit: {pm} person-minutes; critical path (dig, set, cure, mount, cable, commission) {crit} min against 120 min")
+tag("J2", f"DDR-002: footing dug and cast on the survey visit ({survey} min incl. the 30 min set); installation day critical path {crit_day} min "
+          f"(mount, cable, commission; plumbing {sum(m for n, m, w in install if w == 'B')} min in parallel) against 120 min")
 visit = [("shut isolation valve, open and wipe the cell", 5), ("wipe the chlorine electrode", 5), ("flush and wait", 3),
          ("DPD free chlorine test", 4), ("pH comparator", 3), ("enter calibration from a phone", 4),
          ("check strainer and drain air break", 4), ("wipe panel, look over the site", 2)]
@@ -296,25 +336,27 @@ tag("J3", f"monthly visit: {sum(m for _, m in visit)} min against 30 min (" + ",
 print("\nK. Parts cost")
 rows_b = list(csv.DictReader((ROOT / "bom" / "bom.csv").open()))
 total = sum(float(r["qty"]) * float(r["unit_cost_usd"]) for r in rows_b)
-budget = None
+budget_usd = None
 for line in (ROOT / "project.yaml").read_text().splitlines():
     if line.startswith("budget_usd:"):
-        budget = float(line.split(":")[1].split("#")[0])
-tag("K1", f"{len(rows_b)} BOM lines, total ${total:,.2f} against budget_usd ${budget:,.0f}: margin ${budget - total:,.2f} ({(budget - total) / budget * 100:.0f} %)")
+        budget_usd = float(line.split(":")[1].split("#")[0])
+tag("K1", f"{len(rows_b)} BOM lines, total ${total:,.2f} against budget_usd ${budget_usd:,.0f}: margin ${budget_usd - total:,.2f} ({(budget_usd - total) / budget_usd * 100:.0f} %)")
+PH_VARIANT = (60.0, 100.0)   # USD, pH probe and interface, estimate (not a quote)
+tag("K2", f"pH probe variant site (DDR-002): ${total + PH_VARIANT[0]:,.0f} to ${total + PH_VARIANT[1]:,.0f} per unit; the probe is priced per variant site, outside the base-unit budget")
 
 # ------------------------------------------------------------------ L. Results
-print("\nL. Requirement status (see Table 7 of the note)")
+print("\nL. Requirement status (see Table 4 of the note)")
 status = [
-    ("R1", "Not met", "error budget exceeds +/-0.1 mg/L at pH 7.5 and above with site pH, before any sensor drift"),
-    ("R10", "Not met", "chlorine sensor drift and recalibration interval unknown; visit takes 30 min, at the limit"),
+    ("R1", "At risk", f"relaxed target met at zero drift in {n_new} of {len(rows)} cases with the pH probe rule; room for drift {drift_room:.2f} mg/L, drift unknown"),
+    ("R10", "At risk", f"visit 30 min, at the limit; monthly interval needs drift below about {drift_room:.2f} mg/L per month, unverified"),
     ("R2", "At risk", "bubbles handled by the 30 s wait; fouling in service unknown"),
     ("R9", "At risk", f"with the shield, peak {hot[(45.0, 'dusty, with shield')][0]:.0f} degC inside on a 45 degC day (no shield {hot[(45.0, 'dusty, no shield')][0]:.0f} degC); shield factor assumed"),
-    ("R11", "At risk", f"critical path {crit} min with the footing cast on the day"),
+    ("R11", "Met on paper", f"installation day critical path {crit_day} min with the footing cast on the survey visit"),
     ("R5", "Met on paper", f"{worst / 60:.0f} min worst confirmation-to-SMS"),
     ("R6", "Met on paper", "under 1 MB per month; 90 days in 138 kB"),
     ("R7", "Met on paper", f"{aut:.0f} days autonomy; {e_use / (y_clear - e_day):.1f} clear days to refill"),
     ("R8", "Met on paper", "18.0 L nominal, 19.8 L at regulator tolerance"),
-    ("R12", "Met on paper", f"${total:,.0f} of ${budget:,.0f}"),
+    ("R12", "Met on paper", f"${total:,.0f} of ${budget_usd:,.0f} per base unit"),
     ("R3", "Met by design", "DS18B20 +/-0.5 degC"),
     ("R4", "Met by design", "firmware schedule; energy at 15 min checked"),
     ("R13", "Met by design", "alert wording rule"),

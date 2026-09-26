@@ -1,4 +1,4 @@
-"""WaterWatch general arrangement sheet WWT-DWG-001, Rev P1 (TRL 3).
+"""WaterWatch general arrangement sheet WWT-DWG-001, Rev P2 (TRL 3; P2 adds the plugged pH port, WWT-DDR-002).
 
 Run from the repo root:  python cad/src/sheets.py
 Writes cad/drawings/WWT-DWG-001.svg, .pdf and .png from the parametric model in
@@ -94,10 +94,11 @@ def main():
     asm = assembly(with_riser=True)
     views = safe_project_views(asm, work)
     bb = asm.bounding_box()
-    s = Sheet(project="WaterWatch", title="General arrangement", dwg_no="WWT-DWG-001", rev="P1",
+    s = Sheet(project="WaterWatch", title="General arrangement", dwg_no="WWT-DWG-001", rev="P2",
               author="Amish Chadha", date=DATE, scale=None, theme="technical",
               material="Galvanized steel pole; bought-in parts per bom/bom.csv. PRELIMINARY, NOT FOR FABRICATION",
-              revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", DATE, "AC")])
+              revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", DATE, "AC"),
+                         ("P2", "Plugged pH probe port in cell lid (DDR-002)", DATE, "AC")])
     s.add_ortho(views)
     k = s.scale
     c = ortho_cells(s, views)
@@ -157,6 +158,7 @@ def main():
         f"Enclosure IP66 {ew:.0f} x {ed:.0f} x {eh:.0f}, center {P['enc_z']:.0f}; sun shield, {P['shield_gap']:.0f} gap",
         f"Flow cell body {co[0]:.0f} x {co[1]:.0f} x {co[2]:.0f} + {P['cell_top_t']:.0f} lid; cavity {cix:.0f} x {ciy:.0f} x {ciz:.0f}",
         f"Cell water {D['cell_net_l']:.2f} L; inlet at the bottom, outlet {D['outlet_z'] - D['cell_bot']:.0f} above the underside",
+        f"Spare {P['ph_port_d']:.0f} pH probe port in cell lid, plugged (DDR-002)",
         f"Tee on the 25 mm riser at {P['tee_z']:.0f}; 1/4 in tube, {D['tube_l_mm']:.0f} run, {D['tube_vol_l'] * 1000:.0f} mL",
         "Flush 0.5 L/min (pressure compensating) for 90 s hourly (WWT-CAL-001)",
         "Drain 12 mm bore with open air break; discharges to the basin",

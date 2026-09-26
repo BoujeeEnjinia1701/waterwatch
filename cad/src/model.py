@@ -1,9 +1,12 @@
 """WaterWatch parametric model (build123d), TRL 3, massing-plus level of detail.
 
+DDR-002 (2026-09-25): the cell lid carries a spare 12 mm port, closed by a blanking plug,
+so that a site that needs the pH probe variant can take one without a new cell.
+
 Run from the repo root:  python cad/src/model.py
 Exports STEP and STL into cad/step and cad/stl:
     waterwatch-assembly.step / .stl   the whole sentinel, pole set in its footing
-    flow-cell.step / .stl             flow-through cell with sensor ports, baffle and fittings
+    flow-cell.step / .stl             flow-through cell with sensor ports, plugged pH port, baffle and fittings
     enclosure.step / .stl             enclosure base, lid, parts inside and the sun shield
 
 Axes: the existing tapstand riser is the Z axis (x = y = 0), Z is up with the ground at
@@ -42,6 +45,8 @@ PARAMS = {
     "turb": (32.0, 46.0, 46.0),
     "cl_d": 16.0, "cl_len": 120.0, "cl_immersed": 40.0,
     "t_d": 6.0, "t_len": 100.0, "t_immersed": 45.0,
+    # 9 spare port in the cell lid for the pH probe variant (WWT-DDR-002), closed by a blanking plug
+    "ph_port_d": 12.0, "ph_x": 0.0, "plug": (18.0, 8.0),
     # 13, 14 sample line: tube 6.35 mm (1/4 in) OD, 4.3 mm bore; valve body
     "tube_od": 6.35, "tube_id": 4.3,
     "valve_x": 230.0, "valve": (55.0, 45.0, 60.0),
@@ -178,14 +183,19 @@ def build_parts(p=PARAMS, below_ground=True):
     cl_x, t_x, port_y = px - 22, px + 24, 4.0
     top = (box(px, 0, top_z, co[0], co[1], p["cell_top_t"])
            - zcyl(cl_x, port_y, top_z, p["cl_d"] / 2 + 0.5, p["cell_top_t"] + 2)
-           - zcyl(t_x, port_y, top_z, p["t_d"] / 2 + 0.5, p["cell_top_t"] + 2))
+           - zcyl(t_x, port_y, top_z, p["t_d"] / 2 + 0.5, p["cell_top_t"] + 2)
+           - zcyl(px + p["ph_x"], port_y, top_z, p["ph_port_d"] / 2, p["cell_top_t"] + 2))
+    # blanking plug in the spare pH port (DDR-002): a variant site swaps it for a pH probe
+    plug_d, plug_h = p["plug"]
+    plug = (zcyl(px + p["ph_x"], port_y, top_z + p["cell_top_t"] / 2 + plug_h / 2, plug_d / 2, plug_h)
+            + zcyl(px + p["ph_x"], port_y, top_z, p["ph_port_d"] / 2, p["cell_top_t"]))
     bx, by, bz = p["baffle"]
     baffle = box(px, -ciy / 2 + by / 2, cz - ciz / 2 + w / 2 + bz / 2, bx, by, bz)
     in_x = px - cix / 2 + 12
     inlet = zcyl(in_x, 0, D["cell_bot"] - 10, 5, 20)
     out_z = D["outlet_z"]
     outlet = tube((px + co[0] / 2 - 1, 0, out_z), (px + co[0] / 2 + 22, 0, out_z), 8)
-    parts["cell"] = body + top + baffle + inlet + outlet
+    parts["cell"] = body + top + plug + baffle + inlet + outlet
 
     # 10 Turbidity head on the -X side wall at mid-height of the cavity
     tx, ty, tz = p["turb"]
