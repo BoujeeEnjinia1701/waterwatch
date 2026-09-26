@@ -41,13 +41,13 @@ Chlorination is the cheapest defense a piped rural scheme has, but it only prote
 | --- | --- |
 | Rwanda | Cellular handpump sensors paired with a paid maintenance service shortened repair times ([Nagel et al., 2015](https://pubs.acs.org/doi/10.1021/acs.est.5b04077)); the same service model could act on water quality alerts |
 | Nigeria (Plateau State) | Sensors have already tracked functionality and use of rural water points ([Plateau State sensors, 2022](https://www.sciencedirect.com/science/article/pii/S2352728522000094)); water quality alerts would extend the same approach |
-| South Asia (Bangladesh, India) | Dense shared taps, piped schemes with intermittent chlorination and monsoon turbidity make hourly readings useful to operators |
-| Andean and Central American rural schemes | Gravity-fed community systems chlorinate at the tank, far from where people collect water, and are run by volunteer committees |
-| Canada (Ontario) | A high-income example: at Walkerton in May 2000 low chlorine residuals at a municipal well went unrecorded and more than 2,000 people fell ill ([Walkerton Inquiry, Part One, 2002](http://www.archives.gov.on.ca/en/e_records/walkerton/report1/index.html)); small and remote systems still rely on few operators |
+| India | Rural household tap connections rose from 17 % to over 49 % between 2019 and 2022 under the Jal Jeevan Mission, yet [less than 49 % of rural people use safely managed drinking water](https://www.unicef.org/india/what-we-do/clean-drinking-water); a logged residual at the tap would show whether new piped schemes deliver treated water |
+| Honduras | Community water boards run passive chlorinators at storage tanks; in a 2023 study [77 % of samples met the 0.2 mg/L WHO minimum, board errors caused 39 % of chlorination lapses, and more frequent circuit-rider visits went with better results](https://pubmed.ncbi.nlm.nih.gov/38094914/) (Lindmark et al., ACS ES&T Water) |
+| Canada (Ontario) | A high-income example: at Walkerton in May 2000 operators did not measure chlorine residuals at a municipal well as they should have, seven people died and 2,300 fell ill ([CBC News, highlights of the Walkerton Inquiry report](https://www.cbc.ca/news/canada/highlights-of-the-walkerton-inquiry-report-1.867604)) |
 
 ## What sparked the idea
 
-The idea traces back to the E. coli outbreak in Walkerton, Ontario, in May 2000. Part One of the Walkerton Inquiry, released by Associate Chief Justice Dennis O'Connor in January 2002, found that the operators of Well 5 kept chlorine residuals of about 0.12 to 0.4 mg/L against the 0.5 mg/L required after 15 min of contact, tested weekly instead of daily, and often recorded estimates rather than measurements; more than 2,000 people fell ill and at least six died ([Walkerton Inquiry, Part One](http://www.archives.gov.on.ca/en/e_records/walkerton/report1/index.html); [summary of the findings](https://en.wikipedia.org/wiki/Walkerton_E._coli_outbreak)). A town in a high-income country, with a regulated municipal supply, lost its chlorine barrier without anyone noticing in time. At a village tapstand checked only on rare visits, the gap is wider, and a logged, automatic residual reading that raises its own alert is the part WaterWatch aims to supply.
+The idea traces back to the E. coli outbreak in Walkerton, Ontario, in May 2000. Part One of the Walkerton Inquiry, released by Associate Chief Justice Dennis O'Connor in 2002, found that the Well 5 water was to carry a chlorine residual of 0.5 mg/L after 15 min of contact, that operators routinely used less chlorine than required, did not measure residuals on most days and made false entries in the daily operating records, and that seven people died and 2,300 became ill ([CBC News, highlights of the Walkerton Inquiry report](https://www.cbc.ca/news/canada/highlights-of-the-walkerton-inquiry-report-1.867604); [National Academies, Lessons from Waterborne Disease Outbreaks](https://www.ncbi.nlm.nih.gov/sites/books/NBK28459/)). The inquiry concluded that continuous chlorine residual and turbidity monitors at Well 5 would have prevented the outbreak. A town in a high-income country, with a regulated municipal supply, lost its chlorine barrier without anyone noticing in time. At a village tapstand checked only on rare visits, the gap is wider, and a logged, automatic residual and turbidity reading that raises its own alert is the part WaterWatch aims to supply.
 
 ## Problem
 
@@ -92,6 +92,12 @@ The priced bill of materials is in [bom/bom.csv](bom/bom.csv). The parametric mo
 ## Documentation
 
 Controlled documents follow the portfolio [documentation standard](.kit/STANDARDS.md). Each carries a document ID (WWT-PRC-001 for the precis), a version and a revision history. Branded PDFs are built with `python .kit/render.py` and attached to GitHub Releases when a document is tagged, for example `WWT-PRC-001/v1.0`.
+
+## Credits
+
+Designed by Amish Chadha. See [CONTRIBUTORS.md](CONTRIBUTORS.md) for roles. To cite this design, use [CITATION.cff](CITATION.cff) (GitHub shows it as "Cite this repository").
+
+AI assistance (Claude) was used to accelerate concept renders, prototype documentation and first-pass sizing calculations. Design direction and all decisions are Amish Chadha's, recorded in this repository's decision records (`docs/decisions/`).
 
 ## Licenses
 

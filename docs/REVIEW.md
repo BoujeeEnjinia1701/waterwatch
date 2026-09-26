@@ -178,3 +178,16 @@ None. No decision in this repo needs a change in another repo.
 ### TRL 4
 
 TRL 4 remains on hold by Amish's instruction. Nothing was built, bought, tested or programmed. D13 is recorded as a firmware rule only. The drift test that would settle R1 and R10 is TRL 4 work and has not started.
+
+## Session 2026-09-26: sources strengthened
+
+Amish asked to fix the weaker sources in the README (2026-09-26). Every new link below was fetched and checked against the claim it supports. No controlled document changed; `docs/01-problem.md` did not cite the replaced sources.
+
+| Where | Old source | New source |
+| --- | --- | --- |
+| Country row, India (was "South Asia (Bangladesh, India)") | None | [UNICEF India, clean drinking water](https://www.unicef.org/india/what-we-do/clean-drinking-water): rural tap connections 17 % to over 49 % (2019 to 2022); under 49 % of rural people use safely managed water. Bangladesh and the uncited monsoon and intermittent-chlorination claims were dropped |
+| Country row, Honduras (was "Andean and Central American rural schemes") | None | Lindmark et al., ACS ES&T Water 2023 ([PubMed 38094914](https://pubmed.ncbi.nlm.nih.gov/38094914/)): passive tank chlorinators run by community water boards; 77 % of samples at or above 0.2 mg/L; board errors 39 % of lapses; circuit-rider visits correlated with better chlorination |
+| Country row, Canada (Walkerton) | Walkerton Inquiry Part One on archives.gov.on.ca (could not be opened from this session) | [CBC News, highlights of the Walkerton Inquiry report](https://www.cbc.ca/news/canada/highlights-of-the-walkerton-inquiry-report-1.867604): residuals not measured daily, seven deaths, 2,300 ill |
+| What sparked the idea (Walkerton) | Walkerton Inquiry Part One (archives.gov.on.ca, unopened) plus Wikipedia summary | CBC News (above) and the [National Academies workshop summary, Lessons from Waterborne Disease Outbreaks](https://www.ncbi.nlm.nih.gov/sites/books/NBK28459/). The residual range "0.12 to 0.4 mg/L" and "weekly instead of daily" tests could not be verified in a credible source and were removed; the text now states what CBC and the National Academies report: 0.5 mg/L required after 15 min, too little chlorine used, residuals not measured on most days, false entries, seven deaths, 2,300 ill, and the inquiry's finding that continuous residual and turbidity monitors would have prevented the outbreak |
+
+The inspiration event is unchanged; its line in `INSPIRATIONS.md` was updated to match the verified findings. Kept but not re-opened this session: Nagel et al., ES&T 2015 (publisher returned 403) and the Oxfam WASH chlorination page (fetch refused). No budget change.
