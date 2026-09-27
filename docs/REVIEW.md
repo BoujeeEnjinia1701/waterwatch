@@ -191,3 +191,34 @@ Amish asked to fix the weaker sources in the README (2026-09-26). Every new link
 | What sparked the idea (Walkerton) | Walkerton Inquiry Part One (archives.gov.on.ca, unopened) plus Wikipedia summary | CBC News (above) and the [National Academies workshop summary, Lessons from Waterborne Disease Outbreaks](https://www.ncbi.nlm.nih.gov/sites/books/NBK28459/). The residual range "0.12 to 0.4 mg/L" and "weekly instead of daily" tests could not be verified in a credible source and were removed; the text now states what CBC and the National Academies report: 0.5 mg/L required after 15 min, too little chlorine used, residuals not measured on most days, false entries, seven deaths, 2,300 ill, and the inquiry's finding that continuous residual and turbidity monitors would have prevented the outbreak |
 
 The inspiration event is unchanged; its line in `INSPIRATIONS.md` was updated to match the verified findings. Kept but not re-opened this session: Nagel et al., ES&T 2015 (publisher returned 403) and the Oxfam WASH chlorination page (fetch refused). No budget change.
+
+## Session 2026-09-26: product appearance model and photoreal renders
+
+Amish chose this repo for the first batch of product renders on 2026-09-26.
+
+### What was added
+
+`cad/src/product_model.py` exposes `product_parts()` (79 parts: 49 shell, 14 internal, 15 accessory, 1 context), `TITLE` and `RENDER_VIEWS` (hero, exploded and a detail view without the tapstand and plumbing). It reuses PARAMS and derived() from `cad/src/model.py`; every part size, the X and Y positions and every interface are as model.py. It adds:
+
+- Sun shield: rounded front and top edges, pressed side louvers, a teal accent band, a printed name plate, a grommet for the antenna and a lit green status light.
+- Enclosure: filleted IP66 base with cable glands and a vent plug, a clear polycarbonate lid, a gasket line and four tamper-resistant lid screws.
+- Inside: the LiFePO4 pack with a label, fuse holder and a hook-and-loop strap; the controller board (ESP32-S3 module and shield can, charger, potentiostat and boost ICs, microSD and RTC, terminal blocks); the cellular modem board with its module can and SIM holder; the whip antenna.
+- Solar panel: aluminum frame, backsheet, cell grid with busbars, junction box, tilt rail, hinge and pole-top bracket.
+- Flow cell: filleted black body and top plate, four knurled thumb nuts for the tool-free lid, the teal blanking plug in the spare pH port, a label; the turbidity head with flange, screws, label and gland; the chlorine sensor with gland nut and strain relief; the temperature probe with its fitting.
+- Plumbing: saddle tee, isolation ball valve with lever, strainer, check valve and regulator, 1/4 in tube, the latching solenoid valve with push-fit ports, the inlet fitting, the outlet elbow with its open air-break vent, and the drain hose and clamp.
+- Pole section with band clamps, mounting plates and a top cap; sensor and panel cables.
+- Context (not in the BOM): a short section of the tapstand riser with its tap.
+
+`README.md` now shows `media/render-hero.png` and links `media/render-exploded.png`; the orchestrator produces both files.
+
+### Differences from model.py (Proposed, awaiting Amish)
+
+1. **Render layout of heights.** Installed, the parts spread over 2.2 m of pole, which makes each part small in a product render. The appearance model keeps the enclosure at its model.py height and draws the panel and pole top 520 mm lower, the flow cell 130 mm higher and the saddle tee and valve 350 mm higher (tee at 850 mm instead of 500 mm). The pole, riser and drain hose are shown as short sections, and the sample tube is rerouted to suit. All sizes and X and Y positions are unchanged. Proposed, awaiting Amish. Recommendation: keep this as a render-only layout (the hero note says heights are drawn closer together than installed); the installed heights stay as in model.py and WWT-DWG-001.
+2. **Status light.** model.py and the BOM have no status light. The appearance model shows a lit green lens in the shield front, which would be fed by a light pipe from an LED on the controller board (BOM line 6). Proposed, awaiting Amish. Recommendation: adopt a single low-duty status LED behind a lens in the shield, with an open-bottom slot so the shield still lifts off; its power draw is negligible against the 0.54 Wh per day budget but should be added to WWT-CAL-001 if adopted. Option: omit the light and show nothing lit.
+3. **Clear enclosure lid.** BOM lines 3 and 4 specify an IP66 polycarbonate enclosure without saying whether the lid is clear. The appearance model uses a clear lid so the exploded view shows the board, battery and modem; under the sun shield a clear lid gains no sun load. Proposed, awaiting Amish. Recommendation: accept a clear-lid enclosure (common and similar in price) and add "clear lid" to BOM line 3 at the next BOM revision; the BOM was not edited now.
+4. **Panel cable gland on the enclosure top.** model.py brings the panel cable to the enclosure top but shows glands only underneath. The appearance model adds a fourth, small gland on the top, under the shield. Proposed, awaiting Amish. Recommendation: accept; it is within BOM line 16 (glands). Option: route the panel cable down the pole to a fourth gland underneath, which keeps all entries on the bottom face.
+5. **Appearance detail only.** The louvers, labels, thumb nuts, strap and fixings are appearance detail within the existing BOM lines; no new BOM lines are implied. The flow cell stays opaque black, as the turbidity measurement requires.
+
+### Status
+
+This is an appearance model only: no tolerances, no fabrication detail, nothing past TRL 3. `trl: 3` and `trl_target: 3` are unchanged, and TRL 4 remains on hold. model.py, the BOM and the other documents were not edited.
