@@ -48,12 +48,12 @@ def safe_project_views(part, workdir, line_weight=0.35):
 def ortho_cells(sheet, views, names=("front", "top", "right")):
     """Repeat Sheet.add_ortho's layout arithmetic to find where each view lands (x, y, w, h)."""
     ax, ay, aw, ah = M + 10, M + 16, 245, TB_Y - M - 20
-    gap, lab = 14, 12
+    gap, lab, dl = 14, 12, 11
     dims = {n: _viewbox(Path(views[n]).read_text())[2:] for n in names}
     fw, fh = dims["front"]; tw, th = dims["top"]; rw, rh = dims["right"]
     k = sheet.scale
-    ax += (aw - (k * (max(fw, tw) + rw) + gap)) / 2
-    ay += (ah - (k * (th + max(fh, rh)) + gap + 2 * lab)) / 2
+    ax += (aw - (k * (max(fw, tw) + rw) + gap + dl)) / 2 + dl
+    ay += (ah - (k * (th + max(fh, rh)) + gap + 2 * lab + dl)) / 2 + dl
     colw = k * max(fw, tw)
     front_y = ay + k * th + lab + gap
     row_h = k * max(fh, rh)
@@ -94,11 +94,12 @@ def main():
     asm = assembly(with_riser=True)
     views = safe_project_views(asm, work)
     bb = asm.bounding_box()
-    s = Sheet(project="WaterWatch", title="General arrangement", dwg_no="WWT-DWG-001", rev="P2",
+    s = Sheet(project="WaterWatch", title="General arrangement", dwg_no="WWT-DWG-001", rev="P3",
               author="Amish Chadha", date=DATE, scale=None, theme="technical",
               material="Galvanized steel pole; bought-in parts per bom/bom.csv. PRELIMINARY, NOT FOR FABRICATION",
               revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", DATE, "AC"),
-                         ("P2", "Plugged pH probe port in cell lid (DDR-002)", DATE, "AC")])
+                         ("P2", "Plugged pH probe port in cell lid (DDR-002)", DATE, "AC"),
+                         ("P3", "Layout and labels tidied", DATE, "AC")])
     s.add_ortho(views)
     k = s.scale
     c = ortho_cells(s, views)
@@ -113,8 +114,10 @@ def main():
     Z = lambda mz: y + h - (mz - bb.min.Z) * k
     zg = Z(0)
     L.append(f'<line x1="{x - 6:.2f}" y1="{zg:.2f}" x2="{x + w + 4:.2f}" y2="{zg:.2f}" stroke="{INK}" stroke-width="0.35"/>')
-    L.append(_t(x + w + 4, zg - 1, "GROUND", 2.0, 600, MUTED, "end"))
-    xl = X(bb.min.X) - 5                       # dimension columns to the left of the riser
+    xr_end = c["right"][0] + c["right"][2] + 4
+    L[-1] = f'<line x1="{x - 6:.2f}" y1="{zg:.2f}" x2="{xr_end:.2f}" y2="{zg:.2f}" stroke="{INK}" stroke-width="0.35"/>'
+    L.append(_t(xr_end, zg - 1, "GROUND", 2.0, 600, MUTED, "end"))
+    xl = X(bb.min.X) - 12                       # dimension columns to the left of the riser
     for i, (zz, label) in enumerate(((P["tee_z"], f"{P['tee_z']:.0f} tee"),
                                      (D["cell_bot"], f"{D['cell_bot']:.0f} cell underside"),
                                      (P["enc_z"], f"{P['enc_z']:.0f} enclosure center"),
@@ -124,14 +127,18 @@ def main():
         L += dim_v(xd, Z(zz), zg, label)
     xs = X(px + ew / 2 + P["shield_gap"] + P["shield_t"]) + 4
     L += [ext(X(px + ew / 2), Z(D["enc_top"]), xs + 1, Z(D["enc_top"])), ext(X(px + ew / 2), Z(D["enc_bot"]), xs + 1, Z(D["enc_bot"]))]
-    L += dim_v(xs, Z(D["enc_top"]), Z(D["enc_bot"]), f"{eh:.0f}", side=1)
+    L += dim_v(xs, Z(D["enc_top"]), Z(D["enc_bot"]), f"{eh:.0f}", side=3.2)
     L += dim_v(X(px - P["footing_d"] / 2) - 4, zg, Z(-P["embed"]), f"{P['embed']:.0f} embed")
     zt = D["overall_h"] + 90
     L += [ext(X(0), Z(P["riser_h"]) - 2, X(0), Z(zt) - 1), ext(X(px), Z(D["overall_h"]) - 2, X(px), Z(zt) - 1)]
-    L += dim_h(X(0), X(px), Z(zt), f"{px:.0f} riser to pole")
-    L += dim_h(X(px - P["footing_d"] / 2), X(px + P["footing_d"] / 2), Z(-120), f"{P['footing_d']:.0f}")
-    L += leader(X(0), Z(60), X(0) - 3, Z(-260), "EXISTING RISER (NOT IN BOM)", "end")
-    L += leader(X(P["drain_end"][0]), Z(P["drain_end"][2]), X(P["drain_end"][0]) + 4, Z(P["drain_end"][2] + 160), "DRAIN TO BASIN")
+    L += dim_h(X(0), X(px), Z(zt), "")
+    L.append(_t(X(0) - 1.5, Z(zt) - 1.0, f"{px:.0f} riser to pole", 2.3, 400, INK, "end", mono=True))
+    zf = -P["embed"] / 2
+    fx1, fx2 = X(px - P["footing_d"] / 2), X(px + P["footing_d"] / 2)
+    L += dim_h(fx1, fx2, Z(zf), "")
+    L.append(_t(fx2 + 2.0, Z(zf) + 0.8, f"{P['footing_d']:.0f}", 2.3, 400, INK, "start", mono=True))
+    L += leader(X(0), Z(60), X(0) - 9, Z(-260), "EXISTING RISER (NOT IN BOM)", "end")
+    L += leader(X(P["drain_end"][0]), Z(P["drain_end"][2]), X(P["drain_end"][0]) + 13, Z(P["drain_end"][2] + 85), "DRAIN TO BASIN")
     L += leader(X(px + co[0] / 2 + 22), Z(D["outlet_z"] + P["vent_h"]), X(px + co[0] / 2 + 22) + 6, Z(D["outlet_z"] + P["vent_h"] + 150), "AIR-BREAK VENT")
 
     # top view (from +Z): X to the right, Y up the sheet
@@ -139,15 +146,15 @@ def main():
     Xt = lambda mx: x + (mx - bb.min.X) * k
     Yt = lambda my: y + h - (my - bb.min.Y) * k
     L += leader(Xt(px), Yt(D["pole_y"]), Xt(bb.max.X) + 4, Yt(D["pole_y"]) - 3, f"POLE AXIS {D['pole_y']:.0f} BEHIND ENCLOSURE CENTER")
-    L.append(_t(Xt(px) + 30, Yt(bb.min.Y) + 4, "PANEL AND ENCLOSURE FACE -Y (TOWARD THE EQUATOR)", 1.9, 400, MUTED, "middle"))
 
     # right view (from +X): Y to the right... looking along -X, +Y appears to the right
     x, y, w, h = c["right"]
     Yr = lambda my: x + (my - bb.min.Y) * k
     Zr = lambda mz: y + h - (mz - bb.min.Z) * k
-    L += dim_h(Yr(-ed / 2), Yr(ed / 2), Zr(D["enc_top"] + 250), f"{ed:.0f}")
+    L += dim_h(Yr(-ed / 2), Yr(ed / 2), Zr(D["enc_top"] + 250), "")
+    L.append(_t(Yr(-ed / 2) - 1.5, Zr(D["enc_top"] + 250) + 0.8, f"{ed:.0f}", 2.3, 400, INK, "end", mono=True))
     L += [ext(Yr(-ed / 2), Zr(D["enc_top"]), Yr(-ed / 2), Zr(D["enc_top"] + 260)), ext(Yr(ed / 2), Zr(D["enc_top"]), Yr(ed / 2), Zr(D["enc_top"] + 260))]
-    L.append(_t(Yr(0), Zr(D["panel_z"]) - 8, f"PANEL TILT {P['panel_tilt']:.0f} DEG", 2.0, 400, INK, "middle"))
+    L.append(_t(Yr(0) + 9, Zr(D["panel_z"]) + 1.5, f"PANEL TILT {P['panel_tilt']:.0f} DEG", 2.0, 400, INK, "start"))
 
     s._layers += L
     s.add_svg(views["iso"], 276, 32, 140, 100, label="Isometric view", sublabel="Not to scale")
@@ -162,8 +169,8 @@ def main():
         f"Tee on the 25 mm riser at {P['tee_z']:.0f}; 1/4 in tube, {D['tube_l_mm']:.0f} run, {D['tube_vol_l'] * 1000:.0f} mL",
         "Flush 0.5 L/min (pressure compensating) for 90 s hourly (WWT-CAL-001)",
         "Drain 12 mm bore with open air break; discharges to the basin",
-        "Third-angle; front view from -Y; riser on the Z axis",
-    ], x=276, y=158, width=146)
+        "Third-angle; front view from -Y, panel and enclosure face toward the equator; riser on the Z axis",
+    ], x=276, y=154, width=146)
     out = s.save(ROOT / "cad" / "drawings" / "WWT-DWG-001")
     shutil.rmtree(work, ignore_errors=True)
     print(f"wrote {out} and .pdf, .png at scale 1:{1 / k:g}")
