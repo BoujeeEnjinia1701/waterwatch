@@ -3,9 +3,9 @@ doc_id: WWT-PRC-001
 title: WaterWatch design precis
 project: WaterWatch
 doc_type: Design precis
-version: "0.4"
+version: "0.5"
 status: Draft
-date: '2026-09-25'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -25,11 +25,15 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: Recommendations accepted by Amish (DDR-002)
+- version: "0.5"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: Design made constructable (WWT-DDR-003); components table, cost and drawings updated; budget treated as a value-engineering target
 ---
 
 # WaterWatch design precis
 
-WaterWatch is a solar sentinel that stands on its own pole beside a village tapstand. Once an hour a latching valve on a tee in the tapstand riser opens for 90 s and flushes water through a small, dark flow-through cell. An infrared nephelometer measures turbidity, a membrane-free three-electrode sensor measures free chlorine and a sealed probe measures temperature. An ESP32 controller logs the readings, a cellular modem uploads them every 4 h, and an SMS goes to the caretaker and operator when chlorine drops below 0.2 mg/L or turbidity passes 5 NTU. The TRL 3 calculations (WWT-CAL-001) give 0.54 Wh per day, 28.6 days on a 3.2 V, 6 Ah LiFePO4 battery without sun, 18.0 L per day of flushed water and $283 in parts. The weak point is still the chlorine reading. Under Amish's decisions of 2026-09-25 (WWT-DDR-002), R1 is relaxed to ±0.2 mg/L or ±25 %, and sites whose pH is above 7.5 or moves more than 0.2 between visits take a pH probe in a spare port of the cell. With that rule the error budget meets R1 before sensor drift, but the low-cost sensor's drift over months is unknown, so R1 and R10 remain at risk. The design choices below were decided by Amish on 2026-09-25 (WWT-DDR-001 and WWT-DDR-002).
+WaterWatch is a solar sentinel that stands on its own pole beside a village tapstand. Once an hour a latching valve on a tee in the tapstand riser opens for 90 s and flushes water through a small, dark flow-through cell. An infrared nephelometer measures turbidity, a membrane-free three-electrode sensor measures free chlorine and a sealed probe measures temperature. An ESP32 controller logs the readings, a cellular modem uploads them every 4 h, and an SMS goes to the caretaker and operator when chlorine drops below 0.2 mg/L or turbidity passes 5 NTU. The TRL 3 calculations (WWT-CAL-001) give 0.54 Wh per day, 28.6 days on a 3.2 V, 6 Ah LiFePO4 battery without sun, 18.0 L per day of flushed water and $319 in parts for the constructable design (WWT-DDR-003), USD 19 over the USD 300 value-engineering target. How each part is made and fitted is in the prototype build plan (WWT-BLD-001). The weak point is still the chlorine reading. Under Amish's decisions of 2026-09-25 (WWT-DDR-002), R1 is relaxed to ±0.2 mg/L or ±25 %, and sites whose pH is above 7.5 or moves more than 0.2 between visits take a pH probe in a spare port of the cell. With that rule the error budget meets R1 before sensor drift, but the low-cost sensor's drift over months is unknown, so R1 and R10 remain at risk. The design choices below were decided by Amish on 2026-09-25 (WWT-DDR-001 and WWT-DDR-002).
 
 ![Hero render](../media/hero.png)
 
@@ -53,27 +57,30 @@ Table 1. Main components. Numbers match `bom/bom.csv` and Figure 5.
 
 | # | Component | Choice | Notes |
 | --- | --- | --- | --- |
-| 1 | Mounting pole and clamps | 48.3 x 3.2 mm galvanized tube, 2.1 m above ground, 0.6 m in a 300 mm concrete footing beside the tapstand, U-bolt clamps and mounting plates | Keeps the tapstand itself unchanged; factor 4.5 in a 35 m/s gust (WWT-CAL-001, I) |
-| 2 | Solar panel | 5 W monocrystalline, about 250 x 190 mm, tilted 30° toward the equator | Oversized for the load so cloudy weeks are covered |
-| 3 | Enclosure base | IP66 polycarbonate, 200 x 120 x 260 mm, UV-stabilized, pressure-equalizing vent, cable glands underneath | Light grey, under the sun shield (item 17) |
+| 1 | Mounting pole, U-bolts and V-saddles | 48.3 x 3.2 mm galvanized tube, 2.1 m above ground, 0.6 m in a 300 mm concrete footing beside the tapstand; four M8 U-bolts with V-saddles hold the two back plates (item 18) | Keeps the tapstand itself unchanged; factor 4.5 in a 35 m/s gust (WWT-CAL-001, I) |
+| 2 | Solar panel | 5 W monocrystalline, about 250 x 190 mm, tilted 30° toward the equator on a bought pole-top tilt mount | Oversized for the load so cloudy weeks are covered |
+| 3 | Enclosure base | IP66 polycarbonate, 200 x 120 x 260 mm, UV-stabilized, pressure-equalizing vent; every cable, the vent and the antenna enter through the bottom face (WWT-DDR-003) | Light grey, under the sun shield (item 17) |
 | 4 | Enclosure lid and gasket | Supplied with item 3; tamper-resistant screws | |
 | 5 | Battery | LiFePO4, 1S2P 32700 cells, 3.2 V, 6 Ah (19.2 Wh), protection board and NTC | Chemistry chosen for heat tolerance and thermal stability |
 | 6 | Controller board | ESP32-S3 module, LiFePO4 solar charger, LMP91000-class potentiostat front end, valve driver with boost to 12 V, microSD, real-time clock | Carrier board; a custom PCB is TRL 4 work |
 | 7 | Cellular modem | LTE-M and NB-IoT with 2G fallback (SIM7000G class), SIM | Swappable; LoRaWAN module as a variant (WWT-DDR-001, D3) |
-| 8 | Antenna | External LTE and GSM whip on a bulkhead | |
-| 9 | Flow-through cell | Opaque black PVC or printed ASA block, 96 x 54 x 74 mm with a 10 mm lid, 80 x 38 x 66 mm cavity, 0.19 L of water, baffle, inlet at the bottom and outlet near the top; spare 12 mm port in the lid with a blanking plug | Half the TRL 2 volume so the flush clears it; opens without tools for cleaning; the spare port takes the pH probe variant (WWT-DDR-002) |
-| 10 | Turbidity head | 860 nm infrared LED with light-to-frequency detectors at 90° (scatter) and 180° (reference), after [Kelley et al. (2014)](https://www.mdpi.com/1424-8220/14/4/7142) | ISO 7027 style wavelength |
+| 8 | Antenna | External LTE and GSM whip on a bulkhead in the bottom face, pointing down | Moved from the top so the sun shield can slide off (WWT-DDR-003) |
+| 9 | Flow-through cell | Opaque black PVC or printed ASA block, 96 x 60 x 74 mm with a 14 mm back wall screwed to the cell plate, gasket and 10 mm lid on four studs with thumb nuts, 80 x 38 x 66 mm cavity, 0.19 L of water, baffle on the back wall, inlet in the floor and outlet near the top; lid glands for the sensors and a spare M20 port with a blanking plug | Half the TRL 2 volume so the flush clears it; opens without tools for cleaning; the spare port takes the pH probe variant (WWT-DDR-002) |
+| 10 | Turbidity optics | 860 nm infrared LED on the left wall, light-to-frequency detectors on the front wall (90°, scatter) and right wall (180°, reference), each in a small holder with a window, after [Kelley et al. (2014)](https://www.mdpi.com/1424-8220/14/4/7142) | ISO 7027 style wavelength |
 | 11 | Free chlorine sensor | Membrane-free three-electrode sensor: graphite working electrode, Ag/AgCl reference, stainless counter, in a PVC holder, after [Pan et al. (2015)](https://pubs.acs.org/doi/10.1021/acs.analchem.5b03164) | Decided (WWT-DDR-001, D1); long-term drift unknown |
 | 12 | Temperature probe | DS18B20 in a stainless sheath | Also used for chlorine sensor temperature compensation |
-| 13 | Latching solenoid valve | 12 V, 1/4 in (6.35 mm) port, normally closed, direct acting, food-safe wetted parts | Latching, so it draws power only while switching; direct acting so it opens at 0.5 bar |
+| 13 | Latching solenoid valve | 12 V, 1/4 in (6.35 mm) port, normally closed, direct acting, food-safe wetted parts; screwed to the cell plate under the cell | Latching, so it draws power only while switching; direct acting so it opens at 0.5 bar |
 | 14 | Sample line | Saddle tee with isolation ball valve, strainer, check valve, pressure-compensating 0.5 L/min regulator, 1/4 in food-grade PE tube | The only change to the tapstand; the regulator holds R8 from 0.7 to 4 bar |
 | 15 | Drain hose and air break | Outlet elbow with an open air-break vent, then 12 mm hose to the tapstand basin | Basin by default, soakaway or container per site (WWT-DDR-001, D7) |
 | 16 | Cables, glands and fuse | Sensor and panel leads, IP68 glands, battery fuse | |
-| 17 | Sun shield | White aluminum hood with a 25 mm ventilated gap over the enclosure top, sides and front; lifts off | Added at TRL 3 so the battery can charge on hot days (WWT-CAL-001, C) |
+| 17 | Sun shield | White aluminum hood with a 25 mm ventilated gap over the enclosure top, sides and front; flanges at the back held by four thumb screws; slides off forward | Added at TRL 3 so the battery can charge on hot days (WWT-CAL-001, C) |
+| 18 | Mounting plates | Enclosure back plate 270 x 420 mm and cell back plate 140 x 385 mm, 3 mm aluminium, drilled | Added for construction (WWT-DDR-003) |
+| 19 | Lugs and internal plate | The enclosure maker's four mounting lugs; a printed internal plate on the box's moulded bosses carrying the battery, controller and modem | Added for construction (WWT-DDR-003) |
+| 20 | Fixings | Stainless screws, thumb screws, standoffs, battery strap, cable ties | Added for construction (WWT-DDR-003) |
 
 ![Cutaway](../media/cutaway.png)
 
-*Figure 3. Section on the center plane, looking at the front, with the sun shield removed. Top: enclosure with the modem (7, purple) and battery (5, orange) on the left and the controller board (6, teal) on the right. Bottom: flow-through cell (9) with the chlorine sensor (11, blue) and temperature probe (12, green) entering from the top, the turbidity head (10, yellow) on the left side and the outlet near the top on the right.*
+*Figure 3. Section through the flow cell, 7 mm in front of its centre, looking at the front, with the sun shield removed. Top: enclosure with the modem (7, purple) and battery (5, orange) on the left and the controller board (6, teal) on the right, on the internal plate. Bottom: flow-through cell (9) with the chlorine sensor (11, blue) and temperature probe (12, green) entering through the lid, the LED and 180° detector holders of the turbidity optics (10, yellow) on the left and right walls, and the outlet near the top on the right.*
 
 ## Key numbers
 
@@ -95,7 +102,7 @@ All values come from WWT-CAL-001, which states its assumptions; the tags in brac
 | Data per month | 0.86 MB | 780 B payload and 4 kB overhead per upload [G1] | R6 met on paper |
 | Confirmation to SMS | 13.0 min worst case; 77 min from the event | Three tries at 3 min spacing [H1]; 15 min confirming reading [H2] | R5 met on paper |
 | Installation day | 65 min critical path | Footing cast on the survey visit [J2] | R11 met on paper |
-| Parts cost | $283 per base unit; $343 to $383 at a pH probe site | `bom/bom.csv` [K1], [K2] | R12 met on paper, $17 margin |
+| Parts cost | $319 per base unit; $379 to $419 at a pH probe site | `bom/bom.csv` [K1], [K2] | R12: USD 19 over the USD 300 value-engineering target |
 | Shared calibration kit | about $60 | DPD free chlorine and pH comparator, turbidity standards (estimate) | Not in the unit cost |
 
 The chlorine reading is the least certain number. Free chlorine is the sum of hypochlorous acid (HOCl) and hypochlorite (OCl⁻); their split depends on pH, with a pKa of 7.54 at 25 °C, so at pH 8 only 0.26 of free chlorine is HOCl, while at pH 7 0.77 is [E2]. Amperometric sensors respond mainly to HOCl, so the same free chlorine gives very different signals across the pH range in R1. Calibrating at the site against the DPD comparator absorbs the pH on the day of calibration, but a change of 0.2 pH before the next visit shifts the reading by 12 % at pH 7.0, 22 % at pH 7.5 and 38 % at pH 8.0 [E4]. The site pH method is therefore adequate at near-neutral, stable sites and not elsewhere. That is why WWT-DDR-002 fits the pH probe variant where site pH is above 7.5 or moves more than 0.2 between visits, and relaxes R1 to ±0.2 mg/L or ±25 %, since the DPD comparator used as the field reference already takes ±0.07 mg/L. With both, all eight cases in WWT-CAL-001 meet R1 before drift [E6]; at 40 °C, 1.5 mg/L at pH 7.5 with site pH misses by 0.006 mg/L [E7].
@@ -120,7 +127,7 @@ Each choice below was decided by Amish on 2026-09-25, going with the recommendat
 
 ![General arrangement](../cad/drawings/WWT-DWG-001.png)
 
-*Figure 4. General arrangement WWT-DWG-001, Rev P2, generated from `cad/src/model.py` by `cad/src/sheets.py`. Preliminary, not for fabrication.*
+*Figure 4. General arrangement WWT-DWG-001, Rev P4, generated from `cad/src/model.py` by `cad/src/sheets.py`. Preliminary, not for fabrication.*
 
 ![Exploded view](../media/exploded.png)
 

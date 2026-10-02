@@ -1,4 +1,5 @@
-"""WaterWatch general arrangement sheet WWT-DWG-001, Rev P2 (TRL 3; P2 adds the plugged pH port, WWT-DDR-002).
+"""WaterWatch general arrangement sheet WWT-DWG-001, Rev P4 (TRL 3; P2 adds the plugged pH port, WWT-DDR-002;
+P4 shows the constructable design, WWT-DDR-003).
 
 Run from the repo root:  python cad/src/sheets.py
 Writes cad/drawings/WWT-DWG-001.svg, .pdf and .png from the parametric model in
@@ -14,7 +15,8 @@ sys.path[:0] = [str(ROOT / ".kit"), str(ROOT / "cad" / "src")]
 from drawing import Sheet, _viewbox, _t, M, TB_Y, INK, MUTED  # noqa: E402
 from model import PARAMS as P, assembly, derived  # noqa: E402
 
-DATE = "2026-09-25"
+DATE = "2026-10-02"
+D0 = "2026-09-25"
 
 
 def safe_project_views(part, workdir, line_weight=0.35):
@@ -94,12 +96,13 @@ def main():
     asm = assembly(with_riser=True)
     views = safe_project_views(asm, work)
     bb = asm.bounding_box()
-    s = Sheet(project="WaterWatch", title="General arrangement", dwg_no="WWT-DWG-001", rev="P3",
+    s = Sheet(project="WaterWatch", title="General arrangement", dwg_no="WWT-DWG-001", rev="P4",
               author="Amish Chadha", date=DATE, scale=None, theme="technical",
               material="Galvanized steel pole; bought-in parts per bom/bom.csv. PRELIMINARY, NOT FOR FABRICATION",
-              revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", DATE, "AC"),
-                         ("P2", "Plugged pH probe port in cell lid (DDR-002)", DATE, "AC"),
-                         ("P3", "Layout and labels tidied", DATE, "AC")])
+              revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", D0, "AC"),
+                         ("P2", "Plugged pH probe port in cell lid (DDR-002)", D0, "AC"),
+                         ("P3", "Layout and labels tidied", D0, "AC"),
+                         ("P4", "Constructable design: back plates, U-bolts, entries underneath (DDR-003)", "2026-10-02", "AC")])
     s.add_ortho(views)
     k = s.scale
     c = ortho_cells(s, views)
@@ -157,19 +160,20 @@ def main():
     L.append(_t(Yr(0) + 9, Zr(D["panel_z"]) + 1.5, f"PANEL TILT {P['panel_tilt']:.0f} DEG", 2.0, 400, INK, "start"))
 
     s._layers += L
-    s.add_svg(views["iso"], 276, 32, 140, 100, label="Isometric view", sublabel="Not to scale")
+    s.add_svg(views["iso"], 276, 40, 140, 92, label="Isometric view", sublabel="Not to scale")
     cix, ciy, ciz = P["cell_in"]
     s.add_notes("Main dimensions and interfaces (mm)", [
         f"Pole {P['pole_od']} x {P['pole_wall']} galvanized, {P['pole_h']:.0f} above ground, {P['embed']:.0f} in a {P['footing_d']:.0f} footing",
         f"Panel 5 W, {P['panel'][0]:.0f} x {P['panel'][1]:.0f}, tilt {P['panel_tilt']:.0f} deg; top {D['overall_h']:,.0f} above ground",
         f"Enclosure IP66 {ew:.0f} x {ed:.0f} x {eh:.0f}, center {P['enc_z']:.0f}; sun shield, {P['shield_gap']:.0f} gap",
+        f"Back plates 3 mm aluminium on M8 U-bolts and V-saddles (DDR-003)",
         f"Flow cell body {co[0]:.0f} x {co[1]:.0f} x {co[2]:.0f} + {P['cell_top_t']:.0f} lid; cavity {cix:.0f} x {ciy:.0f} x {ciz:.0f}",
         f"Cell water {D['cell_net_l']:.2f} L; inlet at the bottom, outlet {D['outlet_z'] - D['cell_bot']:.0f} above the underside",
-        f"Spare {P['ph_port_d']:.0f} pH probe port in cell lid, plugged (DDR-002)",
-        f"Tee on the 25 mm riser at {P['tee_z']:.0f}; 1/4 in tube, {D['tube_l_mm']:.0f} run, {D['tube_vol_l'] * 1000:.0f} mL",
+        f"Spare pH probe port (M20 gland) in cell lid, plugged (DDR-002)",
+        f"Tee on the 25 mm riser at {P['tee_z']:.0f}; valve under the cell; 1/4 in tube {D['tube_l_mm']:.0f}",
         "Flush 0.5 L/min (pressure compensating) for 90 s hourly (WWT-CAL-001)",
         "Drain 12 mm bore with open air break; discharges to the basin",
-        "Third-angle; front view from -Y, panel and enclosure face toward the equator; riser on the Z axis",
+        "Third-angle; front view from -Y, facing the equator; riser on the Z axis",
     ], x=276, y=154, width=146)
     out = s.save(ROOT / "cad" / "drawings" / "WWT-DWG-001")
     shutil.rmtree(work, ignore_errors=True)

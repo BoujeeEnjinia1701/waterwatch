@@ -340,7 +340,9 @@ budget_usd = None
 for line in (ROOT / "project.yaml").read_text().splitlines():
     if line.startswith("budget_usd:"):
         budget_usd = float(line.split(":")[1].split("#")[0])
-tag("K1", f"{len(rows_b)} BOM lines, total ${total:,.2f} against budget_usd ${budget_usd:,.0f}: margin ${budget_usd - total:,.2f} ({(budget_usd - total) / budget_usd * 100:.0f} %)")
+diff = total - budget_usd
+tag("K1", f"{len(rows_b)} BOM lines, total ${total:,.2f}; value-engineering target (budget_usd) ${budget_usd:,.0f}: "
+    f"${abs(diff):,.2f} {'over' if diff > 0 else 'under'} the target ({abs(diff) / budget_usd * 100:.0f} %)")
 PH_VARIANT = (60.0, 100.0)   # USD, pH probe and interface, estimate (not a quote)
 tag("K2", f"pH probe variant site (DDR-002): ${total + PH_VARIANT[0]:,.0f} to ${total + PH_VARIANT[1]:,.0f} per unit; the probe is priced per variant site, outside the base-unit budget")
 
@@ -356,7 +358,8 @@ status = [
     ("R6", "Met on paper", "under 1 MB per month; 90 days in 138 kB"),
     ("R7", "Met on paper", f"{aut:.0f} days autonomy; {e_use / (y_clear - e_day):.1f} clear days to refill"),
     ("R8", "Met on paper", "18.0 L nominal, 19.8 L at regulator tolerance"),
-    ("R12", "Met on paper", f"${total:,.0f} of ${budget_usd:,.0f} per base unit"),
+    ("R12", "Over target" if total > budget_usd else "Met on paper",
+     f"${total:,.0f} per base unit against the ${budget_usd:,.0f} value-engineering target"),
     ("R3", "Met by design", "DS18B20 +/-0.5 degC"),
     ("R4", "Met by design", "firmware schedule; energy at 15 min checked"),
     ("R13", "Met by design", "alert wording rule"),

@@ -3,9 +3,9 @@ doc_id: WWT-CAL-001
 title: WaterWatch sizing calculations
 project: WaterWatch
 doc_type: Calculation
-version: "0.2"
+version: "0.3"
 status: Draft
-date: '2026-09-25'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -17,17 +17,21 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: Recommendations accepted by Amish (DDR-002)
+- version: "0.3"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: Design made constructable (WWT-DDR-003); tube run, chlorine error budget and cost re-run; budget treated as a value-engineering target
 ---
 
 # WaterWatch sizing calculations
 
-On paper, WaterWatch meets nine of its thirteen requirements (six by calculation, three by design) and has four at risk; none is missed outright. Version 0.2 applies Amish's decisions of 2026-09-25 (WWT-DDR-002): R1 is relaxed to ±0.2 mg/L or ±25 %, whichever is greater; the pH probe variant is fitted at sites whose pH is above 7.5 or moves more than 0.2 between visits; a confirming reading follows 15 min after a first threshold crossing; and the pole footing is cast on the survey visit. With these, the chlorine error budget meets the relaxed R1 target in all eight cases at 25 °C before sensor drift, leaving at least 0.13 mg/L for drift, and installation day drops to 65 min. R1 and R10 remain at risk because the low-cost sensor's drift over a month is still unknown, and at 40 °C one case (1.5 mg/L at pH 7.5 with site pH) misses by 0.006 mg/L. The other two at risk are turbidity (R2, fouling) and outdoor survival (R9, battery temperature). Version 0.1 had R1 and R10 not met and R11 at risk. The calculations changed four parts of the TRL 2 concept: the flow cell is half its former volume so that the flush clears it, a pressure-compensating regulator replaces the fixed restrictor, the settling wait before the turbidity reading rises from 10 s to 30 s, and a ventilated sun shield is added so that the battery can charge on hot days. Every number in this note is printed by `docs/04-calcs/sizing.py`; the tag in brackets, for example [A3], is the line of that script's output that carries it.
+On paper, WaterWatch meets eight of its thirteen requirements (five by calculation, three by design) and has four at risk; none is missed outright, and the parts cost of the constructable design is USD 19 over the USD 300 value-engineering target (R12). Version 0.3 re-runs the note for the constructable design of WWT-DDR-003: the sample tube is shorter (696 mm), which moves two chlorine error figures by 0.001 mg/L, and the added mounting plates, fixings, glands and lid fittings raise the parts cost from USD 283 to USD 319. Version 0.2 applies Amish's decisions of 2026-09-25 (WWT-DDR-002): R1 is relaxed to ±0.2 mg/L or ±25 %, whichever is greater; the pH probe variant is fitted at sites whose pH is above 7.5 or moves more than 0.2 between visits; a confirming reading follows 15 min after a first threshold crossing; and the pole footing is cast on the survey visit. With these, the chlorine error budget meets the relaxed R1 target in all eight cases at 25 °C before sensor drift, leaving at least 0.13 mg/L for drift, and installation day drops to 65 min. R1 and R10 remain at risk because the low-cost sensor's drift over a month is still unknown, and at 40 °C one case (1.5 mg/L at pH 7.5 with site pH) misses by 0.006 mg/L. The other two at risk are turbidity (R2, fouling) and outdoor survival (R9, battery temperature). Version 0.1 had R1 and R10 not met and R11 at risk. The calculations changed four parts of the TRL 2 concept: the flow cell is half its former volume so that the flush clears it, a pressure-compensating regulator replaces the fixed restrictor, the settling wait before the turbidity reading rises from 10 s to 30 s, and a ventilated sun shield is added so that the battery can charge on hot days. Every number in this note is printed by `docs/04-calcs/sizing.py`; the tag in brackets, for example [A3], is the line of that script's output that carries it.
 
 > **Safety:** These are first-principles estimates for a paper proof of concept. They do not show that water is safe to drink, and they are not a substitute for laboratory checks of the sensors, backflow tests on the sample line or electrical safety checks on the battery. See WWT-PRC-001, Safety.
 
 ## Scope and method
 
-The note checks every requirement in WWT-REQ-001 v0.4 against the design in WWT-PRC-001 v0.4 and the parametric model `cad/src/model.py`. The script imports the model's `PARAMS` and derived dimensions, so the cell volume, tube run, enclosure size, pole and footing used here are the ones in the STEP files and in drawing WWT-DWG-001. The script also reads `bom/bom.csv` and `budget_usd` in `project.yaml`. Run it from the repo root with `python docs/04-calcs/sizing.py`.
+The note checks every requirement in WWT-REQ-001 v0.5 against the design in WWT-PRC-001 v0.5 and the parametric model `cad/src/model.py`. The script imports the model's `PARAMS` and derived dimensions, so the cell volume, tube run, enclosure size, pole and footing used here are the ones in the STEP files and in drawing WWT-DWG-001. The script also reads `bom/bom.csv` and `budget_usd` in `project.yaml`. Run it from the repo root with `python docs/04-calcs/sizing.py`.
 
 The design case is a public tapstand on a chlorinated rural scheme, with a supply pressure of 0.5 to 4 bar (7 to 58 psi), ambient 0 to 45 °C, hourly readings and uploads every 4 h over LTE-M or NB-IoT.
 
@@ -86,7 +90,7 @@ The design case is a public tapstand on a chlorinated rural scheme, with a suppl
 
 ## D. Sample flow, flushing and water use (R8, R1)
 
-- **Cell volume.** The TRL 2 cell held 0.37 L. The TRL 3 cell holds 0.185 L of water once the baffle and the immersed sensors are subtracted. The 1/4 in sample tube from the tee to the cell runs 738 mm and holds 10.7 mL [D1].
+- **Cell volume.** The TRL 2 cell held 0.37 L. The TRL 3 cell holds 0.185 L of water once the baffle and the immersed sensors are subtracted. The 1/4 in sample tube, from the regulator to the valve and from the valve to the cell, runs 696 mm and holds 10.1 mL [D1] (738 mm and 10.7 mL before WWT-DDR-003 moved the valve onto the cell plate).
 - **Water use.** Each 90 s flush at 0.5 L/min uses 0.75 L, 18.0 L per day [D2]. At the start of the 10 s chlorine window, 2.9 % of the previous hour's water is still in the cell, and 1.8 % at its end; the TRL 2 cell would have held 17.0 %, enough to bias every chlorine reading low by that much when the old water had lost its residual [D3]. This is why the cell was made smaller rather than the flush longer.
 - **Pressure.** A fixed orifice sized for 0.5 L/min at 1 bar passes 0.35 L/min at 0.5 bar and 1.00 L/min at 4 bar, which would use 36.0 L per day [D4] and break R8. A pressure-compensating regulator holds 0.5 L/min; at its +10 % tolerance the unit uses 19.8 L per day [D5]. **R8 is met on paper** with a 1 % margin at the upper tolerance. Below the regulator's compensating range, at 0.5 bar, the flow falls to about 0.35 L/min and the stale fraction rises to 8.5 % [D5]; a low-pressure site needs a longer flush, set per site.
 - **Context.** The daily flush is 0.36 % of the draw of a tapstand serving 250 people at 20 L each. On the 15 min schedule the unit would use 72 L per day [D6]; R8 applies to hourly sampling.
@@ -105,11 +109,11 @@ Under WWT-DDR-002, R1's target is ±0.2 mg/L or ±25 %, whichever is greater (it
 | Free chlorine | pH | Site pH (±0.2 between visits) | pH probe variant (±0.1) | Method under the rule | Target (v0.3 target) | Room for drift |
 | --- | --- | --- | --- | --- | --- | --- |
 | 0.5 mg/L | 7.0 | ±0.092 mg/L | ±0.077 mg/L | Site pH | ±0.200 (±0.100) mg/L | 0.177 mg/L |
-| 0.5 mg/L | 7.5 | ±0.131 mg/L | ±0.091 mg/L | Site pH | ±0.200 (±0.100) mg/L | 0.151 mg/L |
+| 0.5 mg/L | 7.5 | ±0.131 mg/L | ±0.090 mg/L | Site pH | ±0.200 (±0.100) mg/L | 0.151 mg/L |
 | 0.5 mg/L | 8.0 | ±0.202 mg/L | ±0.115 mg/L | pH probe | ±0.200 (±0.100) mg/L | 0.163 mg/L |
 | 0.5 mg/L | 8.5 | ±0.260 mg/L | ±0.135 mg/L | pH probe | ±0.200 (±0.100) mg/L | 0.148 mg/L |
 | 1.5 mg/L | 7.0 | ±0.194 mg/L | ±0.118 mg/L | Site pH | ±0.375 (±0.225) mg/L | 0.321 mg/L |
-| 1.5 mg/L | 7.5 | ±0.339 mg/L | ±0.186 mg/L | Site pH | ±0.375 (±0.225) mg/L | 0.160 mg/L |
+| 1.5 mg/L | 7.5 | ±0.339 mg/L | ±0.186 mg/L | Site pH | ±0.375 (±0.225) mg/L | 0.161 mg/L |
 | 1.5 mg/L | 8.0 | ±0.574 mg/L | ±0.284 mg/L | pH probe | ±0.375 (±0.225) mg/L | 0.245 mg/L |
 | 1.5 mg/L | 8.5 | ±0.753 mg/L | ±0.352 mg/L | pH probe | ±0.375 (±0.225) mg/L | 0.130 mg/L |
 
@@ -148,7 +152,7 @@ Under WWT-DDR-002, R1's target is ±0.2 mg/L or ±25 %, whichever is greater (it
 
 ## K. Cost (R12)
 
-The BOM has 17 lines totaling $283.00 against the $300 `budget_usd`, a margin of $17.00 (6 %) [K1]. The TRL 3 changes added $3 for the pressure-compensating regulator, $1 for the air-break fitting and $8 for the sun shield; WWT-DDR-002 added $1 for a spare pH port and blanking plug in the cell lid. R12 is met on paper for the base unit. A pH probe variant site costs about $343 to $383 per unit (probe and interface about $60 to $100, estimate) [K2]; as restated in WWT-REQ-001 v0.4, the probe is priced per variant site, outside the base-unit budget, like the shared calibration kit.
+Value-engineering target: USD 300 (`budget_usd`, a hypothetical control target, not a limit). Estimated cost of the constructable design: USD 319.00 for the base unit, 20 BOM lines (USD 19.00 over the target, 6 %) [K1]. The TRL 3 changes added $3 for the pressure-compensating regulator, $1 for the air-break fitting and $8 for the sun shield; WWT-DDR-002 added $1 for a spare pH port and blanking plug in the cell lid; WWT-DDR-003 added $36 for construction: the two drilled back plates ($10), the enclosure lugs and printed internal plate ($8), fixings ($6), three more glands and a blanking plug ($4), the cell's gasket, studs and lid glands ($4), push-fit elbows ($2), the shield fixing ($1) and the drain hose tail ($1). R12 is reported as over the value-engineering target; the savings worth trying are listed in the design decisions register (WWT-DEC-001). A pH probe variant site costs about $379 to $419 per unit (probe and interface about $60 to $100, estimate) [K2]; as restated in WWT-REQ-001 v0.4, the probe is priced per variant site, outside the base-unit budget, like the shared calibration kit.
 
 ## L. Results against every requirement
 
@@ -165,12 +169,12 @@ The BOM has 17 lines totaling $283.00 against the $300 `budget_usd`, a margin of
 | R6 | Report and keep data | 0.86 MB per month; 90 days in 138 kB | 4 h uploads, 90 days on board | Met on paper |
 | R7 | Run on sunlight alone | 28.6 days autonomy; 1.18 clear days to refill | 7 days; 3 clear days | Met on paper |
 | R8 | Use little treated water | 18.0 L/day nominal, 19.8 L at regulator tolerance | 20 L/day | Met on paper (thin margin) |
-| R12 | Stay within the budget | $283 per base unit; $343 to $383 at a pH probe variant site | $300 per base unit | Met on paper |
+| R12 | Stay within the budget | $319 per base unit; $379 to $419 at a pH probe variant site | $300 value-engineering target per base unit | Over the target by $19 |
 | R3 | Measure water temperature | DS18B20, ±0.5 °C from -10 to 85 °C | 0 to 50 °C, ±0.5 °C | Met by design |
 | R4 | Sample on a schedule | Hourly default; 15 min schedule within energy (1.589 Wh/day, 9.7 days) | 15 min to 24 h | Met by design |
 | R13 | Report measurements, not verdicts | Alert wording rule | Never says "safe" | Met by design |
 
-Counts: 0 not met, 4 at risk, 6 met on paper, 3 met by design (v0.1: 2 not met, 3 at risk, 5 met on paper, 3 met by design). No requirement is left unverifiable at TRL 3, although R1, R2, R9 and R10 each rest on an assumption that only a test can settle.
+Counts: 0 not met, 4 at risk, 5 met on paper, 1 over the value-engineering target, 3 met by design (v0.2: 4 at risk, 6 met on paper, 3 met by design; v0.1: 2 not met, 3 at risk, 5 met on paper, 3 met by design). No requirement is left unverifiable at TRL 3, although R1, R2, R9 and R10 each rest on an assumption that only a test can settle.
 
 ## Checks against the TRL 2 figures
 
@@ -186,4 +190,4 @@ Counts: 0 not met, 4 at risk, 6 met on paper, 3 met by design (v0.1: 2 not met, 
 | Under 1 MB per month | 0.86 MB | Stands |
 | SMS within minutes | 13.0 min worst case with 3 min retries | Precis updated |
 | HOCl about a quarter at pH 8, three quarters at pH 7 | 0.26 and 0.77 | Stands |
-| About $270 | $283 (v0.1: $282) | Precis and BOM notes updated |
+| About $270 | $319 for the constructable design (v0.2: $283; v0.1: $282) | Precis and BOM notes updated |

@@ -228,3 +228,59 @@ This is an appearance model only: no tolerances, no fabrication detail, nothing 
 - Kit 1.5.0 synced: STANDARDS v1.5 (sections 12 to 15: product renders, storefront images and image quality, public release, authorship and signing), `.kit/cards.py`, `.kit/image_qc.py`, `.kit/release_gate.py`, issue templates, and the `/render-product` and `/release` commands. `CLAUDE.md` now matches `.kit/CLAUDE.md`.
 - Every `media/render-*.png` recaptioned from its original render with the new layout: the title, concept label and repository sit in a band above the render and the view note in a band below it, each line wrapped to the image width, so no text overlaps other text or the render or runs off the image. `media/card.png` and `media/social-preview.png` regenerated with the same rules.
 - `python .kit/image_qc.py` and `python .kit/release_gate.py` pass. trl stays 3.
+
+## Session 2026-10-02: kit 1.7.0, constructable design and prototype build plan
+
+Amish approved the build plan format on 2026-09-30 and asked for it in every repo, with outstanding decisions kept in a separate register, and wrote: "If you are realising that the design cannot be built as per concept - fix the design assumptions to match and be physically feasible as you draw the illustrations." On 2026-10-01 he set budgets as value-engineering targets. This session applied both to WaterWatch. Nothing was built, bought or tested; `trl` stays 3.
+
+### What was done
+
+- Kit 1.7.0 installed (`.kit/`, `.claude/commands/`); `CLAUDE.md` now matches `.kit/CLAUDE.md`.
+- Constructability review with build123d: `cad/src/model.py` rewritten to separate components and now runs 97 checks (`python cad/src/model.py --check`: 68 required contacts, 17 clearances, an overlap scan of all 53 parts, the light path in the cell and the standing water level). All pass. STEP and STL re-exported.
+- `docs/decisions/0003-design-for-construction.md` (WWT-DDR-003 v0.1, Draft): every change, made under Amish's 2026-09-30 instruction to make the design physically buildable; open for his review.
+- `docs/05-build-plan.md` (WWT-BLD-001 v0.1) from the kit template, with `cad/src/build_plan_media.py`: overview, 9 making sketches (`cad/drawings/WWT-DWG-101` to `109`), 3 drilling layouts, a wiring diagram, 12 joint close-ups and 18 assembly step pictures in `docs/05-build-plan/`.
+- `docs/06-design-decisions.md` (WWT-DEC-001 v0.1): 10 open decisions, 8 items to confirm when parts are bought, a value engineering section and the decisions made.
+- WWT-DWG-001 Rev P3 to P4; WWT-CAL-001 v0.2 to v0.3; WWT-REQ-001 v0.4 to v0.5; WWT-PRC-001 v0.4 to v0.5; `bom/bom.csv` (20 lines) and `bom/bom-notes.md`; `README.md` (links line, "Building the prototype", value-engineering wording); `project.yaml` (`design_state: constructable`, three evidence files added; `budget_usd` unchanged at 300). Three BOM rows that had unquoted commas in their notes were re-quoted.
+- Concept media regenerated from the new model (`media/hero.png`, `cutaway.png`, `exploded.png`, `flow.png`, `concept-blueprint.*`, `model.glb`). PDFs rebuilt.
+
+### Design changes made for construction (WWT-DDR-003)
+
+1. P1. The solid concept plates and loose clamp rings became two 3 mm aluminium back plates, each on two M8 U-bolts with V-saddles; the pole axis moves from 94 to 103 mm behind the enclosure centre.
+2. P2. The enclosure hangs on the maker's four lugs, one M5 screw each.
+3. P3. A printed internal plate on the box's moulded bosses carries the battery, controller and modem.
+4. P4. Every entry is in the bottom face: six glands (one a plugged spare for the pH probe), the vent and the antenna, which now points down; the panel lead runs down the back of the pole.
+5. P5. The sun shield has flanges and four thumb screws and slides off forward.
+6. P6. The turbidity optics are three holders on three walls (LED, 90° and 180° detectors); the baffle, unchanged in size, moved to the back wall so the beam is clear.
+7. P7. The lid glands were laid out so none overlaps and every probe clears the beam and the baffle.
+8. P8. The cell lid has a gasket, four studs and thumb nuts.
+9. P9. The cell's back wall is 14 mm (body 60 deep instead of 54) and takes two M5 screws from behind the plate; the cavity and its volume are unchanged.
+10. P10. The valve is screwed to the cell plate under the cell; the tube run falls from 738 to 696 mm.
+11. P11. The panel sits on a bought pole-top tilt mount.
+12. P12. The riser fittings are one screwed brass line with the check valve shown.
+13. P13. Every cable has a defined route, clear of every part it is not fixed to.
+
+### Key results
+
+- Estimated cost of the constructable design: USD 319 against the USD 300 value-engineering target (USD 19 over); the construction parts added USD 36. A pH probe variant site: USD 379 to 419.
+- Requirement status (WWT-CAL-001 v0.3): none not met; 4 at risk (R1, R2, R9, R10); 5 met on paper; 3 met by design; R12 over the value-engineering target by USD 19. No other status changed. The tube change moves two chlorine error figures by 0.001 mg/L.
+
+### Open decisions (in WWT-DEC-001)
+
+Review of WWT-DDR-003; shield thumb screws at public sites; antenna position; water volume basis in the calculation; and, carried over, the render layout, status light and clear lid (2026-09-26) and O1 to O3. All proposed, awaiting Amish.
+
+### Picture notes
+
+- The concept exploded view (`media/exploded.png`) is still dense around the small flow cell parts (callouts 9 to 12), although they were pulled further apart; the build plan overview shows them clearly.
+- Some joint close-ups have leader lines that end close together where a part is mostly hidden behind another (joints 2, 4 and 5); the captions in the plan say which face meets which.
+
+### Stale until regenerated on Amish's Mac
+
+The design changed visibly, so `media/render-*.png`, `media/card.png` and `media/social-preview.png` and the appearance model `cad/src/product_model.py` still show the concept: the antenna through the shield top, the single turbidity block, the solid mounting plates and clamp rings, and the panel bracket. They were not regenerated here.
+
+### Safety
+
+No change to the safety case. The plan adds safety stops for the battery, the connection to the drinking water supply (supply shut off, check valve direction, air break), the concrete footing and work at height. The shield now comes off by hand (open decision 2).
+
+### Recommended next step
+
+Amish reviews WWT-DDR-003 and the open decisions in WWT-DEC-001, and has the photoreal renders regenerated on the Mac. TRL 4 (building to the plan and testing) remains on hold.
