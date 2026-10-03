@@ -3,9 +3,9 @@ doc_id: WWT-PRB-001
 title: WaterWatch problem statement
 project: WaterWatch
 doc_type: Problem statement
-version: "0.3"
+version: "0.4"
 status: Draft
-date: '2026-09-25'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -21,6 +21,10 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: For TRL 3, record Amish's decisions from WWT-DDR-001 (tapstands first, default thresholds); partner and region left open
+- version: "0.4"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: Partner, alert and data questions answered by Amish's decisions of 2026-10-02 (WWT-DEC-001)
 ---
 
 # WaterWatch problem statement
@@ -76,7 +80,7 @@ Typical site: a public tapstand or a storage tank outlet on a piped rural scheme
 
 ## Open questions
 
-- Which partner and region first? Open, awaiting Amish: community designs pick co-design partners per area later (WWT-DDR-001, O1).
+- Which partner and region first? Decided by Amish, 2026-10-02 (WWT-DEC-001): a scheme operator that runs chlorinated, solar-powered piped schemes with public tapstands; the first candidate to approach is Water Mission, which runs such schemes in East Africa, with the first region taken from its country programs; not yet approached.
 - Tapstand only, or also storage tank outlets and kiosks? Decided by Amish, 2026-09-25: tapstands first, tank outlets and kiosks later (WWT-DDR-001, D8).
 - Which alert thresholds should be defaults? Decided by Amish, 2026-09-25: free chlorine below 0.2 mg/L and turbidity above 5 NTU, confirmed by two consecutive readings and adjustable per site (WWT-DDR-001, D6). Partners may still ask for other site values.
-- Alert language, recipients and data ownership stay open for co-design (WWT-DDR-001, O2 and O3).
+- Alert language, recipients and data ownership: decided by Amish, 2026-10-02 (WWT-DEC-001) as defaults to confirm in co-design: alerts go by SMS in the site's main local language, with an English copy to the operator, stating only what was measured, when and the threshold crossed; they go to the caretaker and the operator's maintenance contact, with a weekly summary to the district water officer; the scheme operator owns the data; the water committee and the district water and health offices can see it; anonymized site data are published only with the operator's written agreement.

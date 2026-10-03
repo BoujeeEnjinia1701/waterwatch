@@ -3,7 +3,7 @@ doc_id: WWT-CAL-001
 title: WaterWatch sizing calculations
 project: WaterWatch
 doc_type: Calculation
-version: "0.3"
+version: "0.4"
 status: Draft
 date: '2026-10-02'
 author: Amish Chadha
@@ -21,11 +21,17 @@ revisions:
   date: '2026-10-02'
   author: Amish Chadha
   change: Design made constructable (WWT-DDR-003); tube run, chlorine error budget and cost re-run; budget treated as a value-engineering target
+- version: "0.4"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "Status light (WWT-DEC-001): energy line A2 and cost lines K1 and K2 re-run; autonomy 28.5 days, cost USD 322"
 ---
 
 # WaterWatch sizing calculations
 
-On paper, WaterWatch meets eight of its thirteen requirements (five by calculation, three by design) and has four at risk; none is missed outright, and the parts cost of the constructable design is USD 19 over the USD 300 value-engineering target (R12). Version 0.3 re-runs the note for the constructable design of WWT-DDR-003: the sample tube is shorter (696 mm), which moves two chlorine error figures by 0.001 mg/L, and the added mounting plates, fixings, glands and lid fittings raise the parts cost from USD 283 to USD 319. Version 0.2 applies Amish's decisions of 2026-09-25 (WWT-DDR-002): R1 is relaxed to ±0.2 mg/L or ±25 %, whichever is greater; the pH probe variant is fitted at sites whose pH is above 7.5 or moves more than 0.2 between visits; a confirming reading follows 15 min after a first threshold crossing; and the pole footing is cast on the survey visit. With these, the chlorine error budget meets the relaxed R1 target in all eight cases at 25 °C before sensor drift, leaving at least 0.13 mg/L for drift, and installation day drops to 65 min. R1 and R10 remain at risk because the low-cost sensor's drift over a month is still unknown, and at 40 °C one case (1.5 mg/L at pH 7.5 with site pH) misses by 0.006 mg/L. The other two at risk are turbidity (R2, fouling) and outdoor survival (R9, battery temperature). Version 0.1 had R1 and R10 not met and R11 at risk. The calculations changed four parts of the TRL 2 concept: the flow cell is half its former volume so that the flush clears it, a pressure-compensating regulator replaces the fixed restrictor, the settling wait before the turbidity reading rises from 10 s to 30 s, and a ventilated sun shield is added so that the battery can charge on hot days. Every number in this note is printed by `docs/04-calcs/sizing.py`; the tag in brackets, for example [A3], is the line of that script's output that carries it.
+**Revision 0.4 (2026-10-02).** Amish decided on 2026-10-02 that the status light is one low-duty LED behind a lens in the shield front (WWT-DEC-001). It adds 1.98 mWh a day to the energy sum (5 mA for 50 ms every 10 s from the 3.3 V rail, 0.55 % of the sum) [A2], which moves the daily need from 0.537 to 0.540 Wh, autonomy from 28.6 to 28.5 days and the refill from 1.18 to 1.19 clear days [A3, B1, B3]. A seventh gland and the status light unit add USD 3 to the parts: USD 322 against the USD 300 value-engineering target, USD 22 over [K1]. No requirement changes status. The paragraph below describes revision 0.3.
+
+On paper, WaterWatch meets eight of its thirteen requirements (five by calculation, three by design) and has four at risk; none is missed outright, and the parts cost of the constructable design is USD 19 over the USD 300 value-engineering target (R12) at version 0.3. Version 0.3 re-runs the note for the constructable design of WWT-DDR-003: the sample tube is shorter (696 mm), which moves two chlorine error figures by 0.001 mg/L, and the added mounting plates, fixings, glands and lid fittings raise the parts cost from USD 283 to USD 319. Version 0.2 applies Amish's decisions of 2026-09-25 (WWT-DDR-002): R1 is relaxed to ±0.2 mg/L or ±25 %, whichever is greater; the pH probe variant is fitted at sites whose pH is above 7.5 or moves more than 0.2 between visits; a confirming reading follows 15 min after a first threshold crossing; and the pole footing is cast on the survey visit. With these, the chlorine error budget meets the relaxed R1 target in all eight cases at 25 °C before sensor drift, leaving at least 0.13 mg/L for drift, and installation day drops to 65 min. R1 and R10 remain at risk because the low-cost sensor's drift over a month is still unknown, and at 40 °C one case (1.5 mg/L at pH 7.5 with site pH) misses by 0.006 mg/L. The other two at risk are turbidity (R2, fouling) and outdoor survival (R9, battery temperature). Version 0.1 had R1 and R10 not met and R11 at risk. The calculations changed four parts of the TRL 2 concept: the flow cell is half its former volume so that the flush clears it, a pressure-compensating regulator replaces the fixed restrictor, the settling wait before the turbidity reading rises from 10 s to 30 s, and a ventilated sun shield is added so that the battery can charge on hot days. Every number in this note is printed by `docs/04-calcs/sizing.py`; the tag in brackets, for example [A3], is the line of that script's output that carries it.
 
 > **Safety:** These are first-principles estimates for a paper proof of concept. They do not show that water is safe to drink, and they are not a substitute for laboratory checks of the sensors, backflow tests on the sample line or electrical safety checks on the battery. See WWT-PRC-001, Safety.
 
@@ -56,13 +62,13 @@ The design case is a public tapstand on a chlorinated rural scheme, with a suppl
 
 - **Per reading.** 130 s awake at 0.264 W is 9.53 mWh, or 0.229 Wh per day at 24 readings [A1].
 - **Uploads, sleep and valve.** Six uploads take 0.120 Wh, the sleep floor 4.0 mWh and the valve pulses 5.0 mWh per day [A2].
-- **Daily need.** The sum is 0.358 Wh; with the 1.5 margin it is 0.537 Wh per day, a 22.4 mW average [A3]. The TRL 2 figure of about 0.5 Wh stands; the longer settling wait adds about 35 mWh per day [F3].
-- **Sensitivity.** A site with only 2G coverage, where each upload costs four times as much, needs 1.077 Wh per day [A4]. The 15 min schedule allowed by R4 needs 1.589 Wh per day [A5].
+- **Daily need.** The sum is 0.360 Wh, including 2 mWh for the status light; with the 1.5 margin it is 0.540 Wh per day, a 22.5 mW average [A2, A3]. The TRL 2 figure of about 0.5 Wh stands; the longer settling wait adds about 35 mWh per day [F3].
+- **Sensitivity.** A site with only 2G coverage, where each upload costs four times as much, needs 1.080 Wh per day [A4]. The 15 min schedule allowed by R4 needs 1.592 Wh per day [A5].
 
 ## B. Battery autonomy and solar recharge (R7)
 
-- **Autonomy.** The 19.2 Wh pack gives 15.36 Wh usable, which lasts 28.6 days without sun, or 24.3 days at 0 °C. On a 2G-only site it lasts 14.3 days and on the 15 min schedule 9.7 days [B1]. R7 (7 days) is met in every case.
-- **Recharge.** The 5 W panel yields 13.5 Wh on a clear day and 7.5 Wh on an overcast day [B2]. From empty it refills in 1.18 clear days or 2.21 overcast days [B3]. R7 (3 clear days) is met.
+- **Autonomy.** The 19.2 Wh pack gives 15.36 Wh usable, which lasts 28.5 days without sun, or 24.2 days at 0 °C. On a 2G-only site it lasts 14.2 days and on the 15 min schedule 9.6 days [B1]. R7 (7 days) is met in every case.
+- **Recharge.** The 5 W panel yields 13.5 Wh on a clear day and 7.5 Wh on an overcast day [B2]. From empty it refills in 1.19 clear days or 2.21 overcast days [B3]. R7 (3 clear days) is met.
 - **Panel size.** The smallest panel that would refill the pack in three overcast days is 3.8 W, so the 5 W panel carries a modest margin for the rainy season. At full sun it charges at about 1.25 A (0.21 C), well within the cells' rating [B4].
 - **Hot weather.** Charging depends on the battery staying below its 45 °C charge limit (section C). Without the sun shield, a clear 45 °C day allows no useful charge at all.
 
@@ -152,7 +158,7 @@ Under WWT-DDR-002, R1's target is ±0.2 mg/L or ±25 %, whichever is greater (it
 
 ## K. Cost (R12)
 
-Value-engineering target: USD 300 (`budget_usd`, a hypothetical control target, not a limit). Estimated cost of the constructable design: USD 319.00 for the base unit, 20 BOM lines (USD 19.00 over the target, 6 %) [K1]. The TRL 3 changes added $3 for the pressure-compensating regulator, $1 for the air-break fitting and $8 for the sun shield; WWT-DDR-002 added $1 for a spare pH port and blanking plug in the cell lid; WWT-DDR-003 added $36 for construction: the two drilled back plates ($10), the enclosure lugs and printed internal plate ($8), fixings ($6), three more glands and a blanking plug ($4), the cell's gasket, studs and lid glands ($4), push-fit elbows ($2), the shield fixing ($1) and the drain hose tail ($1). R12 is reported as over the value-engineering target; the savings worth trying are listed in the design decisions register (WWT-DEC-001). A pH probe variant site costs about $379 to $419 per unit (probe and interface about $60 to $100, estimate) [K2]; as restated in WWT-REQ-001 v0.4, the probe is priced per variant site, outside the base-unit budget, like the shared calibration kit.
+Value-engineering target: USD 300 (`budget_usd`, a hypothetical control target, not a limit). Estimated cost of the constructable design: USD 322.00 for the base unit, 21 BOM lines (USD 22.00 over the target, 7 %) [K1]. The TRL 3 changes added $3 for the pressure-compensating regulator, $1 for the air-break fitting and $8 for the sun shield; WWT-DDR-002 added $1 for a spare pH port and blanking plug in the cell lid; WWT-DDR-003 added $36 for construction: the two drilled back plates ($10), the enclosure lugs and printed internal plate ($8), fixings ($6), three more glands and a blanking plug ($4), the cell's gasket, studs and lid glands ($4), push-fit elbows ($2), the shield fixing ($1) and the drain hose tail ($1); WWT-DEC-001 (2026-10-02) then added $3 for the status light: the lens unit and lead ($2) and a seventh gland ($1). R12 is reported as over the value-engineering target; the savings worth trying are listed in the design decisions register (WWT-DEC-001). A pH probe variant site costs about $382 to $422 per unit (probe and interface about $60 to $100, estimate) [K2]; as restated in WWT-REQ-001 v0.4, the probe is priced per variant site, outside the base-unit budget, like the shared calibration kit.
 
 ## L. Results against every requirement
 
@@ -167,11 +173,11 @@ Value-engineering target: USD 300 (`budget_usd`, a hypothetical control target, 
 | R11 | Install simply and safely | 65 min on installation day with the footing cast on the survey visit (140 min in one visit) | 2 h on installation day, hand tools, backflow prevented | Met on paper |
 | R5 | Alert the people who act | 13.0 min worst case from confirmation to SMS; 77 min from the event with the 15 min confirming reading | 15 min | Met on paper (where there is coverage) |
 | R6 | Report and keep data | 0.86 MB per month; 90 days in 138 kB | 4 h uploads, 90 days on board | Met on paper |
-| R7 | Run on sunlight alone | 28.6 days autonomy; 1.18 clear days to refill | 7 days; 3 clear days | Met on paper |
+| R7 | Run on sunlight alone | 28.5 days autonomy; 1.19 clear days to refill | 7 days; 3 clear days | Met on paper |
 | R8 | Use little treated water | 18.0 L/day nominal, 19.8 L at regulator tolerance | 20 L/day | Met on paper (thin margin) |
-| R12 | Stay within the budget | $319 per base unit; $379 to $419 at a pH probe variant site | $300 value-engineering target per base unit | Over the target by $19 |
+| R12 | Stay within the budget | $322 per base unit; $382 to $422 at a pH probe variant site | $300 value-engineering target per base unit | Over the target by $22 |
 | R3 | Measure water temperature | DS18B20, ±0.5 °C from -10 to 85 °C | 0 to 50 °C, ±0.5 °C | Met by design |
-| R4 | Sample on a schedule | Hourly default; 15 min schedule within energy (1.589 Wh/day, 9.7 days) | 15 min to 24 h | Met by design |
+| R4 | Sample on a schedule | Hourly default; 15 min schedule within energy (1.592 Wh/day, 9.6 days) | 15 min to 24 h | Met by design |
 | R13 | Report measurements, not verdicts | Alert wording rule | Never says "safe" | Met by design |
 
 Counts: 0 not met, 4 at risk, 5 met on paper, 1 over the value-engineering target, 3 met by design (v0.2: 4 at risk, 6 met on paper, 3 met by design; v0.1: 2 not met, 3 at risk, 5 met on paper, 3 met by design). No requirement is left unverifiable at TRL 3, although R1, R2, R9 and R10 each rest on an assumption that only a test can settle.
@@ -180,9 +186,9 @@ Counts: 0 not met, 4 at risk, 5 met on paper, 1 over the value-engineering targe
 
 | TRL 2 claim (WWT-PRC-001 v0.2) | This note | Action |
 | --- | --- | --- |
-| About 0.5 Wh/day | 0.537 Wh/day (130 s awake) | Precis updated |
-| About 30 days without sun | 28.6 days (24.3 days at 0 °C) | Precis updated |
-| About 13 Wh per clear day; about 1.2 days to refill | 13.5 Wh; 1.18 days | Stands |
+| About 0.5 Wh/day | 0.540 Wh/day (130 s awake; 0.537 before the status light) | Precis updated |
+| About 30 days without sun | 28.5 days (24.2 days at 0 °C; 28.6 before the status light) | Precis updated |
+| About 13 Wh per clear day; about 1.2 days to refill | 13.5 Wh; 1.19 days | Stands |
 | Cell 0.37 L; 0.75 L flush is about two cell volumes | 0.185 L; 0.75 L is about four cell volumes | Cell halved, precis updated |
 | About 18 L/day, R8 met | 18.0 L nominal, but 36 L at 4 bar with a fixed restrictor | Regulator added, precis updated |
 | 10 s wait for bubbles | Too short at 5 °C; 30 s | Precis updated |
@@ -190,4 +196,4 @@ Counts: 0 not met, 4 at risk, 5 met on paper, 1 over the value-engineering targe
 | Under 1 MB per month | 0.86 MB | Stands |
 | SMS within minutes | 13.0 min worst case with 3 min retries | Precis updated |
 | HOCl about a quarter at pH 8, three quarters at pH 7 | 0.26 and 0.77 | Stands |
-| About $270 | $319 for the constructable design (v0.2: $283; v0.1: $282) | Precis and BOM notes updated |
+| About $270 | $322 for the constructable design (v0.3: $319; v0.2: $283; v0.1: $282) | Precis and BOM notes updated |

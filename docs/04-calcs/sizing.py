@@ -34,6 +34,9 @@ I_SLEEP = 50e-6        # A sleep floor incl. potentiostat bias, charger and prot
 E_UPLOAD = 0.020       # Wh per upload incl. network attach (LTE-M or NB-IoT)
 UPLOADS = 6            # per day (every 4 h)
 VALVE = (12.0, 0.5, 0.050, 0.80)   # V, A, s per pulse, boost efficiency; 2 pulses per reading
+I_STATUS = 0.005       # A through the status LED while lit (resistor from the 3.3 V rail; decided 2026-10-02, WWT-DEC-001)
+T_STATUS = 0.050       # s lit per flash
+T_STATUS_GAP = 10.0    # s between flashes, around the clock
 MARGIN = 1.5           # alerts, retries, cold weather
 READINGS = 24          # per day at the default hourly schedule
 CELLS = (3.2, 6.0)     # V, Ah: 1S2P 32700 LiFePO4
@@ -56,14 +59,15 @@ e_up = E_UPLOAD * UPLOADS
 e_sleep = I_SLEEP * V_SYS * 24
 v, i, t, eta = VALVE
 e_valve = 2 * v * i * t / eta / 3600 * READINGS
-e_base = e_meas + e_up + e_sleep + e_valve
+e_status = V_SYS * I_STATUS * (T_STATUS / T_STATUS_GAP) * 24     # Wh/day, the low-duty status light
+e_base = e_meas + e_up + e_sleep + e_valve + e_status
 e_day = e_base * MARGIN
 tag("A1", f"awake {t_awake:.0f} s per reading at {V_SYS * I_AWAKE:.3f} W: {e_read * 1000:.2f} mWh per reading, {e_meas:.3f} Wh/day")
-tag("A2", f"uploads {UPLOADS} x {E_UPLOAD * 1000:.0f} mWh = {e_up:.3f} Wh/day; sleep {e_sleep * 1000:.1f} mWh/day; valve {e_valve * 1000:.1f} mWh/day")
+tag("A2", f"uploads {UPLOADS} x {E_UPLOAD * 1000:.0f} mWh = {e_up:.3f} Wh/day; sleep {e_sleep * 1000:.1f} mWh/day; valve {e_valve * 1000:.1f} mWh/day; status light {e_status * 1000:.2f} mWh/day ({I_STATUS * 1000:.0f} mA for {T_STATUS * 1000:.0f} ms every {T_STATUS_GAP:.0f} s, {e_status / e_base * 100:.2f} % of the sum)")
 tag("A3", f"sum {e_base:.3f} Wh/day; with {MARGIN:.1f} margin {e_day:.3f} Wh/day ({e_day / 24 * 1000:.1f} mW average)")
-e_2g = (e_meas + 4 * e_up + e_sleep + e_valve) * MARGIN
+e_2g = (e_meas + 4 * e_up + e_sleep + e_valve + e_status) * MARGIN
 tag("A4", f"2G-only site (uploads cost 4 x as much): {e_2g:.3f} Wh/day")
-e_15 = ((e_read + 2 * v * i * t / eta / 3600) * 96 + e_up + e_sleep) * MARGIN
+e_15 = ((e_read + 2 * v * i * t / eta / 3600) * 96 + e_up + e_sleep + e_status) * MARGIN
 tag("A5", f"15 min schedule (R4 minimum interval): {e_15:.3f} Wh/day")
 
 # ------------------------------------------------------------------ B. Battery and solar (R7)

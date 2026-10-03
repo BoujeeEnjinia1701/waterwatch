@@ -54,9 +54,10 @@ PARAMS = {
     # 3, 4 enclosure (outer), lid depth, wall, center height
     "enc": (200.0, 120.0, 260.0), "lid_t": 12.0, "enc_wall": 3.0, "enc_z": 1300.0,
     # bottom-face entries: two rows, measured from the back face; x from the enclosure centre
-    "pen_rows": (28.0, 70.0),
+    "pen_rows": (28.0, 70.0, 49.0),
     "pens": {"valve": (-62, 0), "chlorine": (-22, 0), "ph_spare": (22, 0), "temp": (62, 0),
-             "panel": (-62, 1), "optics": (-22, 1), "vent": (22, 1), "antenna": (62, 1)},
+             "panel": (-62, 1), "optics": (-22, 1), "vent": (22, 1), "antenna": (62, 1),
+             "status": (0, 2)},
     # 19 lugs (maker's kit) and printed internal plate on the box's moulded bosses
     "lug": (20.0, 3.0, 20.0), "lug_x": 85.0,
     "mplate": (186.0, 205.0, 3.0), "mplate_gap": 6.0, "mplate_z": -90.0,
@@ -66,6 +67,12 @@ PARAMS = {
     "antenna": (18.0, 140.0),
     # 17 ventilated sun shield: white aluminium hood over top, sides and front, open at the bottom
     "shield_gap": 25.0, "shield_t": 2.0, "shield_flange": 15.0, "shield_below": 20.0,
+    # 21 status light (decided 2026-10-02, WWT-DEC-001): one 5 mm LED behind a lens that sits in a slot, open at the bottom,
+    # in the shield front panel; the unit drops out of the slot so the shield still slides off
+    "stat_below": 10.0,               # LED axis below the underside of the enclosure
+    "stat_slot": 12.2, "stat_barrel": 12.0, "stat_flange": 16.0, "stat_lens_t": 1.5, "stat_collar": 18.0, "stat_collar_t": 2.0,
+    "stat_len": 12.0,                 # barrel length behind the panel's inner face
+    "stat_led_d": 5.0, "stat_led_l": 9.0, "stat_cable_d": 3.5, "stat_cable_drop": 24.0,
     # 9 flow-through cell: inner cavity (x, y, z), wall, back wall, center height, lid, baffle
     "cell_in": (80.0, 38.0, 66.0), "cell_wall": 8.0, "cell_back": 14.0, "cell_z": 850.0, "cell_top_t": 10.0,
     "gasket_t": 1.5,
@@ -344,7 +351,21 @@ def build_components(p=PARAMS, below_ground=True):
         for q in (-1, 1):
             f = f - ycyl(px + s * sx, yf - st - 1, yf + 1, ez + q * sz, 2.75)
         hood = hood + f
+    # 21 status light: slot open at the bottom in the front panel, for the lens unit (it drops out downward)
+    zl = ez - eh / 2 - p["stat_below"]
+    hood = hood - ycyl(px, s_y0 - 1, s_y0 + st + 1, zl, p["stat_slot"] / 2) - span(px - p["stat_slot"] / 2, px + p["stat_slot"] / 2, s_y0 - 1, s_y0 + st + 1, sz0 - 1, zl)
     C["shield"] = hood
+    yo, yi = s_y0, s_y0 + st
+    fd, bd_ = p["stat_flange"], p["stat_barrel"]
+    C["status_lens"] = ycyl(px, yo - p["stat_lens_t"], yo, zl, fd / 2)
+    holder = ycyl(px, yo, yi + p["stat_len"], zl, bd_ / 2) + ycyl(px, yi, yi + p["stat_collar_t"], zl, p["stat_collar"] / 2)
+    holder = holder - ycyl(px, yo - 0.1, yo + p["stat_led_l"], zl, p["stat_led_d"] / 2 + 0.01)
+    C["status_holder"] = holder
+    C["status_led"] = ycyl(px, yo, yo + p["stat_led_l"], zl, p["stat_led_d"] / 2)
+    stx, sty = pen_xy["status"]
+    yr = yi + p["stat_len"]
+    zc = zb - p["stat_cable_drop"]
+    C["status_cable"] = path([(px, yr, zl), (px, yr + 4, zl), (px, yr + 4, zc), (stx, sty, zc), (stx, sty, zb - 18)], p["stat_cable_d"] / 2)
     C["shield_screws"] = fuse(ycyl(px + s * sx, yf - st - 6, yb + 2, ez + q * sz, 2.4) + ycyl(px + s * sx, yf - st - 6, yf - st, ez + q * sz, 6)
                               for s in (-1, 1) for q in (-1, 1))
 
@@ -529,6 +550,7 @@ BOM_OF = {
     "led_holder": 10, "ref_holder": 10, "det90_holder": 10, "chlorine": 11, "temp": 12, "valve": 13,
     "tee": 14, "fittings": 14, "supply_tube": 14, "cell_tube": 14, "inlet_fit": 14,
     "drain": 15, "outlet_fit": 15,
+    "status_lens": 21, "status_holder": 21, "status_led": 21, "status_cable": 21,
     "glands": 16, "panel_lead": 16, "valve_cable": 16, "chlorine_cable": 16, "temp_cable": 16, "optics_cable": 16,
     "shield": 17, "enc_plate": 18, "cell_plate": 18, "lugs": 19, "mplate": 19,
     "lug_screws": 20, "mplate_screws": 20, "shield_screws": 20, "cell_screws": 20, "valve_screws": 20,
@@ -543,7 +565,7 @@ GROUPS = {   # build_parts() key: components (old keys kept so the media scripts
     "turb": ["led_holder", "ref_holder", "det90_holder"], "chlorine": ["chlorine"], "temp": ["temp"], "valve": ["valve"],
     "sample": ["tee", "fittings", "supply_tube", "cell_tube", "inlet_fit"], "drain": ["drain", "outlet_fit"],
     "cables": ["glands", "panel_lead", "valve_cable", "chlorine_cable", "temp_cable", "optics_cable"],
-    "shield": ["shield"], "plates": ["enc_plate", "cell_plate"], "fixings": ["lugs", "mplate"],
+    "shield": ["shield"], "status": ["status_lens", "status_holder", "status_led", "status_cable"], "plates": ["enc_plate", "cell_plate"], "fixings": ["lugs", "mplate"],
     "screws": ["lug_screws", "mplate_screws", "shield_screws", "cell_screws", "valve_screws"],
 }
 
@@ -560,7 +582,7 @@ def build_parts(p=PARAMS, below_ground=True):
 BOM_ORDER = [("pole", 1), ("panel", 2), ("enc_base", 3), ("enc_lid", 4), ("battery", 5), ("board", 6),
              ("modem", 7), ("antenna", 8), ("cell", 9), ("turb", 10), ("chlorine", 11), ("temp", 12),
              ("valve", 13), ("sample", 14), ("drain", 15), ("cables", 16), ("shield", 17), ("plates", 18),
-             ("fixings", 19), ("screws", 20)]
+             ("fixings", 19), ("screws", 20), ("status", 21)]
 
 
 def riser_context(p=PARAMS):
@@ -598,6 +620,8 @@ TOUCH = [
     ("panel_lead", "glands"), ("valve_cable", "glands"), ("chlorine_cable", "glands"), ("temp_cable", "glands"),
     ("optics_cable", "glands"), ("valve_cable", "valve"), ("chlorine_cable", "chlorine"), ("temp_cable", "temp"),
     ("optics_cable", "led_holder"), ("panel_lead", "panel"),
+    ("status_lens", "shield"), ("status_holder", "shield"), ("status_lens", "status_holder"), ("status_led", "status_lens"),
+    ("status_led", "status_holder"), ("status_cable", "status_holder"), ("status_cable", "glands"),
 ]
 CLEAR = [   # (a, b, minimum gap in mm, why)
     ("enc_ubolt_0", "shield", 2, "the shield slides off past the lower U-bolt nuts"),
@@ -605,6 +629,8 @@ CLEAR = [   # (a, b, minimum gap in mm, why)
     ("lugs", "shield", 2, "the shield slides off past the lugs"),
     ("shield", "enc_base", 10, "25 mm ventilated gap on top, sides and front; flanges 12 mm from the box at the back"),
     ("shield", "enc_lid", 20, "ventilated gap in front of the lid"),
+    ("status_holder", "enc_lid", 10, "the lens unit stays clear of the clear lid"),
+    ("status_cable", "antenna", 20, "status lead clear of the antenna whip"),
     ("chlorine", "cell_body", 2, "chlorine sensor clear of the walls"),
     ("temp", "cell_body", 2, "temperature probe clear of the walls"),
     ("chlorine", "temp", 10, "probes apart"),

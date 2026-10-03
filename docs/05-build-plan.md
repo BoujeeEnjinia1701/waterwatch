@@ -3,7 +3,7 @@ doc_id: WWT-BLD-001
 title: WaterWatch prototype build plan
 project: WaterWatch
 doc_type: Build plan
-version: "0.1"
+version: "0.2"
 status: Draft
 date: '2026-10-02'
 author: Amish Chadha
@@ -13,6 +13,10 @@ revisions:
     date: '2026-10-02'
     author: Amish Chadha
     change: First build plan; design made constructable (WWT-DDR-003)
+  - version: "0.2"
+    date: '2026-10-02'
+    author: Amish Chadha
+    change: "Status light unit (line 21) and its slot, lead and gland added; tamper-resistant M5 shield screws named for field units; Step 19 added; pictures regenerated"
 ---
 
 # WaterWatch prototype build plan
@@ -25,7 +29,7 @@ revisions:
 
 *Figure 1. Every component pulled apart and numbered in build order: the enclosure group on the left, the flow cell group on the right, the panel above. The pole, the existing tapstand and the long runs of tube, hose and cable are left out.*
 
-The prototype is one WaterWatch on its own galvanized pole beside a village tapstand. Two flat aluminium back plates are held to the pole by U-bolts: the upper one carries a grey plastic box holding the battery, controller and cellular modem under a white sun shield; the lower one carries a small black flow cell with its sensors and, under it, the valve that lets a sample in once an hour. A saddle tee on the tapstand riser feeds the valve through a line of screwed brass fittings and a thin plastic tube; the cell drains through an open air break to the tapstand basin. A 5 W panel sits on the pole top. Figure 1 shows the 22 components in the order you make or fit them. Eight are made in a small workshop: the two back plates, the internal plate, the flow cell body and lid, the three optics holders and the chlorine sensor; the sun shield is folded by a sheet metal shop to a sketch; the bought box is drilled. Everything else is bought and fitted. The work is cutting and drilling aluminium sheet, drilling a plastic box, milling or printing a plastic block, tapping threads in plastic, two small prints, soldering and potting three electrodes, wiring bought boards with screw terminals, and simple plumbing with thread tape and push-fit tube. The parts cost about USD 319 from the bill of materials.
+The prototype is one WaterWatch on its own galvanized pole beside a village tapstand. Two flat aluminium back plates are held to the pole by U-bolts: the upper one carries a grey plastic box holding the battery, controller and cellular modem under a white sun shield; the lower one carries a small black flow cell with its sensors and, under it, the valve that lets a sample in once an hour. A saddle tee on the tapstand riser feeds the valve through a line of screwed brass fittings and a thin plastic tube; the cell drains through an open air break to the tapstand basin. A 5 W panel sits on the pole top. Figure 1 shows the 23 components in the order you make or fit them. Eight are made in a small workshop: the two back plates, the internal plate, the flow cell body and lid, the three optics holders and the chlorine sensor; the sun shield is folded by a sheet metal shop to a sketch; the bought box is drilled. Everything else is bought and fitted. The work is cutting and drilling aluminium sheet, drilling a plastic box, milling or printing a plastic block, tapping threads in plastic, two small prints, soldering and potting three electrodes, wiring bought boards with screw terminals, and simple plumbing with thread tape and push-fit tube. The parts cost about USD 322 from the bill of materials.
 
 > **Safety:** The prototype holds a lithium iron phosphate battery of 19.2 Wh and its charger. Keep the battery fuse out until section 6 says otherwise, never charge below 0 °C or above 45 °C, and never leave a first build charging unattended. The sample line connects to a pressurized drinking water supply: shut the supply off before fitting the saddle tee, fit the check valve the right way round, and keep the open air break so nothing can flow back. Cut aluminium edges are sharp; deburr everything. Printing ASA and milling PVC give off fumes and dust; work with ventilation. Wet concrete burns skin; wear gloves.
 
@@ -39,8 +43,9 @@ The concept showed what WaterWatch does; many of its parts could not be made, fi
 | --- | --- | --- | --- |
 | Pole fixing | Solid 10 mm and 43 mm blocks touching the round pole along a line; clamp rings joined to nothing | Two 3 mm aluminium back plates, each on two M8 U-bolts through V-saddles (Figure 4) | The standard bought way to hold a flat plate to a round pole |
 | Enclosure | No fixing to its plate; parts inside floating | The maker's four lugs (Figure 6); a printed internal plate on the box's moulded bosses (Figure 9) | The box back stays sealed; everything inside is screwed down |
-| Entries | Antenna and panel lead through the sun shield top; three glands for five cables | Six glands (one a plugged spare), the vent and the antenna all in the bottom face, in two rows (Figure 7) | Nothing passes through the shield, and no entry faces the rain |
-| Sun shield | No fixing; trapped by the antenna | Flanges folded in at the back, four thumb screws; slides off forward (Figure 13) | Comes off by hand at the pole; same 25 mm air gap |
+| Entries | Antenna and panel lead through the sun shield top; three glands for five cables | Seven glands (one a plugged spare, one for the status light lead), the vent and the antenna all in the bottom face, in three rows (Figure 7) | Nothing passes through the shield, and no entry faces the rain |
+| Sun shield | No fixing; trapped by the antenna | Flanges folded in at the back, four thumb screws; slides off forward; a slot open at the bottom of its front takes the status light unit (Figure 13) | Comes off by hand at the pole; same 25 mm air gap |
+| Status light | A green light on the product drawings, with nothing behind it | One LED behind a lens, in a unit that sits in the slot in the shield front, with its own lead and gland (Figure 12a) | Shows the state at the tapstand; the shield still slides off |
 | Turbidity optics | One block on one wall, which cannot see at both 90° and 180°; the beam would have hit the baffle | Three holders on three walls; baffle moved to the back wall, same size (Figure 21) | Gives the 90° scatter and 180° reference paths the concept cites |
 | Flow cell lid | Three ports in a line, two of them overlapping; no seal or fixing | Glands laid out clear of each other, a gasket, four studs and thumb nuts (Figures 24 and 25) | Every gland fits and every probe clears the beam and the baffle |
 | Flow cell body | Held on by nothing; 8 mm back wall | 14 mm back wall with two screws from behind the plate (Figure 17) | No hole through a wet wall |
@@ -95,14 +100,14 @@ The box's back sits flat on the front face between 80 and 340 up, held by four l
 
 *Figure 5a. Drilling layout, with the box standing upside down on its top and its back face toward you.*
 
-**What it is and what it is made from.** A bought grey polycarbonate box, 200 wide, 120 deep and 260 tall, rated IP66, with a gasketed lid on the front, four moulded bosses inside the back wall and the maker's kit of four external mounting lugs. Eight holes are drilled in its bottom face.
+**What it is and what it is made from.** A bought grey polycarbonate box, 200 wide, 120 deep and 260 tall, rated IP66, with a gasketed lid on the front, four moulded bosses inside the back wall and the maker's kit of four external mounting lugs. Nine holes are drilled in its bottom face.
 
 **How to make it.**
 
 1. Stand the box upside down on its top on a soft cloth, back face toward you. Cover the bottom face with masking tape.
-2. Mark the holes from Figure 5a. Back row, 28 from the back face: valve cable gland 62 left of centre, chlorine gland 22 left, the spare (plugged) 22 right, temperature gland 62 right. Front row, 70 from the back face: panel lead gland 62 left, optics gland 22 left, vent 22 right, antenna 62 right. Left and right are as seen from the front of the box.
+2. Mark the holes from Figure 5a. Back row, 28 from the back face: valve cable gland 62 left of centre, chlorine gland 22 left, the spare (plugged) 22 right, temperature gland 62 right. Middle row, 49 from the back face: the status light lead gland on the centre line. Front row, 70 from the back face: panel lead gland 62 left, optics gland 22 left, vent 22 right, antenna 62 right. Left and right are as seen from the front of the box.
 3. Put a block of wood inside under the face. Pilot drill every hole 3 mm at low speed; do not centre punch hard, since polycarbonate cracks.
-4. Open each hole with a step drill, light pressure, low speed: 16.2 for the six glands (one is the spare), 12.2 for the vent, 6.5 for the antenna. Before the last step, check the size against the part's datasheet.
+4. Open each hole with a step drill, light pressure, low speed: 16.2 for the seven glands (one is the spare), 12.2 for the vent, 6.5 for the antenna. Before the last step, check the size against the part's datasheet.
 5. Deburr inside and out, peel the tape, and clean with water and mild soap only; solvents craze polycarbonate.
 6. Fit the four lugs to the box's back corners as the lug kit's maker describes, feet on the top and bottom faces, tabs flush with the back face.
 
@@ -112,7 +117,7 @@ The box's back sits flat on the front face between 80 and 340 up, held by four l
 
 ![Figure 7. Joint 3: the bottom face, seen from below](05-build-plan/joint-03.png)
 
-*Figure 7. Six glands, the vent and the antenna bulkhead in two rows; the whip points down.*
+*Figure 7. Seven glands, the vent and the antenna bulkhead in three rows; the whip points down.*
 
 **How it fits the parts next to it.** Each gland, the vent and the antenna bulkhead go in from below with the sealing washer outside and the nut inside (step 1). The outside flanges are at least 16 apart, room for a spanner. The box back sits flat on the back plate, held by the four lugs (step 5).
 
@@ -156,6 +161,7 @@ Wire it like this, with stranded copper and a ferrule on every screw terminal:
 6. Temperature probe: 3-core to the one-wire input.
 7. Optics: 6-core to the LED driver and the two frequency inputs.
 8. Valve: 2-core 0.5 mm² to the 12 V valve driver.
+9. Status light: 2-core lead from a spare output of the carrier board through a series resistor that sets about 5 mA, to the LED in the shield (Figure 10); the lead leaves through its own gland and the other end stays free until step 19.
 
 Check that the charger's temperature window really is 0 to 45 °C in its datasheet before buying: some chargers of this class fix a different window.
 
@@ -171,7 +177,7 @@ Check that the charger's temperature window really is 0 to 45 °C in its datashe
 
 **How to make it.** Order it from a sheet metal shop with the sketch, or fold it on a press brake:
 
-1. Cut a front 254 x 307 mm with a side 147 deep on each long edge and a top 147 deep on the top edge; add a 10 mm tab on each end of the top and a 15 mm flange on the back edge of each side.
+1. Cut a front 254 x 307 mm with a side 147 deep on each long edge and a top 147 deep on the top edge; add a 10 mm tab on each end of the top and a 15 mm flange on the back edge of each side. Cut a slot 12.2 mm wide in the middle of the front, open at the lower edge, with a round end 10 mm up from that edge.
 2. Drill a 3 mm relief hole wherever two fold lines cross, so the sheet does not tear.
 3. Fold the sides back 90°, then the top, then the tabs down over the sides; rivet each tab with two 4 mm rivets.
 4. Fold each flange 90° inward. Drill two 5.5 mm holes in each flange, 7.5 in from the side sheet, 40 and 260 up from the lower edge.
@@ -185,9 +191,22 @@ Check that the charger's temperature window really is 0 to 45 °C in its datashe
 
 *Figure 13. The flange lies flat on the back plate, 10 beside the box; an M5 thumb screw holds it.*
 
-**How it fits the parts next to it.** The flanges lie flat on the front of the back plate either side of the box, and four M5 thumb screws go through them into the tapped holes in the plate. The shield stands 25 off the box's front, sides and top, its lower edge 20 below the box, open at the bottom. To open the box, undo the four thumb screws and slide the shield forward.
+**How it fits the parts next to it.** The flanges lie flat on the front of the back plate either side of the box, and four M5 thumb screws go through them into the tapped holes in the plate. The shield stands 25 off the box's front, sides and top, its lower edge 20 below the box, open at the bottom. The slot in the front, open at the bottom, takes the status light unit below. To open the box, pull the status light unit down out of its slot, undo the four thumb screws and slide the shield forward. On field units the four thumb screws are replaced by tamper-resistant M5 screws (stainless, security head, same thread and length) after the first site visit; the prototype keeps the thumb screws.
 
-**Check before moving on.** On a trial fit over the box, the gap is 25, give or take 3, all round.
+**Check before moving on.** On a trial fit over the box, the gap is 25, give or take 3, all round, and the slot is clear of burrs.
+
+**The status light unit (line 21).** A small unit that shows the state of the sensor at the tapstand. Make it as follows:
+
+1. Print the holder in ASA: a barrel 12 mm across and 14 mm long, an 18 mm collar 2 mm thick at one end of the barrel, and a 5.2 mm hole bored 9 mm deep into the other end.
+2. Cut a 16 mm disc from 1.5 mm clear polycarbonate sheet and glue it to the bored end of the barrel, with a thin film of clear glue.
+3. Push the 5 mm LED into the bore until its lens touches the disc. Solder a resistor to one leg, then solder the 1 m two-core lead, and cover both joints with heat-shrink.
+4. Check by eye: the collar and the disc are the same distance apart as the front panel is thick, so the unit holds in the slot.
+
+![Figure 12a. Step 19 picture: the status light unit going into the slot](05-build-plan/step-19.png)
+
+*Figure 12a. The unit goes up into the slot from below, lens facing out; its lead hangs to the gland under the box.*
+
+The barrel sits in the slot with the disc in front of the panel and the collar behind it; the lead runs from the barrel back under the box and up into its own gland. The unit stays 10 or more from the box lid and the lead stays 20 or more from the antenna whip.
 
 ### 3.5 Cell back plate
 
@@ -338,8 +357,9 @@ Buy to specification, not brand. Line numbers are those of the bill of materials
 - **Valve (line 13).** 12 V latching, direct acting, normally closed, 1/4 in ports, food-safe wetted parts, with two M4 mounting holes in its back face or the maker's bracket.
 - **Sample line (line 14).** 25 mm saddle tee with an isolation ball valve; strainer, check valve and pressure-compensating 0.5 L/min regulator, all screwed in line on brass nipples; 1 m of 1/4 in food-grade PE tube; two push-fit elbows (1/8 BSPT).
 - **Drain (line 15).** 3/8 BSP hose tail for 12 mm hose, a tee for the air-break vent, 2 m of 12 mm bore hose and a clamp.
-- **Glands and cables (line 16).** Six M16 IP68 nylon glands with nuts, one M16 blanking plug for the spare, one M12 pressure-equalizing vent; sensor and panel cables.
-- **Fixings (line 20).** Stainless: 4 x M5 x 12 screws with nyloc nuts (lugs), 4 x M4 x 12 screws (internal plate), 4 x M5 knurled thumb screws (shield), 2 x M5 x 16 screws (cell), 2 x M4 x 10 screws (valve), M3 screws and 6 mm nylon standoffs, a battery strap, UV-stable cable ties.
+- **Glands and cables (line 16).** Seven M16 IP68 nylon glands with nuts (one the spare, one for the status light lead), one M16 blanking plug for the spare, one M12 pressure-equalizing vent; sensor and panel cables.
+- **Status light (line 21).** One 5 mm bi-colour LED with a series resistor, a 16 mm clear polycarbonate disc 1.5 mm thick, the printed holder of section 3.4 and 1 m of two-core 3.5 mm lead with crimps.
+- **Fixings (line 20).** Stainless: 4 x M5 x 12 screws with nyloc nuts (lugs), 4 x M4 x 12 screws (internal plate), 4 x M5 knurled thumb screws (shield; tamper-resistant M5 screws instead on field units), 2 x M5 x 16 screws (cell), 2 x M4 x 10 screws (valve), M3 screws and 6 mm nylon standoffs, a battery strap, UV-stable cable ties.
 
 ### 3.11 How the bought parts join
 
@@ -463,13 +483,19 @@ Push-fit tube from the regulator outlet to the valve inlet, clipped to the pole.
 
 ![Step 17](05-build-plan/step-17.png)
 
-Panel lead down the back of the pole, tied every 300 mm, under the plate and up into its gland; sensor and valve cables up the front of the cell plate into theirs. A drip loop below each gland; tighten the gland caps. Lid gasket clean, lid screws in a cross pattern. **Hold point:** safety stops S3 to S6 in section 6.
+Status light lead into its own gland, its free end left hanging under the box. Panel lead down the back of the pole, tied every 300 mm, under the plate and up into its gland; sensor and valve cables up the front of the cell plate into theirs. A drip loop below each gland; tighten the gland caps. Lid gasket clean, lid screws in a cross pattern. **Hold point:** safety stops S3 to S6 in section 6.
 
 ### Step 18: sun shield
 
 ![Step 18](05-build-plan/step-18.png)
 
-Slide it over the box from the front until its flanges lie on the plate; four M5 thumb screws, finger tight.
+Slide it over the box from the front until its flanges lie on the plate; four M5 thumb screws, finger tight. Field units take tamper-resistant M5 screws here.
+
+### Step 19: status light unit
+
+![Step 19](05-build-plan/step-19.png)
+
+Lift the unit up into the slot in the shield front, lens facing out, and let its lead hang down to the gland under the box. To take the shield off again, pull the unit down out of the slot first.
 
 ## 5. First checks
 
@@ -525,7 +551,7 @@ Stop at each point. Carry on only when everything listed is true.
 - Model and constructability checks: `cad/src/model.py` (`python cad/src/model.py --check`, 97 checks); STEP and STL exports in `cad/step/` and `cad/stl/`.
 - Pictures: `cad/src/build_plan_media.py`, using `.kit/build_views.py`; written to `docs/05-build-plan/` and `cad/drawings/WWT-DWG-101` to `WWT-DWG-109`.
 - General arrangement: `cad/drawings/WWT-DWG-001.pdf`, Rev P4.
-- Calculations: `docs/04-calcs/01-sizing.md` (WWT-CAL-001 v0.3) and `docs/04-calcs/sizing.py`; flush and tube [D1] to [D5], enclosure temperature [C4], installation [J2], cost [K1].
+- Calculations: `docs/04-calcs/01-sizing.md` (WWT-CAL-001 v0.4) and `docs/04-calcs/sizing.py`; flush and tube [D1] to [D5], enclosure temperature [C4], installation [J2], cost [K1].
 - Bill of materials: `bom/bom.csv`.
 - Decisions: `docs/decisions/0003-design-for-construction.md` (WWT-DDR-003), with WWT-DDR-001 and WWT-DDR-002; design decisions register `docs/06-design-decisions.md` (WWT-DEC-001).
 - Requirements: `docs/03-requirements.md` (WWT-REQ-001 v0.5).

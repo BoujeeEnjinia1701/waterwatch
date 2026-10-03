@@ -69,6 +69,7 @@ def named():
         "modules": part("Battery, controller, modem", fuse(["battery", "board", "modem"]), COL["board"]),
         "enc_lid": part("Enclosure lid", C["enc_lid"], COL["lid"]),
         "shield": part("Sun shield and thumb screws", fuse(["shield", "shield_screws"]), COL["shield"]),
+        "status": part("Status light unit", fuse(["status_lens", "status_holder", "status_led"]), "#16A34A"),
         "cell_plate": part("Cell back plate", C["cell_plate"], COL["plate"]),
         "cell_body": part("Flow cell body", fuse(["cell_body", "cell_screws"]), COL["cell"]),
         "optics": part("Optics holders (3)", fuse(["led_holder", "ref_holder", "det90_holder"]), COL["optics"]),
@@ -82,7 +83,7 @@ def named():
         "tee": part("Saddle tee and fittings", fuse(["tee", "fittings"]), COL["fit"]),
         "supply": part("Supply tube", C["supply_tube"], COL["tube"]),
         "drain": part("Air-break tee and drain hose", C["drain"], COL["drain"]),
-        "cables": part("Cables", fuse(["panel_lead", "valve_cable", "chlorine_cable", "temp_cable", "optics_cable"]), COL["cable"]),
+        "cables": part("Cables", fuse(["panel_lead", "valve_cable", "chlorine_cable", "temp_cable", "optics_cable", "status_cable"]), COL["cable"]),
     }
 
 
@@ -91,12 +92,12 @@ def overview():
     M = named()
     M["drain"] = part("Air-break tee and drain hose", C["drain"] & span(PX, PX + 200, -50, 100, 640, 1000), COL["drain"])
     M["supply"] = part("Supply tube", C["supply_tube"] & span(PX - 200, PX + 200, -50, 100, 450, 800), COL["tube"])
-    M["cables"] = part("Cables", fuse(["panel_lead", "valve_cable", "chlorine_cable", "temp_cable", "optics_cable"]) & span(PX - 200, PX + 200, -100, 200, 1040, 1160), COL["cable"])
+    M["cables"] = part("Cables", fuse(["panel_lead", "valve_cable", "chlorine_cable", "temp_cable", "optics_cable", "status_cable"]) & span(PX - 200, PX + 200, -100, 200, 1040, 1160), COL["cable"])
     E, Cg = (-260, 0, 0), (360, 0, 280)
     add = lambda a, d: tuple(x + y for x, y in zip(a, d))  # noqa: E731
     off = {"enc_plate": add(E, (0, 260, 0)), "enc_base": E, "entries": add(E, (0, 0, -130)), "lugs": add(E, (0, 130, 0)),
            "mplate": add(E, (0, -150, 0)), "modules": add(E, (0, -270, 0)), "enc_lid": add(E, (0, -400, 0)),
-           "shield": add(E, (0, -120, 380)),
+           "shield": add(E, (0, -120, 380)), "status": add(E, (0, -330, 330)),
            "cell_plate": add(Cg, (0, 260, 0)), "cell_body": Cg, "optics": add(Cg, (0, -130, 0)), "valve": add(Cg, (0, -120, -90)),
            "fits": add(Cg, (90, -40, -40)), "cell_lid": add(Cg, (0, 0, 110)), "sensors": add(Cg, (0, 0, 230)),
            "saddles": (40, 560, -330), "mount": (760, 260, -830), "panel": (760, 260, -700),
@@ -152,6 +153,8 @@ def sheets():
                    "  22 left, spare (plugged) 22 right, temperature gland 62 right: 16.2 mm.",
                    "Front row, 70 from the back face: panel gland 62 left, optics gland",
                    "  22 left (16.2 mm); vent 22 right (12.2 mm); antenna 62 right (6.5 mm).",
+                   "Middle row, 49 from the back face: status light lead gland on the",
+                   "  centre line (16.2 mm).",
                    "Tape the face, pilot drill 3 mm slowly with wood behind, open out with",
                    "  a step drill, light pressure. No solvents: polycarbonate crazes.",
                    "Check each hole size on the part's datasheet before the last step.",
@@ -191,7 +194,10 @@ def sheets():
                    "Powder coat white after folding; deburr every edge first.",
                    "Fit: flanges flat on the back plate, 10 clear of the box; four M5",
                    "  thumb screws. 25 mm air gap at the front, sides and top.",
-                   "To open the lid: undo the four thumb screws, slide the shield forward.",
+                   "Front panel: a 12.2 mm slot open at the bottom edge, its round end",
+                   "  10 mm up from the lower edge, for the status light unit.",
+                   "To open the lid: pull the status light unit down out of its slot,",
+                   "  undo the four thumb screws, slide the shield forward.",
                    "Check: on a trial fit the gap is 25 mm (plus or minus 3) all round."], **base))
     if go(105):
         out.append(bv.component_sheet(
@@ -515,12 +521,16 @@ def steps():
        [mv(part("Supply tube, 1/4 in", C["supply_tube"], COL["tube"]), (0, -100, 0)), mv(part("Air-break tee and drain hose", C["drain"], COL["drain"]), (80, 0, 0))],
        "supply tube and drain hose", "Push-fit tube from the regulator to the valve inlet; tee on the hose tail, vent up; hose to the basin",
        elev=15, azim=-50, label_done=False)
-    st(17, [pole_section(700, 1600), cellset, encset], [mv(part("Panel lead, valve, sensor and optics cables", fuse(["panel_lead", "valve_cable", "chlorine_cable", "temp_cable", "optics_cable"]) & span(PX - 200, PX + 200, -100, 200, 700, 1600), COL["cable"]), (0, -60, 0))],
+    st(17, [pole_section(700, 1600), cellset, encset], [mv(part("Panel lead, valve, sensor and optics cables", fuse(["panel_lead", "valve_cable", "chlorine_cable", "temp_cable", "optics_cable", "status_cable"]) & span(PX - 200, PX + 200, -100, 200, 700, 1600), COL["cable"]), (0, -60, 0))],
        "cables into their glands; close the lid", "Drip loop below each gland; tighten the gland caps; lid gasket clean, lid screws in a cross pattern",
        elev=12, azim=-40, label_done=False)
     st(18, [pole_section(1000, 1600), encset], [mv(M["shield"], (0, -220, 0))],
        "sun shield", "Slide it over the box from the front until its flanges lie on the plate; four M5 thumb screws, finger tight",
        elev=18, azim=-45, label_done=False)
+    st(19, [pole_section(1000, 1600), encset, part("Sun shield", C["shield"], COL["shield"])],
+       [mv(M["status"], (0, -90, -70))],
+       "status light unit", "Unit up into the shield slot, lens out; lead hangs to its own gland. Pull it down to remove the shield",
+       elev=14, azim=-40, label_done=False)
     return out
 
 
@@ -548,7 +558,7 @@ def layouts():
     ax.text(-ew / 2, -3, "back face (goes against the back plate), toward you", ha="left", va="top", fontsize=8, color=MUT)
     ax.plot([0, 0], [-2, ed + 2], color=MUT, lw=0.6, ls=(0, (8, 3, 2, 3)))
     names = {"valve": "Valve cable", "chlorine": "Chlorine", "ph_spare": "Spare, plugged", "temp": "Temperature",
-             "panel": "Panel lead", "optics": "Optics", "vent": "Vent", "antenna": "Antenna"}
+             "panel": "Panel lead", "optics": "Optics", "vent": "Vent", "antenna": "Antenna", "status": "Status light lead"}
     for k, (x, row) in P["pens"].items():
         y = P["pen_rows"][row]
         hole = {"vent": 12.2, "antenna": 6.5}.get(k, 16.2)
@@ -557,7 +567,13 @@ def layouts():
         ax.add_patch(plt.Circle((x, y), hole / 2, fc="white", ec=INK, lw=1.1))
         ax.plot([x - fl / 2 - 2, x + fl / 2 + 2], [y, y], color=MUT, lw=0.4); ax.plot([x, x], [y - fl / 2 - 2, y + fl / 2 + 2], color=MUT, lw=0.4)
         side = "left" if x < 0 else "right"
-        ax.text(x, y - fl / 2 - 1.5, f"{names[k]}\n{hole:g} hole, {abs(x):g} {side}", ha="center", va="top", fontsize=7, color=INK,
+        if x == 0:     # on the centre line, between the rows: label above the rows, with a leader down the centre line
+            ax.plot([0, 0], [y + fl / 2 + 2, 88], color=AC, lw=0.7)
+            ax.text(0, 89, f"{names[k]} gland: {hole:g} hole, on the centre line", ha="center", va="bottom", fontsize=7, color=INK,
+                    bbox=dict(boxstyle="round,pad=0.15", fc="#F3F4F6", ec="none"))
+            continue
+        xt = x + ((-5 if x < 0 else 5) if (row == 1 and abs(x) == 22) else 0)    # clear of the middle-row gland
+        ax.text(xt, y - fl / 2 - 1.5, f"{names[k]}\n{hole:g} hole, {abs(x):g} {side}", ha="center", va="top", fontsize=7, color=INK,
                 linespacing=1.2, bbox=dict(boxstyle="round,pad=0.15", fc="#F3F4F6", ec="none"))
     for r in P["pen_rows"]:
         ax.plot([ew / 2, ew / 2 + 12], [r, r], color=AC, lw=0.5, ls=":")
@@ -678,12 +694,14 @@ def wiring():
             ("Optics", "LED + 2 detectors, 6 wires", "#D4A017", "6-core", BLU),
             ("Latching valve", "12 V coil, 2 wires", "#115E59", "2-core, 0.5 mm²", RED)]
     for k, (t, sub, colr, cab, wc) in enumerate(sens):
-        y0 = 33 - 9 * k
+        y0 = 31 - 8.5 * k
         blk(98, y0, 19, 7, t, sub, colr)
         ym = y0 + 3.5
         xk = 58 - 4 * k
         wire([(xk, 40), (xk, ym), (98, ym)], wc)
         lab(96, ym + 1.6, cab, MUT, "right")
+    blk(98, 42, 19, 7, "Status light", "5 mm LED, 5 mA, in the shield", "#16A34A")
+    wire([(60, 46), (63, 46), (63, 41), (94, 41), (94, 45.5), (98, 45.5)], RED); lab(92, 39.6, "status lead, own gland, 2-core", MUT, "right")
     ax.text(2, 40, "Each cable enters through its own\ngland in the bottom face (see the\ndrilling layout). Leave a drip loop\nbelow every gland.",
             fontsize=7.2, color=MUT, va="top", linespacing=1.4)
     ax.text(2, 11.5, "Safety: battery fuse out until the\nstop points in section 6 are passed.\nCharging only between 0 and 45 °C.",

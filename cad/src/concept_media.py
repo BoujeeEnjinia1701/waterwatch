@@ -76,6 +76,7 @@ parts = [
     Part("Sun shield, ventilated", SHIFT * m["shield"], "#F8FAFC", 17, (-420, -300, 250)),
     Part("Mounting plates", SHIFT * m["plates"], "#A8A29E", 18, (0, 220, 0)),
     Part("Lugs and internal plate", SHIFT * m["fixings"], "#94A3B8", 19, (680, 0, 0)),
+    Part("Status light, lens and lead", SHIFT * m["status"], "#16A34A", 21, (-420, -420, 60)),
 ]
 
 render_all(
@@ -83,12 +84,12 @@ render_all(
     date="2026-10-02",
     key_figures=["Free chlorine 0 to 2 mg/L, turbidity 0 to 100 NTU, temperature",
                  "Hourly 90 s flush at 0.5 L/min; 18 L/day to drain (WWT-CAL-001)",
-                 "About 0.54 Wh/day; about 29 days on battery (WWT-CAL-001)",
+                 "About 0.54 Wh/day; about 28 days on battery (WWT-CAL-001)",
                  "5 W panel, 3.2 V 6 Ah LiFePO4, sun shield; cellular with SMS",
-                 "$319 in parts (indicative); value-engineering target $300"],
+                 "$322 in parts (indicative); value-engineering target $300"],
     cut_exclude=("Existing tapstand (not in BOM)", "Mounting pole, U-bolts and saddles", "Mounting plates", "Solar panel, 5 W, with bracket",
                  "Drain hose and air break", "Sample line, tee and regulator", "Latching solenoid valve", "Antenna",
-                 "Cables, glands and fuse", "Sun shield, ventilated"),
+                 "Cables, glands and fuse", "Sun shield, ventilated", "Status light, lens and lead"),
     flow={"title": "sample and data flow (values from WWT-CAL-001)", "unit": "",
           "stages": [("Water at the tap", "tee on the riser"), ("Regulator and valve", "0.5 L/min, 90 s hourly"),
                      ("Flow-through cell", "0.19 L, 4 volumes a flush"), ("Controller", "log, 90 days on card"),

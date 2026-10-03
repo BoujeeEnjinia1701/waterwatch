@@ -275,7 +275,7 @@ Review of WWT-DDR-003; shield thumb screws at public sites; antenna position; wa
 
 ### Stale until regenerated on Amish's Mac
 
-The design changed visibly, so `media/render-*.png`, `media/card.png` and `media/social-preview.png` and the appearance model `cad/src/product_model.py` still show the concept: the antenna through the shield top, the single turbidity block, the solid mounting plates and clamp rings, and the panel bracket. They were not regenerated here.
+`media/render-*.png`, `media/card.png` and `media/social-preview.png` are to be made again on Amish's Mac from the render scenes exported on 2026-10-02 (see "Approved follow-ups carried out" below). The appearance model `cad/src/product_model.py` was brought in line with `model.py` on 2026-10-02 (optics holders, antenna and entries in the bottom face, back plate size, status light).
 
 ### Safety
 
@@ -284,3 +284,78 @@ No change to the safety case. The plan adds safety stops for the battery, the co
 ### Recommended next step
 
 Amish reviews WWT-DDR-003 and the open decisions in WWT-DEC-001, and has the photoreal renders regenerated on the Mac. TRL 4 (building to the plan and testing) remains on hold.
+
+## Session 2026-10-02: open decisions decided
+
+Amish, 2026-10-02: "APPROVED: The open decisions from the last wave (TremorTrace to ZeerBox) came in after the review and aren't on the page either." This approves the recommendation written for each open decision in the design decisions register (WWT-DEC-001), as he did for the other 555 open decisions ("i approve your recommendations for all 555 open decisions."). trl stays 3; no build or test work was done, and the model, BOM quantities and prices, and pictures are unchanged.
+
+### Decisions recorded
+
+Ten decisions, all moved to Decisions made in WWT-DEC-001, dated 2026-10-02:
+
+1. Design for construction accepted: the changes P1 to P13 of WWT-DDR-003, as made.
+2. Shield fixing: knurled thumb screws for the prototype; tamper-resistant M5 screws on field units after the first site visit.
+3. Antenna: the whip points down from the bottom face, and signal strength is measured at TRL 4; a pole-top antenna is used only at a weak-signal site.
+4. Water volume in the calculation: the full-cavity 0.185 L is kept, conservative for flushing; the standing volume is measured at TRL 4.
+5. Product render layout: the render-only layout with heights drawn closer together is kept, with the note on the hero render.
+6. Status light: one low-duty LED behind a lens in the shield front, with an open-bottom slot so the shield still slides off.
+7. Enclosure lid: a clear-lid enclosure is accepted, and BOM line 3 says so.
+8. First co-design partner and region: a scheme operator that runs chlorinated, solar-powered piped schemes with public tapstands; the first candidate to approach is Water Mission, which runs such schemes in East Africa, with the first region taken from its country programs.
+9. Alert language and recipients: alerts go by SMS in the site's main local language, with an English copy to the operator, stating only what was measured, when and the threshold crossed; they go to the caretaker and the operator's maintenance contact, with a weekly summary to the district water officer.
+10. Data ownership: the scheme operator owns the data; the water committee and the district water and health offices can see it; anonymized site data are published only with the operator's written agreement.
+
+### Documents changed
+
+- `docs/06-design-decisions.md` (WWT-DEC-001 v0.2): open decisions moved to Decisions made.
+- `docs/decisions/0003-design-for-construction.md` (WWT-DDR-003 v0.2): acceptance recorded in the status line; A1 to A3 decided (record stays Draft).
+- `docs/decisions/0001-trl2-review-decisions.md` (WWT-DDR-001 v0.3) and `docs/decisions/0002-recommendations-accepted.md` (WWT-DDR-002 v0.2): O1 to O3 recorded as decided.
+- `docs/01-problem.md` (WWT-PRB-001 v0.4): partner, alert and data questions answered.
+- `docs/02-concept.md` (WWT-PRC-001 v0.6): open questions answered.
+- `bom/bom.csv` (line 3 specification text only: clear lid; no quantity or price change).
+- `README.md`: the build plan paragraph says WWT-DDR-003 is accepted and the decisions are all made.
+
+### Follow-up actions to carry approved decisions into the design
+
+1. Decision 6 (model): Model the status LED and its lens in the shield front, with the open-bottom slot so the shield still slides off, and check its clearance to the enclosure.
+2. Decision 6 (BOM): Add the status LED, lens and lead to the BOM with a price basis.
+3. Decision 6 (calculations): Add the LED's low-duty energy to the energy budget in WWT-CAL-001.
+4. Decision 6 (pictures): Show the status LED and its wiring in the general arrangement, the build plan's shield and wiring pictures and the concept media.
+5. Decision 2 (docs): Name tamper-resistant M5 shield screws as the field-unit fixing in the build plan's shield step and BOM line 20 note when field units are planned.
+6. Decision 9 (docs): Write the alert message templates (SMS, local language with an English copy) and the recipient list into the firmware settings notes.
+7. Decisions 8, 9 and 10 (docs): Approach Water Mission, choose the first region from its East African country programs, and confirm the alert and data defaults with the operator and caretakers.
+
+### Points found in the review
+
+- None.
+
+## Session 2026-10-02: approved follow-ups carried out
+
+Amish approved on 2026-10-02 that every follow-up action from the open-decision sign-off be carried out. `trl: 3` is unchanged; no build or test work was done.
+
+### Follow-ups
+
+1. Done. Decision 6, model: the status light is in `cad/src/model.py` (parts `status_lens`, `status_holder`, `status_led`, `status_cable`): a 16 mm lens and printed holder whose 12 mm barrel sits in a 12.2 mm slot, open at the bottom, in the shield front panel (round end 10 mm above the lower edge); the lead hangs to a seventh gland in the bottom face (middle row, centre line). The unit drops out of the slot downward, so the shield still slides off forward. Interpretation recorded: the decision text does not say where the lead goes or how the unit is held, so this is the reading chosen. New checks: 7 touches and 2 clearances (holder 10 mm or more from the clear lid; lead 20 mm or more from the antenna); 106 of 106 checks pass; STEP and STL regenerated.
+2. Done. Decision 6, BOM: line 21 (USD 2.00; LED about 0.40, lens disc 0.40, printed holder 0.30, lead with crimps and resistor 0.90) and a seventh gland on line 16 (USD 19.00, +1.00).
+3. Done. Decision 6, calculations: WWT-CAL-001 v0.4 and `sizing.py`: 5 mA for 50 ms every 10 s adds 1.98 mWh a day; daily need 0.540 Wh (was 0.537), autonomy 28.5 days (was 28.6).
+4. Done. Decision 6, pictures: WWT-DWG-001 Rev P5 (status light leader and note); shield sketch WWT-DWG-104 and enclosure sketch WWT-DWG-102; bottom-face drilling layout; joint 3; steps 1, 17 and 18; new step 19; overview; wiring diagram; concept media (new line 21 in the exploded view).
+5. Done. Decision 2, docs: tamper-resistant M5 screws named for field units in the build plan (shield section and steps 18) and in the BOM line 20 note (about USD 2 a unit, not in the total).
+6. Done. Decision 9, docs: alert message templates (five, English copy; the local language text is translated with the caretakers) and the recipient list are in WWT-DDR-001 v0.4, section "Firmware settings notes". The repo has no firmware sketch (TRL cap), so the notes live in that record.
+7. Not done: decisions 8, 9 and 10, approach Water Mission, choose the first region and confirm the defaults with the operator and caretakers; this is outreach by Amish.
+
+### Other changes
+
+- Value-engineering target: USD 300. Estimated cost of the constructable design: USD 322 (USD 22 over the target), 21 lines (was USD 319, 20 lines). `budget_usd` unchanged. The pH probe variant site is now about USD 382 to 422.
+- Requirement status changes: none. R7 is still met on paper (28.5 days); R12 is still over the target, by USD 22.
+- Appearance model (`cad/src/product_model.py`) was stale against the constructable model and did not run (it read a turbidity parameter that no longer exists). Now it takes the three optics holders from `model.py`, puts the antenna and all entries in the bottom face at the model's positions, sizes the enclosure back plate from `model.py`, and shows the status light in the slot with its lead (the green light moves from the upper right of the shield front to the bottom centre). Still render-only, kept by Amish's decision of 2026-10-02: heights drawn closer together, the cell back bar, the pole clamps in place of U-bolts and saddles, and the louvers on the shield. Render scenes exported to `/home/claude/renders/waterwatch` (hero, exploded, detail, with `waterwatch__jobs.json`); photoreal renders, `media/card.png` and `media/social-preview.png` are for Amish's Mac.
+
+### Cross-repo actions
+
+- None needed in other repos for the status light. Water Mission outreach and the first region are Amish's.
+
+### Documents changed
+
+WWT-CAL-001 v0.4, WWT-REQ-001 v0.6, WWT-PRC-001 v0.7, WWT-DDR-001 v0.4, WWT-DDR-003 v0.3, WWT-DEC-001 v0.3, WWT-BLD-001 v0.2, README, `bom/bom.csv`, `bom/bom-notes.md`, WWT-DWG-001 Rev P5.
+
+## 2026-10-02: photoreal renders redone on the constructable design
+
+Rendered with Blender Cycles on Amish's Mac from the updated appearance model; captioned with `.kit/photo_caption.py`; `media/card.png` and `media/social-preview.png` regenerated with `.kit/cards.py`. Views: hero, exploded, detail. image_qc passes. Appearance deviations are those logged above as proposed, awaiting Amish.

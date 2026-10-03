@@ -3,7 +3,7 @@ doc_id: WWT-PRC-001
 title: WaterWatch design precis
 project: WaterWatch
 doc_type: Design precis
-version: "0.5"
+version: "0.7"
 status: Draft
 date: '2026-10-02'
 author: Amish Chadha
@@ -29,11 +29,19 @@ revisions:
   date: '2026-10-02'
   author: Amish Chadha
   change: Design made constructable (WWT-DDR-003); components table, cost and drawings updated; budget treated as a value-engineering target
+- version: "0.6"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: Partner, alert and data open questions answered by Amish's decisions of 2026-10-02 (WWT-DEC-001)
+- version: "0.7"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "Energy, autonomy and cost from WWT-CAL-001 v0.4 (status light, WWT-DEC-001)"
 ---
 
 # WaterWatch design precis
 
-WaterWatch is a solar sentinel that stands on its own pole beside a village tapstand. Once an hour a latching valve on a tee in the tapstand riser opens for 90 s and flushes water through a small, dark flow-through cell. An infrared nephelometer measures turbidity, a membrane-free three-electrode sensor measures free chlorine and a sealed probe measures temperature. An ESP32 controller logs the readings, a cellular modem uploads them every 4 h, and an SMS goes to the caretaker and operator when chlorine drops below 0.2 mg/L or turbidity passes 5 NTU. The TRL 3 calculations (WWT-CAL-001) give 0.54 Wh per day, 28.6 days on a 3.2 V, 6 Ah LiFePO4 battery without sun, 18.0 L per day of flushed water and $319 in parts for the constructable design (WWT-DDR-003), USD 19 over the USD 300 value-engineering target. How each part is made and fitted is in the prototype build plan (WWT-BLD-001). The weak point is still the chlorine reading. Under Amish's decisions of 2026-09-25 (WWT-DDR-002), R1 is relaxed to ±0.2 mg/L or ±25 %, and sites whose pH is above 7.5 or moves more than 0.2 between visits take a pH probe in a spare port of the cell. With that rule the error budget meets R1 before sensor drift, but the low-cost sensor's drift over months is unknown, so R1 and R10 remain at risk. The design choices below were decided by Amish on 2026-09-25 (WWT-DDR-001 and WWT-DDR-002).
+WaterWatch is a solar sentinel that stands on its own pole beside a village tapstand. Once an hour a latching valve on a tee in the tapstand riser opens for 90 s and flushes water through a small, dark flow-through cell. An infrared nephelometer measures turbidity, a membrane-free three-electrode sensor measures free chlorine and a sealed probe measures temperature. An ESP32 controller logs the readings, a cellular modem uploads them every 4 h, and an SMS goes to the caretaker and operator when chlorine drops below 0.2 mg/L or turbidity passes 5 NTU. The TRL 3 calculations (WWT-CAL-001) give 0.54 Wh per day, 28.5 days on a 3.2 V, 6 Ah LiFePO4 battery without sun, 18.0 L per day of flushed water and $322 in parts for the constructable design (WWT-DDR-003 and the status light of WWT-DEC-001), USD 22 over the USD 300 value-engineering target. How each part is made and fitted is in the prototype build plan (WWT-BLD-001). The weak point is still the chlorine reading. Under Amish's decisions of 2026-09-25 (WWT-DDR-002), R1 is relaxed to ±0.2 mg/L or ±25 %, and sites whose pH is above 7.5 or moves more than 0.2 between visits take a pH probe in a spare port of the cell. With that rule the error budget meets R1 before sensor drift, but the low-cost sensor's drift over months is unknown, so R1 and R10 remain at risk. The design choices below were decided by Amish on 2026-09-25 (WWT-DDR-001 and WWT-DDR-002).
 
 ![Hero render](../media/hero.png)
 
@@ -90,9 +98,9 @@ All values come from WWT-CAL-001, which states its assumptions; the tags in brac
 
 | Quantity | Value | Basis | Requirement |
 | --- | --- | --- | --- |
-| Daily energy with margin | 0.537 Wh/day | 0.229 Wh measuring, 0.120 Wh uploads, 9 mWh sleep and valve, x 1.5 [A3] | |
-| Autonomy without sun | 28.6 days (24.3 at 0 °C) | 15.36 Wh usable [B1] | R7 met on paper |
-| Solar yield, 5 W panel | 13.5 Wh per clear day, 7.5 Wh overcast | [B2]; 1.18 clear days to refill [B3] | R7 met on paper |
+| Daily energy with margin | 0.540 Wh/day | 0.229 Wh measuring, 0.120 Wh uploads, 9 mWh sleep and valve, 2 mWh status light, x 1.5 [A3] | |
+| Autonomy without sun | 28.5 days (24.2 at 0 °C) | 15.36 Wh usable [B1] | R7 met on paper |
+| Solar yield, 5 W panel | 13.5 Wh per clear day, 7.5 Wh overcast | [B2]; 1.19 clear days to refill [B3] | R7 met on paper |
 | Enclosure peak on a 45 °C day | 50.8 °C with the sun shield; 69.8 °C without | Dusty enclosure, sun square to the front [C4] | R9 at risk |
 | Flow-through cell | 0.185 L of water | Parametric model [D1] | |
 | Water per reading and per day | 0.75 L; 18.0 L (19.8 L at regulator tolerance) | 0.5 L/min for 90 s, 24 readings [D2], [D5] | R8 met on paper, thin margin |
@@ -102,7 +110,7 @@ All values come from WWT-CAL-001, which states its assumptions; the tags in brac
 | Data per month | 0.86 MB | 780 B payload and 4 kB overhead per upload [G1] | R6 met on paper |
 | Confirmation to SMS | 13.0 min worst case; 77 min from the event | Three tries at 3 min spacing [H1]; 15 min confirming reading [H2] | R5 met on paper |
 | Installation day | 65 min critical path | Footing cast on the survey visit [J2] | R11 met on paper |
-| Parts cost | $319 per base unit; $379 to $419 at a pH probe site | `bom/bom.csv` [K1], [K2] | R12: USD 19 over the USD 300 value-engineering target |
+| Parts cost | $322 per base unit; $382 to $422 at a pH probe site | `bom/bom.csv` [K1], [K2] | R12: USD 22 over the USD 300 value-engineering target |
 | Shared calibration kit | about $60 | DPD free chlorine and pH comparator, turbidity standards (estimate) | Not in the unit cost |
 
 The chlorine reading is the least certain number. Free chlorine is the sum of hypochlorous acid (HOCl) and hypochlorite (OCl⁻); their split depends on pH, with a pKa of 7.54 at 25 °C, so at pH 8 only 0.26 of free chlorine is HOCl, while at pH 7 0.77 is [E2]. Amperometric sensors respond mainly to HOCl, so the same free chlorine gives very different signals across the pH range in R1. Calibrating at the site against the DPD comparator absorbs the pH on the day of calibration, but a change of 0.2 pH before the next visit shifts the reading by 12 % at pH 7.0, 22 % at pH 7.5 and 38 % at pH 8.0 [E4]. The site pH method is therefore adequate at near-neutral, stable sites and not elsewhere. That is why WWT-DDR-002 fits the pH probe variant where site pH is above 7.5 or moves more than 0.2 between visits, and relaxes R1 to ±0.2 mg/L or ±25 %, since the DPD comparator used as the field reference already takes ±0.07 mg/L. With both, all eight cases in WWT-CAL-001 meet R1 before drift [E6]; at 40 °C, 1.5 mg/L at pH 7.5 with site pH misses by 0.006 mg/L [E7].
@@ -152,5 +160,5 @@ Each choice below was decided by Amish on 2026-09-25, going with the recommendat
 - [ ] Does the sun shield cut the solar gain as much as assumed (a quarter)? (R9)
 - [ ] How fast do the cell windows and the chlorine electrode foul at a turbid site, and does a monthly clean suffice? (R2, R10)
 - [ ] How much does source pH move between monthly visits at candidate sites? (R1)
-- [ ] Which alert language and recipients do caretakers and operators want, and who owns the data? Open, awaiting Amish and co-design (WWT-DDR-001, O2 and O3).
-- [ ] First partner and region? Open, awaiting Amish; co-design partners are picked per area later (WWT-DDR-001, O1).
+- [ ] Confirm with caretakers and operators the alert and data defaults decided by Amish on 2026-10-02 (WWT-DEC-001): SMS in the local language to the caretaker and the operator's maintenance contact, and data owned by the scheme operator.
+- [ ] Approach the first candidate partner, Water Mission, and choose the first region from its East African country programs (decided by Amish, 2026-10-02, WWT-DEC-001).

@@ -3,7 +3,7 @@ doc_id: WWT-DDR-003
 title: WaterWatch design for construction
 project: WaterWatch
 doc_type: Design decision record
-version: "0.1"
+version: "0.3"
 status: Draft
 date: '2026-10-02'
 author: Amish Chadha
@@ -13,12 +13,20 @@ revisions:
   date: '2026-10-02'
   author: Amish Chadha
   change: Changes that make the concept physically buildable, with the reason for each; made under Amish's 2026-09-30 instruction to make the design physically buildable; open for his review
+- version: "0.2"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: Accepted by Amish on 2026-10-02, with A1 to A3 decided as recommended
+- version: "0.3"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "Status light carried into the model (WWT-DEC-001): lens unit in a slot in the shield front, line 21, seventh gland; cost USD 322"
 ---
 
 # 0003: Design for construction
 
 - **Date:** 2026-10-02
-- **Status:** Draft. Every change in Table 1 was made under Amish's 2026-09-30 instruction to make the design physically buildable; open for his review. The items in Table 3 are proposed, awaiting Amish.
+- **Status:** Draft; accepted. Amish, 2026-10-02: "APPROVED: The open decisions from the last wave (TremorTrace to ZeerBox) came in after the review and aren't on the page either." This approves the recommendation written for each open decision in the design decisions register (WWT-DEC-001 v0.1): every change in Table 1 is accepted as made, and A1 to A3 in Table 3 are decided as recorded there.
 
 ## Context
 
@@ -56,13 +64,23 @@ The changes keep what WaterWatch does: the same pole, footing and heights, the s
 | Documents | WWT-REQ-001 v0.5 and WWT-PRC-001 v0.5 updated; WWT-DWG-001 Rev P4; making sketches WWT-DWG-101 to 109; build plan WWT-BLD-001; design decisions register WWT-DEC-001. | Follow the model. |
 | Media | `media/hero.png`, `cutaway.png`, `exploded.png`, `concept-blueprint.*`, `flow.png`, `model.glb` regenerated. The photoreal renders, `media/card.png` and `media/social-preview.png` (made on Amish's Mac) still show the concept: the antenna through the shield top and the single turbidity block. | Visible change. |
 
-*Table 3. Proposed, awaiting Amish.*
+*Table 3. Decided by Amish, 2026-10-02.*
 
 | # | Question | Options | Recommendation |
 | --- | --- | --- | --- |
-| A1 | The shield now comes off by hand, which lowers tamper resistance at a public tapstand. | (a) knurled thumb screws, as modelled; (b) tamper-resistant M5 screws, which add about 2 minutes to a visit that only rarely needs the box open. | (a) for the prototype; (b) for field units after the first site visit. |
-| A2 | The antenna now points down from the bottom face, about 0.1 m above the cell lid and 0.13 m from the steel pole. | (a) keep it there and measure signal strength at TRL 4; (b) a short cable to an antenna on the pole top beside the panel. | (a): it keeps the shield free and costs nothing; (b) if a weak-signal site needs it. |
-| A3 | Water stands in the cell only up to the outlet's lower edge, 17 mm below the lid, about 0.14 L, not the full 0.185 L the calculation uses. | (a) keep 0.185 L in WWT-CAL-001, which is conservative for flushing (a smaller standing volume is cleared faster), and measure at TRL 4; (b) revise the calculation now. | (a): no requirement changes, and the chlorine tip stays 23 mm under water. |
+| A1 | The shield now comes off by hand, which lowers tamper resistance at a public tapstand. | (a) knurled thumb screws, as modelled; (b) tamper-resistant M5 screws, which add about 2 minutes to a visit that only rarely needs the box open. | (a) for the prototype; (b) for field units after the first site visit. **Decided by Amish, 2026-10-02.** |
+| A2 | The antenna now points down from the bottom face, about 0.1 m above the cell lid and 0.13 m from the steel pole. | (a) keep it there and measure signal strength at TRL 4; (b) a short cable to an antenna on the pole top beside the panel. | (a): it keeps the shield free and costs nothing; (b) if a weak-signal site needs it. **Decided by Amish, 2026-10-02: (a).** |
+| A3 | Water stands in the cell only up to the outlet's lower edge, 17 mm below the lid, about 0.14 L, not the full 0.185 L the calculation uses. | (a) keep 0.185 L in WWT-CAL-001, which is conservative for flushing (a smaller standing volume is cleared faster), and measure at TRL 4; (b) revise the calculation now. | (a): no requirement changes, and the chlorine tip stays 23 mm under water. **Decided by Amish, 2026-10-02: (a).** |
+
+*Table 4. Carried into the design, 2026-10-02 (decision of the status light, WWT-DEC-001).*
+
+| Item | Change | Reason |
+| --- | --- | --- |
+| Status light | One 5 mm LED behind a 16 mm lens in a printed holder whose barrel sits in a 12.2 mm slot, open at the bottom, in the shield front panel; its lead hangs from the unit to a seventh gland in the bottom face (middle row, on the centre line). The unit drops out of the slot downward, so the shield still slides off forward after the four thumb screws. | Decision of 2026-10-02 |
+| Clearances | The holder stays 10 mm or more from the clear lid; the lead stays 20 mm or more from the antenna whip. The model's 106 checks pass. | Constructability checks |
+| BOM | Line 21 added (USD 2.00); line 16 gains a seventh gland (USD 19.00). 21 lines, USD 322.00, USD 22 over the USD 300 target; `budget_usd` unchanged. | Basis in `bom/bom.csv` |
+| Calculations | WWT-CAL-001 v0.4: 2 mWh a day for the light; autonomy 28.5 days. No requirement changes status. | Energy line A2 |
+| Drawings | WWT-DWG-001 Rev P5; shield and enclosure sketches (WWT-DWG-104 and 102), the bottom-face layout, joint 3, steps 1 and 17 to 19 and the wiring picture regenerated. | Follows the model |
 
 ## Consequences
 

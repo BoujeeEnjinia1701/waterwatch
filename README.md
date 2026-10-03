@@ -2,7 +2,7 @@
 
 ![TRL 3](https://img.shields.io/badge/TRL-3%20of%209-0F766E) ![Hardware: CERN-OHL-S-2.0](https://img.shields.io/badge/hardware-CERN--OHL--S--2.0-111827) ![Software: MIT](https://img.shields.io/badge/software-MIT-111827) [![DOI](https://zenodo.org/badge/1386353082.svg)](https://zenodo.org/badge/latestdoi/1386353082) [![REUSE compliant](https://github.com/BoujeeEnjinia1701/waterwatch/actions/workflows/reuse.yml/badge.svg)](https://github.com/BoujeeEnjinia1701/waterwatch/actions/workflows/reuse.yml) [![Archived in Software Heritage](https://archive.softwareheritage.org/badge/origin/https://github.com/BoujeeEnjinia1701/waterwatch/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/BoujeeEnjinia1701/waterwatch)
 
-**Area:** Water Security · **TRL:** 3 of 9 (proof of concept on paper) · **Value-engineering target:** USD 300 (estimated cost of the constructable design: USD 319) · **Difficulty:** 3 of 5
+**Area:** Water Security · **TRL:** 3 of 9 (proof of concept on paper) · **Value-engineering target:** USD 300 (estimated cost of the constructable design: USD 322) · **Difficulty:** 3 of 5
 
 Solar sentinel sensor that logs turbidity, free chlorine and temperature at a tap or tank and alerts over GSM or LoRa.
 
@@ -55,7 +55,7 @@ Rural water points go untested between rare lab visits, so a chlorinator that ru
 
 ## Concept
 
-A pole-mounted sentinel beside a village tapstand flushes a small sample through a dark flow-through cell once an hour, measures turbidity, free chlorine and temperature, logs the readings and sends them over cellular (LTE-M, NB-IoT or 2G; LoRaWAN as a variant). An SMS goes to the caretaker and operator when chlorine drops below 0.2 mg/L or turbidity passes 5 NTU. The TRL 3 calculations give 0.54 Wh per day, 28.6 days on battery without sun, 18 L per day of flushed water and an estimated USD 319 in parts for the constructable design, USD 19 over the USD 300 value-engineering target. Following Amish's decisions of 2026-09-25 (WWT-DDR-002), the chlorine accuracy target is ±0.2 mg/L or ±25 %, and sites above pH 7.5 or with a moving pH take a pH probe in a spare port of the cell; the error budget then meets the target before drift, but the low-cost sensor's long-term drift is unknown, so chlorine accuracy and the monthly maintenance interval remain at risk.
+A pole-mounted sentinel beside a village tapstand flushes a small sample through a dark flow-through cell once an hour, measures turbidity, free chlorine and temperature, logs the readings and sends them over cellular (LTE-M, NB-IoT or 2G; LoRaWAN as a variant). An SMS goes to the caretaker and operator when chlorine drops below 0.2 mg/L or turbidity passes 5 NTU. The TRL 3 calculations give 0.54 Wh per day, 28.5 days on battery without sun, 18 L per day of flushed water and an estimated USD 322 in parts for the constructable design, USD 22 over the USD 300 value-engineering target. Following Amish's decisions of 2026-09-25 (WWT-DDR-002), the chlorine accuracy target is ±0.2 mg/L or ±25 %, and sites above pH 7.5 or with a moving pH take a pH probe in a spare port of the cell; the error budget then meets the target before drift, but the low-cost sensor's long-term drift is unknown, so chlorine accuracy and the monthly maintenance interval remain at risk.
 
 Full design precis: [docs/02-concept.md](docs/02-concept.md)
 
@@ -74,7 +74,7 @@ The priced bill of materials is in [bom/bom.csv](bom/bom.csv). The parametric mo
 
 ## Building the prototype
 
-The prototype build plan ([docs/05-build-plan.md](docs/05-build-plan.md)) shows how to make and fit every component of the first proof-of-concept unit, with a making sketch for each made part, close-ups of the joints and a picture for every assembly step. Making it buildable changed the concept in places: the enclosure and the flow cell now hang on aluminium back plates held to the pole by U-bolts, every cable enters the box from below so the sun shield slides off, and the turbidity optics sit on three walls of the cell (decision record WWT-DDR-003, open for review). The plan is paper only; building and testing to it is TRL 4 work. Decisions still open are in the [design decisions register](docs/06-design-decisions.md).
+The prototype build plan ([docs/05-build-plan.md](docs/05-build-plan.md)) shows how to make and fit every component of the first proof-of-concept unit, with a making sketch for each made part, close-ups of the joints and a picture for every assembly step. Making it buildable changed the concept in places: the enclosure and the flow cell now hang on aluminium back plates held to the pole by U-bolts, every cable enters the box from below so the sun shield slides off, and the turbidity optics sit on three walls of the cell (decision record WWT-DDR-003, accepted by Amish on 2026-10-02). The plan is paper only; building and testing to it is TRL 4 work. The decisions, all made as of 2026-10-02, are in the [design decisions register](docs/06-design-decisions.md).
 
 ![WaterWatch prototype: every component, pulled apart and numbered in build order](docs/05-build-plan/overview.png)
 

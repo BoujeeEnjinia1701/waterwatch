@@ -4,7 +4,7 @@ Finished-product look for photoreal renders: a white powder-coated sun shield wi
 corners, side louvers, a name plate and a lit green status lens; the IP66 enclosure with a
 clear polycarbonate lid, gasket line, tamper-resistant lid screws, cable glands and vent plug;
 inside it the LiFePO4 pack under a hook-and-loop strap, the controller board and the cellular
-modem; the whip antenna through a grommet in the shield; the 5 W panel with an aluminum frame,
+modem; the whip antenna pointing down from the bottom face; the 5 W panel with an aluminum frame,
 cell grid, junction box and pole-top tilt bracket; the opaque black flow-through cell with a
 top plate held by knurled thumb nuts, the turbidity head, the chlorine sensor, the temperature
 probe and the teal blanking plug in the spare pH port; the latching solenoid valve, the sample
@@ -32,7 +32,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from build123d import (Axis, Box, Cone, Cylinder, Plane, Pos, RegularPolygon, Rot, Solid, Sphere, Vector,
                        extrude, fillet)
-from model import PARAMS, derived
+from model import PARAMS, derived, build_components
 
 TITLE = "WaterWatch: solar water quality sentinel for a village tap"
 
@@ -235,7 +235,7 @@ def product_parts(P=PARAMS):
     pole -= _zcyl(px, py, (SECTION_Z0 + pole_top) / 2 - 5, pr - P["pole_wall"], pole_top - SECTION_Z0)
     add("Mounting pole (section)", pole, C_GALV, "metal", 1, "shell", (0, 0, 0))
 
-    ep = _box(px, ed / 2 + P["plate_t"] / 2, ez, 110, P["plate_t"], eh + 40)
+    ep = _box(px, ed / 2 + P["plate_t"] / 2, ez, P["enc_plate"][0], P["plate_t"], P["enc_plate"][1])
     ep = _fillet_try(ep, _edges_par(ep, Axis.Y), [6.0, 4.0])
     cp_d = py - pr - co[1] / 2
     cp = _box(px, co[1] / 2 + cp_d / 2, cz, 50, cp_d, 60)
@@ -307,8 +307,11 @@ def product_parts(P=PARAMS):
                      [8.0, 6.0])
     si = _fillet_try(si, _sel(si, lambda c: c.Z > zt - st - 0.5 and c.Y < y1 + 5), [5.0, 3.0])
     shield = so - si
-    ant_x, ant_y = px + 60, 10.0
-    shield -= _zcyl(ant_x, ant_y, zt - st / 2, 11.0, st + 4)
+    pen = {k: (px + x, ed / 2 - P["pen_rows"][row]) for k, (x, row) in P["pens"].items()}     # bottom-face entries, as model.py
+    ant_x, ant_y = pen["antenna"]
+    # status light slot in the front panel, open at the bottom (as model.py: stat_below, stat_slot)
+    slz = e_bot - P["stat_below"]
+    shield -= _ycyl(px, y0 + st / 2, slz, P["stat_slot"] / 2, st + 2) + _box(px, y0 + st / 2, (zb + slz) / 2 - 0.5, P["stat_slot"], st + 2, slz - zb + 1)
     # pressed side louvers (texture)
     for sx in (-1, 1):
         for k in range(6):
@@ -317,10 +320,6 @@ def product_parts(P=PARAMS):
             lv = _fillet_try(lv, _edges_par(lv, Axis.Y), [0.6, 0.3])
             shield += lv
     add("Sun shield (white powder-coated aluminum)", shield, C_SHIELD, "painted", 17, "shell", ES)
-    grom = _zcyl(ant_x, ant_y, zt + 0.5, 13.0, 3.0) - _zcyl(ant_x, ant_y, zt + 0.5, 9.5, 5.0)
-    grom = _fillet_try(grom, _top(grom), [1.0, 0.5])
-    add("Antenna grommet", grom, C_BLACK, "rubber", 16, "shell", ES)
-
     fy = y0
     band = _box(px, fy - 0.2, zt - 22, sw - 40, 0.4, 5)
     add("Shield accent band", band, C_ACCENT, "painted", 17, "shell", ES)
@@ -331,13 +330,18 @@ def product_parts(P=PARAMS):
            + _box(px - 34, fy - 0.5, ez + 16, 76, 0.3, 2.5) + _box(px - 38, fy - 0.5, ez + 9, 68, 0.3, 2.5)
            + _box(px + 26, fy - 0.5, ez + 37, 16, 0.3, 9))
     add("Name plate print", ink, C_DARK, "paper", 17, "shell", ES)
-    lx, lz = px + 82, ez + 30
-    bez = _ycyl(lx, fy - 1.5, lz, 9.0, 3.0) - _ycyl(lx, fy - 2.0, lz, 5.6, 4.0)
-    bez = _fillet_try(bez, _front(bez), [1.0, 0.5])
-    add("Status light bezel", bez, C_DARK, "plastic", 6, "shell", ES)
-    dome = _ycyl(lx, fy - 1.2, lz, 5.5, 2.4) + Pos(lx, fy - 2.4, lz) * Sphere(4.6)
-    dome &= _box(lx, fy - 2.5, lz, 14, 5.0, 14)
-    add("Status light, green (lit)", dome, C_LED_G, "emissive", 6, "shell", ES)
+    lx, lz = px, slz       # the lens unit sits in the slot at the bottom of the shield front (model.py)
+    fr = P["stat_flange"] / 2
+    bez = _ycyl(lx, fy - 0.75, lz, fr, 1.5) - _ycyl(lx, fy - 1.0, lz, 5.6, 2.0)
+    bez = _fillet_try(bez, _front(bez), [0.6, 0.3])
+    add("Status light bezel", bez, C_DARK, "plastic", 21, "shell", ES)
+    dome = _ycyl(lx, fy - 0.6, lz, 5.5, 1.2) + Pos(lx, fy - 1.2, lz) * Sphere(4.6)
+    dome &= _box(lx, fy - 1.5, lz, 14, 3.0, 14)
+    add("Status light, green (lit)", dome, C_LED_G, "emissive", 21, "shell", ES)
+    yr = fy + P["shield_t"] + P["stat_len"]
+    zc = e_bot - P["stat_cable_drop"]
+    slead = _pipe([(px, yr, lz), (px, yr + 4, lz), (px, yr + 4, zc), (pen["status"][0], pen["status"][1], zc), (pen["status"][0], pen["status"][1], e_bot - 13)], P["stat_cable_d"] / 2)
+    add("Status light lead", slead, C_BLACK, "rubber", 21, "shell", ES)
 
     # ------------------------------------------------------------ 3, 4 enclosure base and lid
     by0, by1 = -ed / 2 + lt, ed / 2
@@ -347,16 +351,17 @@ def product_parts(P=PARAMS):
     bi = _box(px, (by0 + by1) / 2 - et, ez, ew - 2 * et, by1 - by0, eh - 2 * et)
     bi = _fillet_try(bi, _edges_par(bi, Axis.Y), [5.0, 3.0])
     base = bo - bi
-    for gx in (-50, 0, 50):
-        base -= _zcyl(px + gx, 10, e_bot + et / 2, 6.0, et + 2)
+    for k, (gx_, gy_) in pen.items():
+        base -= _zcyl(gx_, gy_, e_bot + et / 2, {"vent": 6.1, "antenna": 3.25}.get(k, 8.1), et + 2)
     add("Enclosure base (IP66 polycarbonate)", base, C_ENC, "plastic", 3, "shell", (0, 0, 0))
     gl = None
-    for gx in (-50, 0, 50):
-        gg = _gland_down(px + gx, 10, e_bot)
+    for k, (gx_, gy_) in pen.items():
+        if k in ("antenna", "vent"):
+            continue
+        gg = _gland_down(gx_, gy_, e_bot)
         gl = gg if gl is None else gl + gg
-    gl += _gland_up(ant_x - 25, 45, e_top, 14.0)        # panel cable gland on top
     add("Cable glands", gl, C_DARK, "plastic", 16, "shell", (0, 0, 0))
-    vent = _zcyl(px + 80, -25, e_bot - 3, 7.0, 6.0)
+    vent = _zcyl(pen["vent"][0], pen["vent"][1], e_bot - 3, 7.0, 6.0)
     vent = _fillet_try(vent, _bottom(vent), [2.0, 1.0])
     add("Pressure-equalizing vent plug", vent, C_BLACK, "plastic", 3, "shell", (0, 0, 0))
 
@@ -441,11 +446,11 @@ def product_parts(P=PARAMS):
 
     ad, al = P["antenna"]
     EA = (0, 0, 200)
-    abase = _hex_z(ant_x, ant_y, e_top + 3, 16.0, 6.0) + _zcyl(ant_x, ant_y, e_top + 16, ad / 2, 20)
-    abase = _fillet_try(abase, _top(abase), [2.0, 1.0])
+    abase = _hex_z(ant_x, ant_y, e_bot - 3, 16.0, 6.0) + _zcyl(ant_x, ant_y, e_bot - 16, ad / 2, 20)
+    abase = _fillet_try(abase, _bottom(abase), [2.0, 1.0])
     add("Antenna bulkhead and base", abase, C_DARK, "plastic", 8, "shell", EA)
-    whip = Pos(ant_x, ant_y, e_top + 26) * Cone(ad / 2 - 2, 4.5, al - 26, align=None)
-    whip = _fillet_try(whip, _top(whip), [2.0, 1.0])
+    whip = Pos(ant_x, ant_y, e_bot - 26 - (al - 26) / 2) * Cone(4.5, ad / 2 - 2, al - 26, align=None)
+    whip = _fillet_try(whip, _bottom(whip), [2.0, 1.0])
     add("LTE whip antenna", whip, C_BLACK, "rubber", 8, "shell", EA)
 
     # ------------------------------------------------------------ 9 to 12 flow cell and sensors
@@ -481,27 +486,17 @@ def product_parts(P=PARAMS):
         + _box(px + 22, -co[1] / 2 - 0.45, cz + 3, 20, 0.3, 2)
     add("Flow cell label print", arrow, C_DARK, "paper", 9, "shell", EC)
 
-    tx, ty, tz = P["turb"]
-    txc = px - co[0] / 2 - tx / 2
+    # turbidity optics: the three small holders of model.py (LED left wall, 90 degree detector front wall,
+    # 180 degree reference right wall), shifted with the cell by the render layout
     ETb = _add(CX, (-70, 0, 0))
-    th = _box(txc, 0, cz + cw_ / 2 - 4, tx, ty, tz)
-    th = _fillet_try(th, _sel(th, lambda c: c.X < txc + tx / 2 - 1), [4.0, 3.0, 2.0])
-    add("Turbidity head, 860 nm", th, C_DARK, "plastic", 10, "shell", ETb)
-    tfl = _box(px - co[0] / 2 - 2, 0, cz + cw_ / 2 - 4, 4, ty + 10, tz + 10)
-    tfl = _fillet_try(tfl, _edges_par(tfl, Axis.X), [4.0, 2.0])
-    tsc = None
-    for sy in (-1, 1):
-        for sz in (-1, 1):
-            s = _xcyl(px - co[0] / 2 - 4.6, sy * (ty / 2 + 1), cz + cw_ / 2 - 4 + sz * (tz / 2 + 1), 2.6, 1.2)
-            tsc = s if tsc is None else tsc + s
-    add("Turbidity head flange", tfl, C_DARK, "plastic", 10, "shell", ETb)
-    add("Turbidity flange screws", tsc, C_METAL, "metal", 10, "shell", ETb)
-    tlab = _box(txc, -ty / 2 - 0.2, cz + cw_ / 2 + 2, tx - 10, 0.4, 14)
-    tband = _box(txc, -ty / 2 - 0.2, cz + cw_ / 2 - 14, tx - 10, 0.4, 3)
-    add("Turbidity head label", tlab, C_LABEL, "paper", 10, "shell", ETb)
-    add("Turbidity head accent band", tband, C_ACCENT, "painted", 10, "shell", ETb)
-    tgl = _gland_up(txc, 0, cz + cw_ / 2 - 4 + tz / 2, 12.0)
-    add("Turbidity head cable gland", tgl, C_BLACK, "plastic", 10, "shell", ETb)
+    _mc = build_components(P, below_ground=False)
+    for nm, key in (("LED holder (860 nm)", "led_holder"), ("180 degree reference holder", "ref_holder"), ("90 degree detector holder", "det90_holder")):
+        hsh = Pos(0, 0, DZ_CELL) * _mc[key]
+        hsh = _fillet_try(hsh, hsh.edges(), [1.5, 1.0, 0.6])
+        add(f"Turbidity optics: {nm}", hsh, C_DARK, "plastic", 10, "shell", ETb)
+    _lb = (Pos(0, 0, DZ_CELL) * _mc["led_holder"]).bounding_box()
+    txc = (_lb.min.X + _lb.max.X) / 2
+    tgz = _lb.max.Z + 8
 
     ES2 = _add(CX, (0, 0, 210))
     cl_bot = P["cell_z"] + co[2] / 2 - P["cl_immersed"] + DZ_CELL
@@ -528,19 +523,18 @@ def product_parts(P=PARAMS):
     add("Temperature probe boot", tpr, C_BLACK, "rubber", 12, "shell", ES2)
 
     # ------------------------------------------------------------ 16 cables
-    cab = _pipe([(cl_x, port_y, cl_topz + 12), (cl_x, port_y, cl_topz + 24), (px - 50, 10, e_bot - 30),
-                 (px - 50, 10, e_bot - 13)], 2.8)
-    cab += _pipe([(t_x, port_y, t_topz + 10), (t_x, port_y, t_topz + 30), (px + 50, 10, e_bot - 30),
-                  (px + 50, 10, e_bot - 13)], 2.2)
+    cab = _pipe([(cl_x, port_y, cl_topz + 12), (cl_x, port_y, cl_topz + 24), (pen["chlorine"][0], pen["chlorine"][1], e_bot - 30),
+                 (pen["chlorine"][0], pen["chlorine"][1], e_bot - 13)], 2.8)
+    cab += _pipe([(t_x, port_y, t_topz + 10), (t_x, port_y, t_topz + 30), (pen["temp"][0], pen["temp"][1], e_bot - 30),
+                  (pen["temp"][0], pen["temp"][1], e_bot - 13)], 2.2)
     add("Chlorine and temperature cables", cab, C_BLACK, "rubber", 16, "shell", ES2)
-    tgz = cz + cw_ / 2 - 4 + tz / 2 + 13
-    tcab = _pipe([(txc, 0, tgz), (txc, 0, tgz + 30), (px - 20, 18, e_bot - 45), (px, 10, e_bot - 30),
-                  (px, 10, e_bot - 13)], 2.8)
+    tcab = _pipe([(txc, 0, tgz), (txc, 0, tgz + 30), (pen["optics"][0] + 15, pen["optics"][1] + 20, e_bot - 45), (pen["optics"][0], pen["optics"][1], e_bot - 30),
+                  (pen["optics"][0], pen["optics"][1], e_bot - 13)], 2.8)
     add("Turbidity head cable", tcab, C_BLACK, "rubber", 16, "shell", ETb)
     jb_w = _panel_pt(px, py, pz, tilt, 60, 45, -pt / 2 - 16)
-    cx_c = ant_x - 25
-    pcab = _pipe([jb_w, (cx_c, jb_w[1], jb_w[2] - 20), (cx_c, 110, pole_top - 40), (cx_c, 110, e_top + 16),
-                  (cx_c, 45, e_top + 16), (cx_c, 45, e_top + 12)], 2.8)
+    cx_c = px + 35
+    pcab = _pipe([jb_w, (cx_c, jb_w[1], jb_w[2] - 20), (cx_c, 110, pole_top - 40), (cx_c, 110, e_bot - 60),
+                  (pen["panel"][0], pen["panel"][1], e_bot - 60), (pen["panel"][0], pen["panel"][1], e_bot - 13)], 2.8)
     add("Panel cable", pcab, C_BLACK, "rubber", 16, "shell", EP)
 
     # ------------------------------------------------------------ 13 valve, 14 sample line, 15 drain

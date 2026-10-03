@@ -3,9 +3,9 @@ doc_id: WWT-DDR-002
 title: WaterWatch recommendations accepted
 project: WaterWatch
 doc_type: Design decision record
-version: "0.1"
+version: "0.2"
 status: Draft
-date: '2026-09-25'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -13,12 +13,16 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: Recommendations accepted by Amish (DDR-002)
+- version: "0.2"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: O1 to O3 recorded as decided by Amish on 2026-10-02
 ---
 
 # 0002: Recommendations accepted
 
 - **Date:** 2026-09-25
-- **Status:** accepted for items D11 to D14; items O1 to O3 remain proposed
+- **Status:** accepted for items D11 to D14; items O1 to O3 decided by Amish on 2026-10-02 (WWT-DEC-001)
 
 ## Context
 
@@ -37,13 +41,13 @@ After the TRL 3 session, `docs/REVIEW.md` (session 2026-09-25, TRL 3) listed two
 
 No pitch, problem or `budget_usd` change was recommended, so `project.yaml` is unchanged; `trl` and `trl_target` stay at 3.
 
-*Table 2. Items that remain open.*
+*Table 2. Items left open on 2026-09-25, decided by Amish on 2026-10-02 (WWT-DEC-001).*
 
 | # | Item | Status |
 | --- | --- | --- |
-| O1 | First co-design partner and region (WWT-DDR-001, O1). Community designs pick co-design partners per area later. | Proposed, awaiting Amish |
-| O2 | Alert language and recipients beyond the R13 rule; no recommendation was made. | Proposed, awaiting Amish |
-| O3 | Data ownership and access; no recommendation was made. | Proposed, awaiting Amish |
+| O1 | First co-design partner and region (WWT-DDR-001, O1). Community designs pick co-design partners per area later. | Decided 2026-10-02: Water Mission as the first candidate to approach, region from its East African country programs |
+| O2 | Alert language and recipients beyond the R13 rule; no recommendation was made. | Decided 2026-10-02: SMS in the local language with an English copy to the operator, to the caretaker and the operator's maintenance contact, weekly summary to the district water officer |
+| O3 | Data ownership and access; no recommendation was made. | Decided 2026-10-02: owned by the scheme operator, visible to the water committee and district offices, published only with the operator's written agreement |
 
 ## Consequences
 

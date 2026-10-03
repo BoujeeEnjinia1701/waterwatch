@@ -1,5 +1,5 @@
-"""WaterWatch general arrangement sheet WWT-DWG-001, Rev P4 (TRL 3; P2 adds the plugged pH port, WWT-DDR-002;
-P4 shows the constructable design, WWT-DDR-003).
+"""WaterWatch general arrangement sheet WWT-DWG-001, Rev P5 (TRL 3; P2 adds the plugged pH port, WWT-DDR-002;
+P4 shows the constructable design, WWT-DDR-003; P5 adds the status light, WWT-DEC-001).
 
 Run from the repo root:  python cad/src/sheets.py
 Writes cad/drawings/WWT-DWG-001.svg, .pdf and .png from the parametric model in
@@ -96,13 +96,14 @@ def main():
     asm = assembly(with_riser=True)
     views = safe_project_views(asm, work)
     bb = asm.bounding_box()
-    s = Sheet(project="WaterWatch", title="General arrangement", dwg_no="WWT-DWG-001", rev="P4",
+    s = Sheet(project="WaterWatch", title="General arrangement", dwg_no="WWT-DWG-001", rev="P5",
               author="Amish Chadha", date=DATE, scale=None, theme="technical",
               material="Galvanized steel pole; bought-in parts per bom/bom.csv. PRELIMINARY, NOT FOR FABRICATION",
               revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", D0, "AC"),
                          ("P2", "Plugged pH probe port in cell lid (DDR-002)", D0, "AC"),
                          ("P3", "Layout and labels tidied", D0, "AC"),
-                         ("P4", "Constructable design: back plates, U-bolts, entries underneath (DDR-003)", "2026-10-02", "AC")])
+                         ("P4", "Constructable design: back plates, U-bolts, entries underneath (DDR-003)", "2026-10-02", "AC"),
+                         ("P5", "Status light in the shield front, lead to its own gland", "2026-10-02", "AC")])
     s.add_ortho(views)
     k = s.scale
     c = ortho_cells(s, views)
@@ -140,6 +141,8 @@ def main():
     fx1, fx2 = X(px - P["footing_d"] / 2), X(px + P["footing_d"] / 2)
     L += dim_h(fx1, fx2, Z(zf), "")
     L.append(_t(fx2 + 2.0, Z(zf) + 0.8, f"{P['footing_d']:.0f}", 2.3, 400, INK, "start", mono=True))
+    zl_ = P["enc_z"] - eh / 2 - P["stat_below"]
+    L += leader(X(px), Z(zl_), X(px) + 14, Z(zl_ - 170), "STATUS LIGHT")
     L += leader(X(0), Z(60), X(0) - 9, Z(-260), "EXISTING RISER (NOT IN BOM)", "end")
     L += leader(X(P["drain_end"][0]), Z(P["drain_end"][2]), X(P["drain_end"][0]) + 13, Z(P["drain_end"][2] + 85), "DRAIN TO BASIN")
     L += leader(X(px + co[0] / 2 + 22), Z(D["outlet_z"] + P["vent_h"]), X(px + co[0] / 2 + 22) + 6, Z(D["outlet_z"] + P["vent_h"] + 150), "AIR-BREAK VENT")
@@ -166,6 +169,7 @@ def main():
         f"Pole {P['pole_od']} x {P['pole_wall']} galvanized, {P['pole_h']:.0f} above ground, {P['embed']:.0f} in a {P['footing_d']:.0f} footing",
         f"Panel 5 W, {P['panel'][0]:.0f} x {P['panel'][1]:.0f}, tilt {P['panel_tilt']:.0f} deg; top {D['overall_h']:,.0f} above ground",
         f"Enclosure IP66 {ew:.0f} x {ed:.0f} x {eh:.0f}, center {P['enc_z']:.0f}; sun shield, {P['shield_gap']:.0f} gap",
+        f"Status light: 5 mm LED behind a lens in the shield front slot; lead to its own gland",
         f"Back plates 3 mm aluminium on M8 U-bolts and V-saddles (DDR-003)",
         f"Flow cell body {co[0]:.0f} x {co[1]:.0f} x {co[2]:.0f} + {P['cell_top_t']:.0f} lid; cavity {cix:.0f} x {ciy:.0f} x {ciz:.0f}",
         f"Cell water {D['cell_net_l']:.2f} L; inlet at the bottom, outlet {D['outlet_z'] - D['cell_bot']:.0f} above the underside",
@@ -174,7 +178,7 @@ def main():
         "Flush 0.5 L/min (pressure compensating) for 90 s hourly (WWT-CAL-001)",
         "Drain 12 mm bore with open air break; discharges to the basin",
         "Third-angle; front view from -Y, facing the equator; riser on the Z axis",
-    ], x=276, y=154, width=146)
+    ], x=276, y=146.5, width=146)
     out = s.save(ROOT / "cad" / "drawings" / "WWT-DWG-001")
     shutil.rmtree(work, ignore_errors=True)
     print(f"wrote {out} and .pdf, .png at scale 1:{1 / k:g}")

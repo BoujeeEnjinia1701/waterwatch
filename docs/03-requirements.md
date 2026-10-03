@@ -3,7 +3,7 @@ doc_id: WWT-REQ-001
 title: WaterWatch requirements
 project: WaterWatch
 doc_type: Requirements
-version: "0.5"
+version: "0.6"
 status: Draft
 date: '2026-10-02'
 author: Amish Chadha
@@ -29,13 +29,17 @@ revisions:
   date: '2026-10-02'
   author: Amish Chadha
   change: Status from WWT-CAL-001 v0.3 for the constructable design (WWT-DDR-003); R12 stated against the value-engineering target
+- version: "0.6"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "R7 and R12 figures from WWT-CAL-001 v0.4 (status light); no status changed"
 ---
 
 # WaterWatch requirements
 
-These requirements were first set for the concept and are checked by calculation in WWT-CAL-001 v0.3. Version 0.4 applies Amish's decisions of 2026-09-25 (WWT-DDR-002): R1 is relaxed, R11 is restated for a footing cast on the survey visit, R5 gains a 15 min confirming reading and R12 now states that the pH probe variant is priced per variant site. The targets are still not user-validated needs and will be revised after co-design. On paper, no requirement is missed outright; four are at risk (R1, R10, R2 and R9), five are met by calculation and three by design, and the parts cost of the constructable design (WWT-DDR-003) is USD 19 over the USD 300 value-engineering target (R12). Version 0.5 updates the status for that design; no target changed. In v0.3, R1 and R10 were not met and R11 was at risk. Amish's decisions are in WWT-DDR-001 and WWT-DDR-002.
+These requirements were first set for the concept and are checked by calculation in WWT-CAL-001 v0.4. Version 0.4 applies Amish's decisions of 2026-09-25 (WWT-DDR-002): R1 is relaxed, R11 is restated for a footing cast on the survey visit, R5 gains a 15 min confirming reading and R12 now states that the pH probe variant is priced per variant site. The targets are still not user-validated needs and will be revised after co-design. On paper, no requirement is missed outright; four are at risk (R1, R10, R2 and R9), five are met by calculation and three by design, and the parts cost of the constructable design (WWT-DDR-003) is USD 19 over the USD 300 value-engineering target (R12). Version 0.5 updates the status for that design; no target changed. In v0.3, R1 and R10 were not met and R11 was at risk. Amish's decisions are in WWT-DDR-001 and WWT-DDR-002.
 
-*Table 1. Requirements and TRL 3 status (from WWT-CAL-001 v0.3, Table 4), at-risk items first.*
+*Table 1. Requirements and TRL 3 status (from WWT-CAL-001 v0.4, Table 4), at-risk items first.*
 
 | ID | Requirement | Target | Verification | TRL 3 status |
 | --- | --- | --- | --- | --- |
@@ -45,10 +49,10 @@ These requirements were first set for the concept and are checked by calculation
 | R9 | Survive outdoors | Electronics IP65 or better; ambient 0 to 45 °C in direct sun; UV-stable parts; flow cell opaque to daylight; battery charging blocked below 0 °C and above 45 °C | Thermal estimate (WWT-CAL-001, C); parts selection | **At risk**: with the sun shield the inside peaks at 50.8 °C on a 45 °C day (69.8 °C without); the shield factor is assumed |
 | R5 | Alert the people who act | SMS to up to three numbers within 15 min of a confirmed crossing (two consecutive readings, the second taken 15 min after the first crossing, WWT-DDR-002): free chlorine below 0.2 mg/L, turbidity above 5 NTU, device fault or low battery; thresholds adjustable per site | Latency calculation (WWT-CAL-001, H) | Met on paper where there is coverage: 13.0 min worst case with three tries at 3 min spacing; 77 min from the event (was 122 min) |
 | R6 | Report and keep data | Upload readings at least every 4 h over LTE-M, NB-IoT or 2G (LoRaWAN variant); keep 90 days on board if the link fails; open CSV or JSON format; works without a cloud service | Data budget (WWT-CAL-001, G) | Met on paper: 0.86 MB per month; 90 days in 138 kB |
-| R7 | Run on sunlight alone | 7 days or more with no sun from full; back to full in 3 clear days or fewer | Energy budget (WWT-CAL-001, A and B) | Met on paper: 28.6 days (24.3 at 0 °C); 1.18 clear days to refill; hot days rely on the sun shield (R9) |
+| R7 | Run on sunlight alone | 7 days or more with no sun from full; back to full in 3 clear days or fewer | Energy budget (WWT-CAL-001, A and B) | Met on paper: 28.5 days (24.2 at 0 °C); 1.19 clear days to refill; the status light costs 2 mWh a day; hot days rely on the sun shield (R9) |
 | R8 | Use little treated water | 20 L/day or less at hourly sampling | Flow calculation (WWT-CAL-001, D) | Met on paper, thin margin: 18.0 L/day nominal, 19.8 L at the regulator's tolerance |
 | R11 | Install simply and safely | Two people, 2 h or less on installation day, with the pole footing dug and cast on the survey visit (WWT-DDR-002); hand tools only; one tee and isolation valve on the riser; backflow prevented; wetted parts food-safe | Task analysis (WWT-CAL-001, J); design review | Met on paper: 65 min critical path on installation day (140 min if done in one visit); the design parts are met |
-| R12 | Stay within the concept budget | Parts cost per base unit against a value-engineering target of $300 (a hypothetical control target, not a limit), excluding the shared calibration kit, airtime and the pH probe variant, which is priced per variant site (WWT-DDR-002) | Priced BOM (WWT-CAL-001, K) | Over the value-engineering target by $19: $319 per base unit for the constructable design; $379 to $419 at a pH probe variant site |
+| R12 | Stay within the concept budget | Parts cost per base unit against a value-engineering target of $300 (a hypothetical control target, not a limit), excluding the shared calibration kit, airtime and the pH probe variant, which is priced per variant site (WWT-DDR-002) | Priced BOM (WWT-CAL-001, K) | Over the value-engineering target by $22: $322 per base unit for the constructable design; $382 to $422 at a pH probe variant site |
 | R3 | Measure water temperature | 0 to 50 °C, within ±0.5 °C | Sensor datasheet | Met by design |
 | R4 | Sample on a schedule | One reading per hour by default; configurable from 15 min to 24 h | Energy at the 15 min schedule (WWT-CAL-001, A and B) | Met by design (15 min schedule: 1.589 Wh/day, 9.7 days on battery, but 72 L/day of water) |
 | R13 | Report measurements, not verdicts | Messages state what was measured and when; the device never says the water is "safe" | Design review of alert wording | Met by design |
