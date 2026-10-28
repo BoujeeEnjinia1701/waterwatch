@@ -3,9 +3,9 @@ doc_id: WWT-PRB-001
 title: WaterWatch problem statement
 project: WaterWatch
 doc_type: Problem statement
-version: "0.4"
+version: "0.5"
 status: Draft
-date: '2026-10-02'
+date: '2026-10-25'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -25,6 +25,10 @@ revisions:
   date: '2026-10-02'
   author: Amish Chadha
   change: Partner, alert and data questions answered by Amish's decisions of 2026-10-02 (WWT-DEC-001)
+- version: "0.5"
+  date: '2026-10-25'
+  author: Amish Chadha
+  change: "Kit 1.9.1 upgrade: users-and-needs and stakeholder tables (Tables 2 and 3) added for the user requirements (WWT-URS-001); problem unchanged"
 ---
 
 # WaterWatch problem statement
@@ -52,6 +56,27 @@ Table 1. Users and context (proposed; to be confirmed through co-design).
 | Scheme operator or maintenance service provider | Chlorine and turbidity trends from many points, so dosing and repairs can be targeted | Small utility, NGO or private operator serving several villages |
 | District water or health officer | Evidence that treated water reaches people, especially during cholera or flood season | Periodic review; outbreak response |
 | Researcher or open hardware community | A reproducible, inspectable design to build on | University labs, makerspaces, WASH research groups |
+
+Table 2. Users and needs (kit 1.8; the source of the user requirements in WWT-URS-001; proposed, to confirm in co-design).
+
+| User type | Goals and needs | Typical use scenario | Pain points and challenges |
+| --- | --- | --- | --- |
+| Tapstand caretaker or water committee member | Know when the water at the tap needs attention; a short monthly routine with tools already in the kit | Gets an SMS on a basic phone; opens the cell, wipes it, runs a DPD comparator test and enters the result once a month | No smartphone; little training time; unpaid or part-time; cannot judge a sensor fault from a water problem |
+| Scheme operator or maintenance service provider | Chlorine and turbidity trends from many tapstands; alerts that are trustworthy enough to send a technician | Reviews uploads weekly; acts on alerts by checking the doser or the source | False alarms waste trips; missed events lose trust; budgets of a few hundred dollars per point; parts must be easy to get |
+| District water or health officer | Evidence that treated water reaches people, above all in cholera and flood season | Reads a weekly summary; asks for site data in an outbreak | Data scattered across operators; needs measurements, never a claim that water is safe |
+| Researcher or open hardware community | A reproducible design they can build, test and improve | Builds a unit in a lab or makerspace; compares it with lab methods | Closed commercial analysers cannot be inspected; low-cost sensors lack long-term data |
+| People who drink the water (indirect users) | Water that stays safe; the tapstand works as before | Fill containers at the tap; never touch the unit | A unit that contaminates the supply, takes their water or blocks the tap would harm them |
+
+Table 3. Stakeholders.
+
+| Stakeholder group | Role or interest | Engagement needed |
+| --- | --- | --- |
+| Scheme operator (first candidate: Water Mission, decided by Amish on 2026-10-02, WWT-DEC-001; not yet approached) | Owns the data, installs and maintains units, chooses alert recipients | Co-design partner: sites, thresholds, alert wording, maintenance routine |
+| Water committee and community | Hosts the unit at its tapstand; agrees where flushed water goes | Consent for installation; caretaker nomination; drain location |
+| District water and health offices | Use the data; may set rules for monitoring | Agree the weekly summary and outbreak access |
+| National regulators (water quality, telecommunications, battery transport) | Drinking water standards, radio type approval, lithium battery shipping | Checked in the regulatory register (WWT-REG-001); type approval before any field unit |
+| Mobile network operators | Carry uploads and SMS | Coverage and SIM plans per site |
+| Open hardware community and funders | Build, review and fund the open design | Repository, build reports, citations |
 
 Typical site: a public tapstand or a storage tank outlet on a piped rural scheme with chlorination at the source or tank. No mains power. Ambient temperature from about 0 to 45 °C, direct sun, dust and splashing. Cellular coverage is usually 2G or LTE-M/NB-IoT; some districts have a LoRaWAN gateway.
 

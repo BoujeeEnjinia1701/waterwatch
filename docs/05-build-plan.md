@@ -3,9 +3,9 @@ doc_id: WWT-BLD-001
 title: WaterWatch prototype build plan
 project: WaterWatch
 doc_type: Build plan
-version: "0.2"
+version: '0.4'
 status: Draft
-date: '2026-10-02'
+date: '2026-10-25'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -17,6 +17,14 @@ revisions:
     date: '2026-10-02'
     author: Amish Chadha
     change: "Status light unit (line 21) and its slot, lead and gland added; tamper-resistant M5 shield screws named for field units; Step 19 added; pictures regenerated"
+  - version: "0.3"
+    date: '2026-10-25'
+    author: Amish Chadha
+    change: "Kit 1.9.1 upgrade: battery is one 32700 cell in a tray held by two M3 screws (WWT-DEC-001 F1, F3); lug screws M5 x 16 with a washer each side (F2); second check valve at the cell inlet (F8) and 110 s flush below 0.7 bar (F5); pictures regenerated"
+  - version: '0.4'
+    date: '2026-10-25'
+    author: Amish Chadha
+    change: 'First check of the chlorine response read against the shared DPD photometer (O2, decided by Amish 2026-10-25)'
 ---
 
 # WaterWatch prototype build plan
@@ -29,7 +37,7 @@ revisions:
 
 *Figure 1. Every component pulled apart and numbered in build order: the enclosure group on the left, the flow cell group on the right, the panel above. The pole, the existing tapstand and the long runs of tube, hose and cable are left out.*
 
-The prototype is one WaterWatch on its own galvanized pole beside a village tapstand. Two flat aluminium back plates are held to the pole by U-bolts: the upper one carries a grey plastic box holding the battery, controller and cellular modem under a white sun shield; the lower one carries a small black flow cell with its sensors and, under it, the valve that lets a sample in once an hour. A saddle tee on the tapstand riser feeds the valve through a line of screwed brass fittings and a thin plastic tube; the cell drains through an open air break to the tapstand basin. A 5 W panel sits on the pole top. Figure 1 shows the 23 components in the order you make or fit them. Eight are made in a small workshop: the two back plates, the internal plate, the flow cell body and lid, the three optics holders and the chlorine sensor; the sun shield is folded by a sheet metal shop to a sketch; the bought box is drilled. Everything else is bought and fitted. The work is cutting and drilling aluminium sheet, drilling a plastic box, milling or printing a plastic block, tapping threads in plastic, two small prints, soldering and potting three electrodes, wiring bought boards with screw terminals, and simple plumbing with thread tape and push-fit tube. The parts cost about USD 322 from the bill of materials.
+The prototype is one WaterWatch on its own galvanized pole beside a village tapstand. Two flat aluminium back plates are held to the pole by U-bolts: the upper one carries a grey plastic box holding the battery, controller and cellular modem under a white sun shield; the lower one carries a small black flow cell with its sensors and, under it, the valve that lets a sample in once an hour. A saddle tee on the tapstand riser feeds the valve through a line of screwed brass fittings and a thin plastic tube; the cell drains through an open air break to the tapstand basin. A 5 W panel sits on the pole top. Figure 1 shows the 23 components in the order you make or fit them. Eight are made in a small workshop: the two back plates, the internal plate, the flow cell body and lid, the three optics holders and the chlorine sensor; the sun shield is folded by a sheet metal shop to a sketch; the bought box is drilled. Everything else is bought and fitted. The work is cutting and drilling aluminium sheet, drilling a plastic box, milling or printing a plastic block, tapping threads in plastic, two small prints, soldering and potting three electrodes, wiring bought boards with screw terminals, and simple plumbing with thread tape and push-fit tube. The parts cost about USD 325 from the bill of materials.
 
 > **Safety:** The prototype holds a lithium iron phosphate battery of 19.2 Wh and its charger. Keep the battery fuse out until section 6 says otherwise, never charge below 0 °C or above 45 °C, and never leave a first build charging unattended. The sample line connects to a pressurized drinking water supply: shut the supply off before fitting the saddle tee, fit the check valve the right way round, and keep the open air break so nothing can flow back. Cut aluminium edges are sharp; deburr everything. Printing ASA and milling PVC give off fumes and dust; work with ventilation. Wet concrete burns skin; wear gloves.
 
@@ -136,7 +144,7 @@ The box's back sits flat on the front face between 80 and 340 up, held by four l
 1. Measure the four bosses inside your box. The model assumes they are 166 apart across and 185 apart up and down; move the plate's holes to match your box.
 2. Print the plate with four 4.5 mm holes at the bosses, 10 in from each edge. Let it cool on the bed so it does not warp.
 3. Lay out the parts on the front face, measured from the plate's left and bottom edges: the battery from 8 to 88 across and 18 to 148 up; the modem from 18 to 88 across and 150 to 205 up; the controller from 93 to 183 across and 45 to 165 up.
-4. Mark each board's mounting holes through the board, drill 3.2 mm, and fit the boards on M3 screws with 6 mm nylon standoffs. Hold the battery with a strap round it and the plate, with its fuse out.
+4. Mark each board's mounting holes through the board, drill 3.2 mm, and fit the boards on M3 screws with 6 mm nylon standoffs. Fit the battery cell, its protection board and fuse holder in the battery tray, and screw the tray to the plate with two M3 x 8 screws and nuts through the tray back (WWT-DEC-001 F3), with its fuse out.
 5. Wire the boards as Figure 10 shows.
 
 ![Figure 9. Joint 4: internal plate on a moulded boss](05-build-plan/joint-04.png)
@@ -154,7 +162,7 @@ The box's back sits flat on the front face between 80 and 340 up, held by four l
 Wire it like this, with stranded copper and a ferrule on every screw terminal:
 
 1. Battery to the carrier board's battery terminals, through the 3 A fuse in the battery lead: 0.75 mm² (18 AWG).
-2. The battery's temperature sensor to the charger's temperature input, twisted, with the sensor taped to the cells.
+2. The battery's temperature sensor to the charger's temperature input, twisted, with the sensor taped to the cell.
 3. Panel lead, through its gland, to the carrier board's solar input: 0.5 mm² (20 AWG).
 4. Carrier board to the modem: power and serial lines, as the modem maker's carrier describes; antenna pigtail from the modem to the bulkhead, away from the power wires.
 5. Chlorine sensor: screened 3-core cable to the potentiostat's working, reference and counter terminals, screen to ground at the board end only.
@@ -350,16 +358,16 @@ Buy to specification, not brand. Line numbers are those of the bill of materials
 - **Pole, U-bolts and V-saddles (line 1).** 40 NB galvanized tube, 48.3 x 3.2 mm, 2.7 m long; four M8 U-bolts for 48 mm pipe, each with a 90° V-saddle, washers and nyloc nuts.
 - **Solar panel and pole-top mount (line 2).** 5 W monocrystalline, 6 V class, about 250 x 190 mm, aluminium frame with fixing holes; a pole-top tilt mount for 48 mm pipe with set screws.
 - **Enclosure and lid (lines 3 and 4).** Polycarbonate, IP66, UV stabilized, 200 x 120 x 260 mm, four moulded bosses inside the back wall, tamper-resistant lid screws, and the maker's four-lug mounting kit (line 19). Drill as section 3.2.
-- **Battery (line 5).** LiFePO4, 1S2P 32700 cells, 3.2 V, 6 Ah, with protection board, temperature sensor and an in-line 3 A fuse.
+- **Battery (line 5).** One 32700 LiFePO4 cell (1S1P), 3.2 V, 6 Ah, with protection board, temperature sensor and an in-line 3 A fuse, in a tray held to the internal plate by two M3 screws and nuts (WWT-DEC-001 F1).
 - **Controller carrier (line 6) and modem (line 7).** ESP32-S3 module, LiFePO4 solar charger with a 0 to 45 °C charging window, LMP91000-class potentiostat, 12 V boost valve driver, microSD and real-time clock; LTE-M and NB-IoT modem with 2G fallback and SIM holder.
 - **Antenna (line 8).** LTE and GSM whip about 140 mm on an SMA bulkhead for a 6.5 mm hole, with pigtail.
 - **Temperature probe (line 12).** DS18B20 in a 6 mm stainless sheath, 1 m cable.
 - **Valve (line 13).** 12 V latching, direct acting, normally closed, 1/4 in ports, food-safe wetted parts, with two M4 mounting holes in its back face or the maker's bracket.
-- **Sample line (line 14).** 25 mm saddle tee with an isolation ball valve; strainer, check valve and pressure-compensating 0.5 L/min regulator, all screwed in line on brass nipples; 1 m of 1/4 in food-grade PE tube; two push-fit elbows (1/8 BSPT).
+- **Sample line (line 14).** 25 mm saddle tee with an isolation ball valve; strainer, check valve and pressure-compensating 0.5 L/min regulator, all screwed in line on brass nipples; 1 m of 1/4 in food-grade PE tube rated 10 bar or more; two push-fit elbows (1/8 BSPT); a second, inline push-fit check valve at the cell inlet (WWT-DEC-001 F8).
 - **Drain (line 15).** 3/8 BSP hose tail for 12 mm hose, a tee for the air-break vent, 2 m of 12 mm bore hose and a clamp.
 - **Glands and cables (line 16).** Seven M16 IP68 nylon glands with nuts (one the spare, one for the status light lead), one M16 blanking plug for the spare, one M12 pressure-equalizing vent; sensor and panel cables.
 - **Status light (line 21).** One 5 mm bi-colour LED with a series resistor, a 16 mm clear polycarbonate disc 1.5 mm thick, the printed holder of section 3.4 and 1 m of two-core 3.5 mm lead with crimps.
-- **Fixings (line 20).** Stainless: 4 x M5 x 12 screws with nyloc nuts (lugs), 4 x M4 x 12 screws (internal plate), 4 x M5 knurled thumb screws (shield; tamper-resistant M5 screws instead on field units), 2 x M5 x 16 screws (cell), 2 x M4 x 10 screws (valve), M3 screws and 6 mm nylon standoffs, a battery strap, UV-stable cable ties.
+- **Fixings (line 20).** Stainless: 4 x M5 x 16 hex screws with a washer each side and nyloc nuts (lugs, WWT-DEC-001 F2), 4 x M4 x 12 screws (internal plate), 4 x M5 knurled thumb screws (shield; tamper-resistant M5 screws instead on field units), 2 x M5 x 16 screws (cell), 2 x M4 x 10 screws (valve), M3 screws and 6 mm nylon standoffs, two M3 x 8 screws and nuts for the battery tray, UV-stable cable ties.
 
 ### 3.11 How the bought parts join
 
@@ -399,7 +407,7 @@ The maker's four lugs on the back corners, feet on the top and bottom faces, tab
 
 ![Step 3](05-build-plan/step-03.png)
 
-Boards on M3 screws and standoffs, battery under its strap with its fuse out; wire them as Figure 10. **Hold point:** the wiring checks of section 3.3 pass before going on.
+Boards on M3 screws and standoffs, battery tray screwed down with its fuse out; wire them as Figure 10. **Hold point:** the wiring checks of section 3.3 pass before going on.
 
 ### Step 4: internal plate into the box
 
@@ -435,7 +443,7 @@ Coil up, inlet port on the right, centred, 63 above the plate's bottom edge. Two
 
 ![Step 9](05-build-plan/step-09.png)
 
-Thread tape on the inlet fitting and the outlet hose tail, hand tight plus a quarter turn. Push-fit elbow on the valve outlet; tube straight up into the inlet fitting, pushed fully home.
+Thread tape on the inlet fitting and the outlet hose tail, hand tight plus a quarter turn. Push-fit elbow on the valve outlet; tube up to the inline check valve (arrow pointing up, towards the cell), then on up into the inlet fitting, each pushed fully home (second check valve, WWT-DEC-001 F8).
 
 ### Step 10: gasket, lid and sensors
 
@@ -499,7 +507,7 @@ Lift the unit up into the slot in the shield front, lens facing out, and let its
 
 ## 5. First checks
 
-These are the checks a TRL 4 test report would record; this plan only lists them. Requirement numbers are those of WWT-REQ-001.
+These are the checks a TRL 4 test report would record; this plan only lists them. Requirement numbers are those of WWT-REQ-001; R1 to R13 are PR-001 to PR-013 in WWT-PRS-001, which replaces it.
 
 *Table 2. First checks.*
 
@@ -508,12 +516,12 @@ These are the checks a TRL 4 test report would record; this plan only lists them
 | Cell holds water | R2, R9 | Fill the closed cell to the outlet on the bench; 30 min on paper | No wet mark |
 | Light tight | R2, R9 | Detectors read in a dark room with the light on and off, cell full | Same reading both ways |
 | Turbidity response | R2 | Clean water, then a prepared, stabilized 20 NTU standard | The 90° reading rises clearly; the 180° reading falls |
-| Chlorine response | R1 | Tap water and the same water after standing open a day, each checked with a DPD kit | The current follows the DPD difference |
+| Chlorine response | R1 | Tap water and the same water after standing open a day, each checked with the operator's shared DPD photometer (WWT-DEC-001 O2) | The current follows the DPD difference |
 | Temperature | R3 | Probe beside a reference thermometer in a water bath | Within 0.5 °C |
 | Charge voltage and cut-offs | R7, R9 | Bench supply at 6 V in place of the panel, 1 A limit, temperature sensor replaced by resistors for -1 °C and 46 °C | 3.6 V charge, give or take 0.05 V; no charge current in either cut-off case |
 | Valve | R4, R7 | Pulse open and closed from the controller | Opens and closes on one pulse each; no current between pulses |
-| Flow per flush | R8 | Time the outflow at the hose end over 90 s at the site pressure | 0.75 L, give or take 10 % |
-| Backflow | R11 | Close the isolation valve, open a drain cock upstream | Nothing flows back past the check valve |
+| Flow per flush | R8 | Time the outflow at the hose end over 90 s at the site pressure; below 0.7 bar set the flush to 110 s (WWT-DEC-001 F5) | 0.75 L, give or take 10 %; at a low-pressure site at least 0.6 L |
+| Backflow | R11, PR-014 | Close the isolation valve, open a drain cock upstream; repeat with each check valve in turn bypassed | Nothing flows back past either check valve on its own |
 | Air break | R1, R2 | Close the valve after a flush | The cell stays full to the outlet; the vent stays open and dry |
 | Report and alert | R5, R6 | Force an upload and a test alert | Upload received; SMS received at the test number |
 | Entries sealed | R9 | Look at each washer under a lamp; gland caps tight on their cables | Every washer evenly squeezed |

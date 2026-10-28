@@ -23,7 +23,7 @@ from model import PARAMS as P, build_components, derived, span, zcyl, riser_cont
 
 OUT = ROOT / "docs" / "05-build-plan"
 DWG = ROOT / "cad" / "drawings"
-DATE = "2026-10-02"
+DATE = "2026-10-25"
 REPO = "github.com/BoujeeEnjinia1701/waterwatch"
 D = derived(P)
 C = build_components(P)
@@ -162,7 +162,9 @@ def sheets():
     if go(103):
         out.append(bv.component_sheet(
             part("Internal plate", C["mplate"], COL["mplate"]), [M["enc_base"]],
-            dwg_no="WWT-DWG-103", title="WaterWatch internal plate: making sketch",
+            dwg_no="WWT-DWG-103", title="WaterWatch internal plate: making sketch", rev="P2",
+            revisions=[("P1", "Making sketch for the prototype build plan", "2026-10-02", "AC"),
+                       ("P2", "Two 3.4 mm holes for the battery tray screws (WWT-DEC-001 F3)", DATE, "AC")],
             material="ASA, 3D printed flat, 100 % infill, 186 x 205 x 3 mm",
             view_shape=b.Pos(-PX, 0, -EZ) * C["mplate"], inset_view=(20, -60),
             notes=["Print flat, 186 wide x 205 tall x 3 mm, ASA, enclosed printer.",
@@ -170,7 +172,8 @@ def sheets():
                    "  (166 x 185 apart) to match the box's four moulded bosses.",
                    "  Measure your box's bosses first and move the holes to suit.",
                    "Lay out on the front face, measured from the left and bottom edges:",
-                   "  battery 8 to 88 across, 18 to 148 up (strap round it);",
+                   "  battery tray 8 to 88 across, 18 to 148 up; two 3.4 mm holes at 63",
+                   "  across, 28 and 125 up, for its M3 x 8 screws and nuts;",
                    "  modem 18 to 88 across, 150 to 205 up;",
                    "  controller 93 to 183 across, 45 to 165 up.",
                    "Mark each board's holes through the board; drill 3.2 mm for M3",
@@ -485,7 +488,7 @@ def steps():
        "valve onto the cell plate", "Coil up, inlet on the right; two M4 screws from behind",
        elev=15, azim=-50, label_done=False)
     st(9, celld + [M["valve"]], [mv(part("Inlet fitting", C["inlet_fit"], COL["fit"]), (0, 0, -40)),
-                                 mv(part("Valve to cell tube and elbow", C["cell_tube"], COL["tube"]), (-40, 0, 0)),
+                                 mv(part("Valve to cell tube, check valve and elbow", C["cell_tube"], COL["tube"]), (-40, 0, 0)),
                                  mv(part("Outlet hose tail", C["outlet_fit"], COL["fit"]), (50, 0, 0))],
        "fittings and the valve-to-cell tube", "Thread tape on the inlet and outlet threads, hand tight plus a quarter turn; push the tube fully home",
        elev=10, azim=-50, label_done=False)

@@ -15,7 +15,7 @@ sys.path[:0] = [str(ROOT / ".kit"), str(ROOT / "cad" / "src")]
 from drawing import Sheet, _viewbox, _t, M, TB_Y, INK, MUTED  # noqa: E402
 from model import PARAMS as P, assembly, derived  # noqa: E402
 
-DATE = "2026-10-02"
+DATE = "2026-10-25"
 D0 = "2026-09-25"
 
 
@@ -96,14 +96,13 @@ def main():
     asm = assembly(with_riser=True)
     views = safe_project_views(asm, work)
     bb = asm.bounding_box()
-    s = Sheet(project="WaterWatch", title="General arrangement", dwg_no="WWT-DWG-001", rev="P5",
+    s = Sheet(project="WaterWatch", title="General arrangement", dwg_no="WWT-DWG-001", rev="P6",
               author="Amish Chadha", date=DATE, scale=None, theme="technical",
               material="Galvanized steel pole; bought-in parts per bom/bom.csv. PRELIMINARY, NOT FOR FABRICATION",
-              revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", D0, "AC"),
-                         ("P2", "Plugged pH probe port in cell lid (DDR-002)", D0, "AC"),
-                         ("P3", "Layout and labels tidied", D0, "AC"),
+              revisions=[("P1 to P3", "Preliminary GA; plugged pH port (DDR-002); layout (history in Git)", D0, "AC"),
                          ("P4", "Constructable design: back plates, U-bolts, entries underneath (DDR-003)", "2026-10-02", "AC"),
-                         ("P5", "Status light in the shield front, lead to its own gland", "2026-10-02", "AC")])
+                         ("P5", "Status light in the shield front, lead to its own gland", "2026-10-02", "AC"),
+                         ("P6", "From the D3 model: every fastener; second check valve at the cell inlet", DATE, "AC")])
     s.add_ortho(views)
     k = s.scale
     c = ortho_cells(s, views)

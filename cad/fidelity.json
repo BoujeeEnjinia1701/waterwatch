@@ -1,0 +1,47 @@
+{
+ "level": "D3",
+ "stage": "P3",
+ "hash": "9598032b614e9c24",
+ "options": {
+  "A": {
+   "title": "Timed-flush flow cell on its own pole",
+   "parts": 215,
+   "made_or_bought": 95,
+   "fasteners": 120,
+   "welds": 0,
+   "bare": [],
+   "bare_share": 0.0,
+   "interference": [],
+   "mass_kg": 19.2,
+   "step_files": 95
+  },
+  "B": {
+   "title": "Reagent colorimetric analyser cabinet",
+   "parts": 173,
+   "made_or_bought": 65,
+   "fasteners": 108,
+   "welds": 0,
+   "bare": [],
+   "bare_share": 0.0,
+   "interference": [],
+   "mass_kg": 18.8,
+   "step_files": 0
+  },
+  "C": {
+   "title": "In-riser probe manifold",
+   "parts": 139,
+   "made_or_bought": 51,
+   "fasteners": 88,
+   "welds": 0,
+   "bare": [],
+   "bare_share": 0.0,
+   "interference": [],
+   "mass_kg": 6.4,
+   "step_files": 0
+  }
+ },
+ "failures": [],
+ "warnings": [],
+ "passed": true,
+ "seconds": 237.9
+}

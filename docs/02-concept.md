@@ -3,9 +3,9 @@ doc_id: WWT-PRC-001
 title: WaterWatch design precis
 project: WaterWatch
 doc_type: Design precis
-version: "0.7"
+version: '0.9'
 status: Draft
-date: '2026-10-02'
+date: '2026-10-25'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -37,11 +37,21 @@ revisions:
   date: '2026-10-02'
   author: Amish Chadha
   change: "Energy, autonomy and cost from WWT-CAL-001 v0.4 (status light, WWT-DEC-001)"
+- version: "0.8"
+  date: '2026-10-25'
+  author: Amish Chadha
+  change: "Kit 1.9.1 upgrade: describes option A of WWT-OPT-001 (proposed, awaiting Amish); battery is one 32700 cell (WWT-DEC-001 F1, after STEM check S3); requirement numbers now PR-001 to PR-016 (WWT-PRS-001)"
+- version: '0.9'
+  date: '2026-10-25'
+  author: Amish Chadha
+  change: 'Amish''s decisions of 2026-10-25: concept A chosen (O1); photometer as the monthly reference (O2); R1 restated above 1.0 mg/L (O5); drift room 0.15 mg/L'
 ---
 
 # WaterWatch design precis
 
-WaterWatch is a solar sentinel that stands on its own pole beside a village tapstand. Once an hour a latching valve on a tee in the tapstand riser opens for 90 s and flushes water through a small, dark flow-through cell. An infrared nephelometer measures turbidity, a membrane-free three-electrode sensor measures free chlorine and a sealed probe measures temperature. An ESP32 controller logs the readings, a cellular modem uploads them every 4 h, and an SMS goes to the caretaker and operator when chlorine drops below 0.2 mg/L or turbidity passes 5 NTU. The TRL 3 calculations (WWT-CAL-001) give 0.54 Wh per day, 28.5 days on a 3.2 V, 6 Ah LiFePO4 battery without sun, 18.0 L per day of flushed water and $322 in parts for the constructable design (WWT-DDR-003 and the status light of WWT-DEC-001), USD 22 over the USD 300 value-engineering target. How each part is made and fitted is in the prototype build plan (WWT-BLD-001). The weak point is still the chlorine reading. Under Amish's decisions of 2026-09-25 (WWT-DDR-002), R1 is relaxed to ±0.2 mg/L or ±25 %, and sites whose pH is above 7.5 or moves more than 0.2 between visits take a pH probe in a spare port of the cell. With that rule the error budget meets R1 before sensor drift, but the low-cost sensor's drift over months is unknown, so R1 and R10 remain at risk. The design choices below were decided by Amish on 2026-09-25 (WWT-DDR-001 and WWT-DDR-002).
+WaterWatch is a solar sentinel that stands on its own pole beside a village tapstand. Once an hour a latching valve on a tee in the tapstand riser opens for 90 s and flushes water through a small, dark flow-through cell. An infrared nephelometer measures turbidity, a membrane-free three-electrode sensor measures free chlorine and a sealed probe measures temperature. An ESP32 controller logs the readings, a cellular modem uploads them every 4 h, and an SMS goes to the caretaker and operator when chlorine drops below 0.2 mg/L or turbidity passes 5 NTU. The TRL 3 calculations (WWT-CAL-001) give 0.54 Wh per day, 28.5 days on a 3.2 V, 6 Ah LiFePO4 cell without sun, 18.0 L per day of flushed water and $325 in parts for the constructable design (WWT-DDR-003 and the status light of WWT-DEC-001), USD 25 over the USD 300 value-engineering target. How each part is made and fitted is in the prototype build plan (WWT-BLD-001). The weak point is still the chlorine reading. Under Amish's decisions of 2026-09-25 (WWT-DDR-002), R1 is relaxed to ±0.2 mg/L or ±25 %, and sites whose pH is above 7.5 or moves more than 0.2 between visits take a pH probe in a spare port of the cell. With that rule the error budget of WWT-CAL-001 v0.5 met R1 before sensor drift; the independent review of the STEM check corrected the budget, which then misses R1 at 1.5 mg/L by up to 0.017 mg/L, so R1 is not met there (a restated target above 1.0 mg/L is proposed, awaiting Amish, WWT-DEC-001 O5), while it is met with room at 0.2 to 0.5 mg/L where the alerts are set. The low-cost sensor's drift over months is unknown, so R10 remains at risk. The design choices below were decided by Amish on 2026-09-25 (WWT-DDR-001 and WWT-DDR-002).
+
+This precis describes option A of the concept options (WWT-OPT-001): the design as it stood before kit 1.8, scored against two alternatives with different working principles, a reagent colorimetric analyser (option B) and probes in the riser (option C). Option A scores highest and is recommended; the choice is proposed, awaiting Amish (WWT-DDR-004). The STEM check (WWT-STM-001) found one detail to correct, the battery's cell count, now one 32700 cell (WWT-DEC-001 F1). The requirements R1 to R13 named below are PR-001 to PR-013 in WWT-PRS-001.
 
 ![Hero render](../media/hero.png)
 
@@ -49,7 +59,7 @@ WaterWatch is a solar sentinel that stands on its own pole beside a village taps
 
 ## How it works
 
-1. **Sample.** A saddle tee with an isolation valve on the tapstand riser feeds a strainer, a check valve, a pressure-compensating flow regulator (0.5 L/min) and a normally closed, direct-acting latching solenoid valve. Every hour the controller opens the valve for 90 s, flushing 0.75 L, about four volumes of the 0.19 L cell, then closes it. The sample enters at the bottom of the cell and leaves near the top, so the cell stays full and the electrodes stay wet between flushes. The outlet rises to an open air-break vent before the drain hose falls to the basin, so the hose cannot siphon the cell empty and the drain can never connect back to the cell.
+1. **Sample.** A saddle tee with an isolation valve on the tapstand riser feeds a strainer, a check valve, a pressure-compensating flow regulator (0.5 L/min) and a normally closed, direct-acting latching solenoid valve, with a second check valve at the cell inlet (WWT-DEC-001 F8). Where the supply is below the regulator's 0.7 bar, the flush is set to 110 s at commissioning (F5). Every hour the controller opens the valve for 90 s, flushing 0.75 L, about four volumes of the 0.19 L cell, then closes it. The sample enters at the bottom of the cell and leaves near the top, so the cell stays full and the electrodes stay wet between flushes. The outlet rises to an open air-break vent before the drain hose falls to the basin, so the hose cannot siphon the cell empty and the drain can never connect back to the cell.
 2. **Measure.** During the last 10 s of flow the controller reads the chlorine sensor, because amperometric sensors need steady flow across the electrode. After the valve closes it waits 30 s for bubbles to rise clear, then reads turbidity for 5 s and temperature. The cell is opaque so daylight does not reach the turbidity detector.
 3. **Log.** Each reading is stored with a timestamp on a microSD card (90 days or more) and in a short ring buffer in flash.
 4. **Report.** Every 4 h the modem wakes, attaches to LTE-M, NB-IoT or 2G, and posts a compact batch to an open endpoint the operator chooses. If a reading crosses a threshold, the controller takes a confirming reading 15 min later rather than waiting for the next hourly one (WWT-DDR-002). If that one also crosses, it sends an SMS at once, retrying up to three times at 3 min spacing, without waiting for the next upload.
@@ -65,11 +75,11 @@ Table 1. Main components. Numbers match `bom/bom.csv` and Figure 5.
 
 | # | Component | Choice | Notes |
 | --- | --- | --- | --- |
-| 1 | Mounting pole, U-bolts and V-saddles | 48.3 x 3.2 mm galvanized tube, 2.1 m above ground, 0.6 m in a 300 mm concrete footing beside the tapstand; four M8 U-bolts with V-saddles hold the two back plates (item 18) | Keeps the tapstand itself unchanged; factor 4.5 in a 35 m/s gust (WWT-CAL-001, I) |
+| 1 | Mounting pole, U-bolts and V-saddles | 48.3 x 3.2 mm galvanized tube, 2.1 m above ground, 0.6 m in a 300 mm concrete footing beside the tapstand; four M8 U-bolts with V-saddles hold the two back plates (item 18) | Keeps the tapstand itself unchanged; factor 4.0 in a 35 m/s gust on the sun shield's area, footing factor 2.2 in saturated sand (WWT-CAL-001, I) |
 | 2 | Solar panel | 5 W monocrystalline, about 250 x 190 mm, tilted 30° toward the equator on a bought pole-top tilt mount | Oversized for the load so cloudy weeks are covered |
 | 3 | Enclosure base | IP66 polycarbonate, 200 x 120 x 260 mm, UV-stabilized, pressure-equalizing vent; every cable, the vent and the antenna enter through the bottom face (WWT-DDR-003) | Light grey, under the sun shield (item 17) |
 | 4 | Enclosure lid and gasket | Supplied with item 3; tamper-resistant screws | |
-| 5 | Battery | LiFePO4, 1S2P 32700 cells, 3.2 V, 6 Ah (19.2 Wh), protection board and NTC | Chemistry chosen for heat tolerance and thermal stability |
+| 5 | Battery | LiFePO4, one 32700 cell, 3.2 V, 6 Ah (19.2 Wh), protection board and NTC (WWT-DEC-001 F1) | Chemistry chosen for heat tolerance and thermal stability |
 | 6 | Controller board | ESP32-S3 module, LiFePO4 solar charger, LMP91000-class potentiostat front end, valve driver with boost to 12 V, microSD, real-time clock | Carrier board; a custom PCB is TRL 4 work |
 | 7 | Cellular modem | LTE-M and NB-IoT with 2G fallback (SIM7000G class), SIM | Swappable; LoRaWAN module as a variant (WWT-DDR-001, D3) |
 | 8 | Antenna | External LTE and GSM whip on a bulkhead in the bottom face, pointing down | Moved from the top so the sun shield can slide off (WWT-DDR-003) |
@@ -77,14 +87,14 @@ Table 1. Main components. Numbers match `bom/bom.csv` and Figure 5.
 | 10 | Turbidity optics | 860 nm infrared LED on the left wall, light-to-frequency detectors on the front wall (90°, scatter) and right wall (180°, reference), each in a small holder with a window, after [Kelley et al. (2014)](https://www.mdpi.com/1424-8220/14/4/7142) | ISO 7027 style wavelength |
 | 11 | Free chlorine sensor | Membrane-free three-electrode sensor: graphite working electrode, Ag/AgCl reference, stainless counter, in a PVC holder, after [Pan et al. (2015)](https://pubs.acs.org/doi/10.1021/acs.analchem.5b03164) | Decided (WWT-DDR-001, D1); long-term drift unknown |
 | 12 | Temperature probe | DS18B20 in a stainless sheath | Also used for chlorine sensor temperature compensation |
-| 13 | Latching solenoid valve | 12 V, 1/4 in (6.35 mm) port, normally closed, direct acting, food-safe wetted parts; screwed to the cell plate under the cell | Latching, so it draws power only while switching; direct acting so it opens at 0.5 bar |
-| 14 | Sample line | Saddle tee with isolation ball valve, strainer, check valve, pressure-compensating 0.5 L/min regulator, 1/4 in food-grade PE tube | The only change to the tapstand; the regulator holds R8 from 0.7 to 4 bar |
+| 13 | Latching solenoid valve | 12 V, 1/4 in (6.35 mm) port, normally closed, direct acting, rated to open against at least 4 bar (F6), food-safe wetted parts; screwed to the cell plate under the cell | Latching, so it draws power only while switching; direct acting so it opens at 0.5 bar |
+| 14 | Sample line | Saddle tee clamp with isolation ball valve, strainer, check valve, pressure-compensating 0.5 L/min regulator, 1/4 in food-grade PE tube, and a second, inline check valve at the cell inlet (F8) | The only change to the tapstand; the regulator holds R8 from 0.7 to 4 bar |
 | 15 | Drain hose and air break | Outlet elbow with an open air-break vent, then 12 mm hose to the tapstand basin | Basin by default, soakaway or container per site (WWT-DDR-001, D7) |
 | 16 | Cables, glands and fuse | Sensor and panel leads, IP68 glands, battery fuse | |
 | 17 | Sun shield | White aluminum hood with a 25 mm ventilated gap over the enclosure top, sides and front; flanges at the back held by four thumb screws; slides off forward | Added at TRL 3 so the battery can charge on hot days (WWT-CAL-001, C) |
 | 18 | Mounting plates | Enclosure back plate 270 x 420 mm and cell back plate 140 x 385 mm, 3 mm aluminium, drilled | Added for construction (WWT-DDR-003) |
 | 19 | Lugs and internal plate | The enclosure maker's four mounting lugs; a printed internal plate on the box's moulded bosses carrying the battery, controller and modem | Added for construction (WWT-DDR-003) |
-| 20 | Fixings | Stainless screws, thumb screws, standoffs, battery strap, cable ties | Added for construction (WWT-DDR-003) |
+| 20 | Fixings | Stainless screws, thumb screws, standoffs, battery tray screws, cable ties | Added for construction (WWT-DDR-003) |
 
 ![Cutaway](../media/cutaway.png)
 
@@ -106,12 +116,12 @@ All values come from WWT-CAL-001, which states its assumptions; the tags in brac
 | Water per reading and per day | 0.75 L; 18.0 L (19.8 L at regulator tolerance) | 0.5 L/min for 90 s, 24 readings [D2], [D5] | R8 met on paper, thin margin |
 | Old water left at the chlorine reading | 2.9 % | Well-mixed cell [D3] | R1 |
 | Chlorine error at 0.5 mg/L, pH 7.5 | ±0.131 mg/L before drift, against ±0.2 mg/L | Site pH ±0.2 between visits, DPD reference [E4] | R1 at risk (drift unknown) |
-| Room for sensor drift | 0.13 mg/L or more | Relaxed R1 with the pH probe rule, 25 °C [E8] | R1, R10 at risk |
-| Data per month | 0.86 MB | 780 B payload and 4 kB overhead per upload [G1] | R6 met on paper |
-| Confirmation to SMS | 13.0 min worst case; 77 min from the event | Three tries at 3 min spacing [H1]; 15 min confirming reading [H2] | R5 met on paper |
+| Room for sensor drift | 0.15 mg/L or more | R1 restated above 1.0 mg/L (O5) with the shared photometer (O2) and the pH probe rule, 25 °C [E12] | R1 met on paper; R10 at risk |
+| Data per month | 0.36 MB | 780 B payload; TLS session resumption, about 1.2 kB overhead (F7); 1.22 MB with a full handshake every time [G1, G3] | R6 met on paper |
+| Confirmation to SMS | 13.0 min worst case; 77 min from the event with a first-try SMS, 92 min with all three tries | Three tries at 3 min spacing [H1]; 15 min confirming reading [H2, H4] | R5 met on paper |
 | Installation day | 65 min critical path | Footing cast on the survey visit [J2] | R11 met on paper |
-| Parts cost | $322 per base unit; $382 to $422 at a pH probe site | `bom/bom.csv` [K1], [K2] | R12: USD 22 over the USD 300 value-engineering target |
-| Shared calibration kit | about $60 | DPD free chlorine and pH comparator, turbidity standards (estimate) | Not in the unit cost |
+| Parts cost | $325 per base unit; $385 to $425 at a pH probe site | `bom/bom.csv` [K1], [K2] | R12: USD 25 over the USD 300 value-engineering target |
+| Shared calibration kit | about $60 for the pH comparator and turbidity standards (estimate); handheld DPD photometer USD 379.99 to 599.99 (Hanna HI97711, WWT-MKT-001) | Shared per operator; the photometer is the monthly chlorine reference (WWT-DEC-001 O2, decided 2026-10-25) | Not in the unit cost |
 
 The chlorine reading is the least certain number. Free chlorine is the sum of hypochlorous acid (HOCl) and hypochlorite (OCl⁻); their split depends on pH, with a pKa of 7.54 at 25 °C, so at pH 8 only 0.26 of free chlorine is HOCl, while at pH 7 0.77 is [E2]. Amperometric sensors respond mainly to HOCl, so the same free chlorine gives very different signals across the pH range in R1. Calibrating at the site against the DPD comparator absorbs the pH on the day of calibration, but a change of 0.2 pH before the next visit shifts the reading by 12 % at pH 7.0, 22 % at pH 7.5 and 38 % at pH 8.0 [E4]. The site pH method is therefore adequate at near-neutral, stable sites and not elsewhere. That is why WWT-DDR-002 fits the pH probe variant where site pH is above 7.5 or moves more than 0.2 between visits, and relaxes R1 to ±0.2 mg/L or ±25 %, since the DPD comparator used as the field reference already takes ±0.07 mg/L. With both, all eight cases in WWT-CAL-001 meet R1 before drift [E6]; at 40 °C, 1.5 mg/L at pH 7.5 with site pH misses by 0.006 mg/L [E7].
 
@@ -121,7 +131,7 @@ Each choice below was decided by Amish on 2026-09-25, going with the recommendat
 
 - **Chlorine sensor (D1).** Chosen: a membrane-free graphite three-electrode sensor with a potentiostat front end, after [Pan et al. (2015)](https://pubs.acs.org/doi/10.1021/acs.analchem.5b03164) and the [pencil graphite work in PLOS ONE (2021)](https://journals.plos.org/plosone/article?id=10.1371%2Fjournal.pone.0248142), about $25 in parts, with a monthly DPD comparison built into the maintenance routine. Not chosen: an industrial membrane amperometric probe, well proven but about $1,900 for the probe alone ([Sensorex FCL](https://sensorex.com/product/fcl-amperometric-free-chlorine-sensor/)); an ORP probe as a proxy, about $175 as a kit ([Atlas Scientific](https://atlas-scientific.com/kits/ezo-complete-orp-kit/)), which tracks chlorine only loosely. The long-term performance literature ([Water Science and Technology, 2025](https://iwaponline.com/wst/article/92/2/326/108695/Long-term-performance-of-low-cost-free-chlorine)) could not be checked in full; see `docs/REVIEW.md`.
 - **pH (D2).** Chosen: site pH entered at installation and checked monthly, at no cost. A pH probe and interface (about $60 to $100, estimate) is a documented variant. Under WWT-DDR-002 it is fitted at sites whose pH is above 7.5 or moves more than 0.2 between visits, in a spare port in the cell lid that is plugged at other sites; it is priced per variant site, outside the $300 base-unit budget, which stays unchanged.
-- **R1 target (WWT-DDR-002).** Chosen: relax to ±0.2 mg/L or ±25 %, whichever is greater. Not chosen: keep ±0.1 mg/L and accept that R1 is not met; keep it and make the pH probe standard, which exceeds the budget.
+- **R1 target (WWT-DDR-002).** Chosen: relax to ±0.2 mg/L or ±25 %, whichever is greater. Not chosen: keep ±0.1 mg/L and accept that R1 is not met; keep it and make the pH probe standard, which exceeds the budget. Restated by Amish on 2026-10-25 as ±30 % above 1.0 mg/L (WWT-DEC-001 O5), with a shared DPD photometer as the monthly reference (O2).
 - **Confirming reading (WWT-DDR-002).** A firmware rule: after a first threshold crossing, the next reading is taken 15 min later instead of at the next hour, cutting the worst case from event to SMS from 122 min to 77 min for about 10 mWh and 0.75 L per event.
 - **Footing on the survey visit (WWT-DDR-002).** The pole footing is dug and cast, with the pole set, on the survey visit, so installation day takes about 65 min instead of 140 min.
 - **Sampling by timed flush (D5).** An hourly 90 s flush uses 18.0 L per day; continuous flow at 0.5 L/min would use 720 L. At TRL 3 the cell was halved in volume, the fixed restrictor replaced by a pressure-compensating regulator, and the outlet moved near the top with an air break, all within this decision.
@@ -147,7 +157,7 @@ Each choice below was decided by Amish on 2026-09-25, going with the recommendat
 
 > **Safety:** The design contains a lithium iron phosphate battery (19.2 Wh). Use cells with a protection board, a fuse at the battery, and charging cut-offs below 0 °C and above 45 °C. Keep the enclosure vented, light-colored and under its sun shield; WWT-CAL-001 shows that an unshaded enclosure reaches about 70 °C inside on a 45 °C day.
 
-> **Safety:** The sample line connects to a pressurized drinking water supply. Fit an isolation valve and a check valve so nothing can flow back into the supply, use food-safe wetted materials, keep the open air break at the cell outlet, and never let the flushed sample return to the drinking water. Fitting the saddle tee needs the supply shut off unless a tool for tapping under pressure is used. Flushed water contains chlorine; drain it where it cannot pool against the tapstand or be mistaken for a separate water point.
+> **Safety:** The sample line connects to a pressurized drinking water supply. Fit an isolation valve and both check valves (the supply train and the cell inlet) so nothing can flow back into the supply, even when the main runs dry, use food-safe wetted materials, keep the open air break at the cell outlet, and never let the flushed sample return to the drinking water. Fitting the saddle tee needs the supply shut off unless a tool for tapping under pressure is used. Flushed water contains chlorine; drain it where it cannot pool against the tapstand or be mistaken for a separate water point.
 
 > **Safety:** Calibration and cleaning use chemicals: DPD reagent tablets, and formazin turbidity standards, which are hazardous if made from their precursors. Use prepared, stabilized standards, gloves and the supplier's safety data sheets; do not make formazin in the field.
 
@@ -156,7 +166,7 @@ Each choice below was decided by Amish on 2026-09-25, going with the recommendat
 
 ## Open questions
 
-- [ ] What does the published long-term data say about low-cost chlorine sensor drift, and is it below the 0.13 mg/L per month that R1 and R10 now allow? (the WST 2025 paper is still unchecked in full)
+- [ ] What does the published long-term data say about low-cost chlorine sensor drift, and is it below the 0.15 mg/L per month that R1 and R10 now allow? (the WST 2025 paper is still unchecked in full)
 - [ ] Does the sun shield cut the solar gain as much as assumed (a quarter)? (R9)
 - [ ] How fast do the cell windows and the chlorine electrode foul at a turbid site, and does a monthly clean suffice? (R2, R10)
 - [ ] How much does source pH move between monthly visits at candidate sites? (R1)

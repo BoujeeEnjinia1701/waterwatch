@@ -1,4 +1,4 @@
-"""WaterWatch sizing calculations, WWT-CAL-001 v0.2 (TRL 3; R1, R5, R11 and R12 updated for WWT-DDR-002).
+"""WaterWatch sizing calculations, WWT-CAL-001 v0.5 (TRL 3; battery corrected to one 32700 cell, WWT-DEC-001 F1).
 
 Run from the repo root:  python docs/04-calcs/sizing.py
 Prints every number quoted in docs/04-calcs/01-sizing.md. Each line carries a tag such as
@@ -39,7 +39,8 @@ T_STATUS = 0.050       # s lit per flash
 T_STATUS_GAP = 10.0    # s between flashes, around the clock
 MARGIN = 1.5           # alerts, retries, cold weather
 READINGS = 24          # per day at the default hourly schedule
-CELLS = (3.2, 6.0)     # V, Ah: 1S2P 32700 LiFePO4
+CELLS = (3.2, 6.0)     # V, Ah: one 32700 LiFePO4 cell, 6 Ah (1S1P; was "1S2P 32700", which would be 12 Ah; WWT-DEC-001 F1)
+CELL_KG = 0.135        # kg, one 32700 LiFePO4 cell (datasheet: 6000 mAh, 32 x 70 mm, 135 g)
 DOD = 0.80             # usable fraction
 COLD = 0.85            # capacity factor at 0 degC
 PANEL_W = 5.0
@@ -47,7 +48,7 @@ PSH = 4.5              # peak sun hours, clear day
 PSH_WET = 2.5          # peak sun hours, overcast rainy-season day
 DERATE = 0.60          # heat, dust, angle, small-charger losses
 
-print("WaterWatch sizing, WWT-CAL-001 v0.2")
+print("WaterWatch sizing, WWT-CAL-001 v0.5")
 print(f"Geometry from cad/src/model.py: cell cavity {P['cell_in']} mm, enclosure {P['enc']} mm, pole {P['pole_od']} x {P['pole_wall']} mm")
 
 # ------------------------------------------------------------------ A. Energy (R7, R4)
@@ -69,6 +70,8 @@ e_2g = (e_meas + 4 * e_up + e_sleep + e_valve + e_status) * MARGIN
 tag("A4", f"2G-only site (uploads cost 4 x as much): {e_2g:.3f} Wh/day")
 e_15 = ((e_read + 2 * v * i * t / eta / 3600) * 96 + e_up + e_sleep + e_status) * MARGIN
 tag("A5", f"15 min schedule (R4 minimum interval): {e_15:.3f} Wh/day")
+CONV = 0.85            # efficiency of a buck-boost from the 2.5 to 3.65 V cell to the 3.3 V rail (independent review, 2026-10-25)
+tag("A6", f"with a {CONV:.2f} efficient 3.3 V converter: {e_day / CONV:.3f} Wh/day (inside the 1.5 margin; the margin is then {MARGIN * CONV:.2f} on the rest)")
 
 # ------------------------------------------------------------------ B. Battery and solar (R7)
 print("\nB. Battery autonomy and solar recharge")
@@ -108,7 +111,7 @@ for alpha, label in ((0.45, "light grey, clean"), (0.70, "dusty or weathered")):
     q = absorbed(60, alpha)
     qs = absorbed(60, alpha, top_shaded=True)
     tag("C2", f"alpha {alpha} ({label}), sun at 60 deg: {q:.1f} W absorbed, rise {q / (H_COMB * A_exp):.1f} K ({qs / (H_COMB * A_exp):.1f} K with the top shaded by the panel)")
-C_TH = 0.9 * 1200 + 0.29 * 1000 + 0.10 * 900  # J/K: enclosure, cells, boards and brackets
+C_TH = 0.9 * 1200 + CELL_KG * 1000 + 0.10 * 900  # J/K: enclosure, cell, boards and brackets (cell mass 0.29 kg before WWT-DEC-001 F1)
 tau = C_TH / (H_COMB * A_exp)
 tag("C3", f"thermal mass {C_TH:.0f} J/K, time constant {tau / 60:.0f} min (quasi-steady within the hour)")
 
@@ -176,6 +179,13 @@ tag("D5", f"PC regulator 0.50 L/min +10 %: {q_hi * T_FLUSH / 60 * READINGS:.1f} 
 tag("D6", f"15 min schedule: {v_flush * 96:.0f} L/day (R8 applies to hourly sampling); tapstand serving 250 people at 20 L: {v_flush * READINGS / 5000 * 100:.2f} % of daily draw")
 dp_valve_min = 0.0
 tag("D7", f"supply 0.5 bar minimum: valve must be direct acting (minimum differential {dp_valve_min:.1f} bar); pilot valves need about 0.2 to 0.5 bar")
+T_FLUSH_LOW = 110.0    # s, flush at sites below the regulator's 0.7 bar compensating pressure (WWT-DEC-001 F5)
+tag("D8", f"low-pressure site (0.5 bar, {q_lo:.2f} L/min), {T_FLUSH_LOW:.0f} s flush: stale fraction at the chlorine window {stale(q_lo, T_FLUSH_LOW - T_READ_CL) * 100:.1f} %, "
+          f"{q_lo * T_FLUSH_LOW / 60 * READINGS:.1f} L/day, {V_SYS * I_AWAKE * (T_FLUSH_LOW - T_FLUSH) * READINGS / 3600 * 1000:.0f} mWh/day more awake time")
+rho_w, a_wave = 1000.0, 350.0          # kg/m3; pressure wave speed in a small PE tube, m/s (estimate)
+v_tube_ms = Q / 60 / 1000 / (math.pi / 4 * (P["tube_id"] / 1000) ** 2)
+dp_hammer = rho_w * a_wave * v_tube_ms / 1e5
+tag("D9", f"valve closing: tube velocity {v_tube_ms:.2f} m/s, Joukowsky surge {dp_hammer:.1f} bar on top of 4 bar: {4 + dp_hammer:.1f} bar against about 10 bar for 1/4 in PE tube (typical rating, to confirm)")
 
 # ------------------------------------------------------------------ E. Free chlorine error budget (R1)
 print("\nE. Free chlorine error budget")
@@ -207,9 +217,10 @@ def ph_err(ph, dph, t_c=25):
 
 def r1_target(fc, relaxed=True):
     """R1 target: v0.3 was +/-0.1 mg/L below 1.0 mg/L and +/-15 % above; DDR-002 relaxed it to
-    +/-0.2 mg/L or +/-25 %, whichever is greater."""
+    +/-0.2 mg/L or +/-25 %, whichever is greater; Amish restated it on 2026-10-25 (WWT-DEC-001 O5)
+    as +/-30 % above 1.0 mg/L, keeping +/-0.2 mg/L or +/-25 % up to 1.0 mg/L."""
     if relaxed:
-        return max(0.2, 0.25 * fc)
+        return max(0.2, 0.25 * fc) if fc <= 1.0 else 0.30 * fc
     return 0.10 if fc < 1.0 else 0.15 * fc
 
 
@@ -254,6 +265,39 @@ tag("E7", f"at 40 degC (pKa {pka(40):.2f}) with the rule, worst case FC {worst40
 drift_room = min(r[5] for r in rows)
 tag("E8", f"smallest room for sensor drift under the rule at 25 degC: {drift_room:.3f} mg/L (was 0.038 mg/L at pH 7.0 only under the v0.3 target)")
 
+
+def budget_span(fc, ph, dph, fc_cal, ref_abs, ref_rel, t_c=25):
+    """Independent review, 2026-10-25: a one-point slope calibration at fc_cal carries the reference error as a
+    relative error, ref / fc_cal, at every other reading; the stale-water bias is added linearly."""
+    rel = math.sqrt(ph_err(ph, dph, t_c) ** 2 + (TCOEF * T_ERR) ** 2)
+    ref = (ref_abs + ref_rel * fc_cal) / fc_cal
+    return math.sqrt((fc * ref) ** 2 + (fc * rel) ** 2) + fc * stale(Q, t_cl)
+
+
+cases = [(fc, ph) for fc in (0.5, 1.5) for ph in (7.0, 7.5, 8.0, 8.5)]
+corr = [(fc, ph, budget_span(fc, ph, method(ph)[0], fc, REF, 0.0)) for fc, ph in cases]
+n_corr = sum(1 for fc, ph, e in corr if e < r1_target(fc))
+w_corr = max(corr, key=lambda r: r[2] / r1_target(r[0]))
+tag("E9", f"corrected budget (stale bias added linearly, calibrated at the reading level): {n_corr} of {len(cases)} cases met at zero drift; worst FC {w_corr[0]} mg/L pH {w_corr[1]}: "
+          f"+/-{w_corr[2]:.3f} vs +/-{r1_target(w_corr[0]):.3f} mg/L; misses: " + (", ".join(f"FC {fc} pH {ph} by {e - r1_target(fc):.3f}" for fc, ph, e in corr if e >= r1_target(fc)) or "none"))
+for ref_name, ra, rr in (("comparator", REF, 0.0), ("photometer", 0.03, 0.03)):
+    sp = [(ph, budget_span(1.5, ph, method(ph)[0], 0.5, ra, rr)) for ph in (7.0, 7.5, 8.0, 8.5)]
+    tag("E10", f"calibrated at 0.5 mg/L with the {ref_name} (+/-{ra:.2f} mg/L{f' +/-{rr * 100:.0f} %' if rr else ''}), reading 1.5 mg/L: "
+               + ", ".join(f"pH {ph} +/-{e:.3f}" for ph, e in sp) + f" vs +/-{r1_target(1.5):.3f}; {sum(1 for _, e in sp if e < r1_target(1.5))} of 4 met")
+rel30 = lambda fc: max(0.2, 0.25 * fc) if fc <= 1.0 else 0.30 * fc
+n30 = sum(1 for fc, ph in cases if budget_span(fc, ph, method(ph)[0], 0.5 if fc > 1.0 else fc, REF, 0.0) < rel30(fc))
+tag("E11", f"target +/-30 % above 1.0 mg/L (WWT-DEC-001 O5, decided by Amish 2026-10-25), calibrated at 0.5 mg/L with the comparator: {n30} of {len(cases)} cases met")
+# E12: the shared DPD photometer is the monthly reference (WWT-DEC-001 O2, decided by Amish 2026-10-25): the budget is rerun
+# with its accuracy (+/-0.03 mg/L +/-3 %, as in E10), calibrated at the reading level and, for 1.5 mg/L readings, at 0.5 mg/L
+PHOT = (0.03, 0.03)
+e12 = [(fc, ph, max(budget_span(fc, ph, method(ph)[0], fc, *PHOT), budget_span(fc, ph, method(ph)[0], 0.5, *PHOT))) for fc, ph in cases]
+n12 = sum(1 for fc, ph, e in e12 if e < r1_target(fc))
+drift_room = min(math.sqrt(r1_target(fc) ** 2 - e ** 2) for fc, ph, e in e12 if e < r1_target(fc))
+w12 = max(e12, key=lambda r: r[2] / r1_target(r[0]))
+tag("E12", f"photometer as the monthly reference (O2): {n12} of {len(cases)} cases met at zero drift against the restated target; worst FC {w12[0]} mg/L pH {w12[1]}: "
+           f"+/-{w12[2]:.3f} vs +/-{r1_target(w12[0]):.3f} mg/L; smallest room for sensor drift {drift_room:.3f} mg/L")
+
+
 # ------------------------------------------------------------------ F. Turbidity: bubbles and settling (R2)
 print("\nF. Turbidity reading: bubble clearance and settling")
 g = 9.81
@@ -281,6 +325,7 @@ payload = 4 * 120 + 300
 overhead = 4000       # TLS, HTTP and network overhead per session (no session resumption)
 mb = UPLOADS * 30 * (payload + overhead) / 1e6
 tag("G1", f"upload {payload} B payload plus {overhead} B overhead; {mb:.2f} MB per month; with TLS session resumption about {UPLOADS * 30 * (payload + 1200) / 1e6:.2f} MB")
+tag("G3", f"full TLS handshake every session (about 6 kB): {UPLOADS * 30 * (payload + 6000) / 1e6:.2f} MB per month; the firmware keeps TLS sessions (resumption, WWT-DEC-001 F7)")
 tag("G2", f"90 days on microSD: {90 * READINGS * rec_csv / 1e3:.0f} kB as CSV; 7 day ring buffer in flash: {7 * READINGS * 32 / 1e3:.1f} kB at 32 B per record")
 
 # ------------------------------------------------------------------ H. Alert latency (R5)
@@ -289,6 +334,7 @@ attach_s, sms_s, retry_s, tries = 120, 20, 180, 3
 worst = attach_s + sms_s + (tries - 1) * (retry_s + attach_s + sms_s)
 tag("H1", f"confirmation to SMS: {attach_s + sms_s} s first try; {worst / 60:.1f} min with {tries} tries at {retry_s / 60:.0f} min spacing (R5 limit 15 min)")
 CONFIRM_S = 900    # DDR-002 firmware rule: confirming reading 15 min after a first threshold crossing
+tag("H4", f"event onset to SMS worst case with all three tries: {(3600 + CONFIRM_S) / 60 + worst / 60 + 2 * 130 / 60:.0f} min (60 min to the next reading, 15 min to the confirming reading, two readings of 130 s, {worst / 60:.0f} min of tries)")
 tag("H2", f"event onset to SMS worst case: {(2 * 3600 + attach_s + sms_s) / 60:.0f} min with the next hourly reading as confirmation (v0.1); "
           f"{(3600 + CONFIRM_S + attach_s + sms_s) / 60:.0f} min with the 15 min confirming reading (DDR-002)")
 e_conf = e_read + 2 * v * i * t / eta / 3600
@@ -299,8 +345,11 @@ print("\nI. Pole and footing in wind")
 V = 35.0
 q = 0.5 * 1.2 * V ** 2
 pw, ph_, _ = P["panel"]
+# the wind sees the sun shield, not the bare enclosure (independent review, 2026-10-25): outer width x height
+shield_w = P["enc"][0] + 2 * (P["shield_gap"] + P["shield_t"])
+shield_h = P["enc"][2] + P["shield_below"] + P["shield_gap"] + P["shield_t"]
 loads = [("panel", pw * ph_ / 1e6, 1.2, D["panel_z"] / 1000),
-         ("enclosure", P["enc"][0] * P["enc"][2] / 1e6, 1.3, P["enc_z"] / 1000),
+         ("sun shield and enclosure", shield_w * shield_h / 1e6, 1.3, P["enc_z"] / 1000),
          ("pole", P["pole_od"] * P["pole_h"] / 1e6, 1.2, P["pole_h"] / 2000)]
 F_tot = sum(q * a * cf for _, a, cf, _ in loads)
 M = sum(q * a * cf * z for _, a, cf, z in loads)
@@ -314,6 +363,8 @@ gam, Kp, Dd, L = 18000.0, 3.0, P["footing_d"] / 1000, P["embed"] / 1000
 e = M / F_tot
 Hu = 0.5 * gam * Dd * L ** 3 * Kp / (e + L)
 tag("I3", f"footing {Dd * 1000:.0f} mm x {L * 1000:.0f} mm in medium sand (Broms, short rigid pile): lateral capacity {Hu:.0f} N, factor {Hu / F_tot:.1f}")
+Hu_wet = Hu * 9000.0 / gam
+tag("I4", f"saturated sand (submerged unit weight 9 kN/m3): lateral capacity {Hu_wet:.0f} N, factor {Hu_wet / F_tot:.1f}; clay and made ground to assess at the survey visit")
 
 # ------------------------------------------------------------------ J. Install and maintenance tasks (R11, R10)
 print("\nJ. Installation and monthly visit, task times")
@@ -333,7 +384,7 @@ tag("J2", f"DDR-002: footing dug and cast on the survey visit ({survey} min incl
           f"(mount, cable, commission; plumbing {sum(m for n, m, w in install if w == 'B')} min in parallel) against 120 min")
 visit = [("shut isolation valve, open and wipe the cell", 5), ("wipe the chlorine electrode", 5), ("flush and wait", 3),
          ("DPD free chlorine test", 4), ("pH comparator", 3), ("enter calibration from a phone", 4),
-         ("check strainer and drain air break", 4), ("wipe panel, look over the site", 2)]
+         ("check strainer and drain air break", 4), ("wipe panel with a long-handled brush, look over the site", 2)]
 tag("J3", f"monthly visit: {sum(m for _, m in visit)} min against 30 min (" + ", ".join(f"{n} {m}" for n, m in visit) + ")")
 
 # ------------------------------------------------------------------ K. Cost (R12)
@@ -353,13 +404,13 @@ tag("K2", f"pH probe variant site (DDR-002): ${total + PH_VARIANT[0]:,.0f} to ${
 # ------------------------------------------------------------------ L. Results
 print("\nL. Requirement status (see Table 4 of the note)")
 status = [
-    ("R1", "At risk", f"relaxed target met at zero drift in {n_new} of {len(rows)} cases with the pH probe rule; room for drift {drift_room:.2f} mg/L, drift unknown"),
+    ("R1", "Met on paper" if n12 == len(cases) else "Not met", f"with the photometer as the monthly reference and the target restated above 1.0 mg/L (E11, E12; WWT-DEC-001 O2, O5), {n12} of {len(cases)} cases met at zero drift, {drift_room:.2f} mg/L left for drift, drift unknown"),
     ("R10", "At risk", f"visit 30 min, at the limit; monthly interval needs drift below about {drift_room:.2f} mg/L per month, unverified"),
     ("R2", "At risk", "bubbles handled by the 30 s wait; fouling in service unknown"),
     ("R9", "At risk", f"with the shield, peak {hot[(45.0, 'dusty, with shield')][0]:.0f} degC inside on a 45 degC day (no shield {hot[(45.0, 'dusty, no shield')][0]:.0f} degC); shield factor assumed"),
     ("R11", "Met on paper", f"installation day critical path {crit_day} min with the footing cast on the survey visit"),
     ("R5", "Met on paper", f"{worst / 60:.0f} min worst confirmation-to-SMS"),
-    ("R6", "Met on paper", "under 1 MB per month; 90 days in 138 kB"),
+    ("R6", "Met on paper", "0.36 MB per month with TLS session resumption (F7); 90 days in 138 kB"),
     ("R7", "Met on paper", f"{aut:.0f} days autonomy; {e_use / (y_clear - e_day):.1f} clear days to refill"),
     ("R8", "Met on paper", "18.0 L nominal, 19.8 L at regulator tolerance"),
     ("R12", "Over target" if total > budget_usd else "Met on paper",

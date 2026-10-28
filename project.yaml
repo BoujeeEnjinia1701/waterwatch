@@ -6,22 +6,49 @@ area: Water Security
 trl: 3                   # Technology Readiness Level, see .kit/STANDARDS.md section 9
 trl_target: 3
 design_state: constructable   # concept or constructable, see .kit/STANDARDS.md section 18
+stage: P3                # pipeline stage, STANDARDS section 19; P3 since the kit 1.9.1 upgrade, 2026-10-25
+stem_check: open         # WWT-STM-001 v0.2: S3 fixed (WWT-DEC-001 F1); S31 closed by O2 and O5 (2026-10-25); S5, S12, S14, S22 and others plausible, to confirm by test at TRL 4
+concept_options: [A, B, C]   # WWT-OPT-001: A timed-flush flow cell on its own pole, B reagent colorimetric analyser cabinet, C in-riser probe manifold
+concept_chosen: A   # decided by Amish, 2026-10-25: "i concur with your recommendations" (WWT-DEC-001 O1, WWT-DDR-004)
 trl_evidence:
   - docs/01-problem.md
+  - docs/01b-stem-check.md
   - docs/02-concept.md
+  - docs/02a-concept-options.md
+  - docs/03a-user-requirements.md
   - docs/03-requirements.md
+  - docs/03b-traceability.md
   - docs/decisions/0001-trl2-review-decisions.md
   - docs/decisions/0002-recommendations-accepted.md
   - docs/decisions/0003-design-for-construction.md
+  - docs/decisions/0004-concept-selection.md
+  - docs/04-calcs/stem_check.py
+  - docs/04-calcs/stem_results.csv
   - docs/04-calcs/01-sizing.md
   - docs/04-calcs/sizing.py
   - cad/src/model.py
+  - cad/src/wwt_parts.py
+  - cad/fidelity.json
+  - cad/step/A-assembly.step
+  - cad/step/B-assembly.step
+  - cad/step/C-assembly.step
   - cad/step/waterwatch-assembly.step
+  - cad/stl/waterwatch-assembly.stl
   - cad/drawings/WWT-DWG-001.svg
   - cad/drawings/WWT-DWG-001.pdf
   - bom/bom.csv
   - docs/05-build-plan.md
+  - docs/05-build-plan/overview.png
   - docs/06-design-decisions.md
+  - docs/07-regulatory.md
+  - docs/08-feasibility.md
+  - docs/09-risk.md
+  - docs/10-market.md
+  - docs/11-plan.md
+  - media/options.png
+  - media/hero.png
+  - media/concept-blueprint.png
+  - media/model.glb
 shortlisted: false
 pitch: >-
   Solar sentinel sensor that logs turbidity, free chlorine and temperature at a tap or tank and alerts over GSM or LoRa.

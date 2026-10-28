@@ -2,13 +2,13 @@
 
 ![TRL 3](https://img.shields.io/badge/TRL-3%20of%209-0F766E) ![Hardware: CERN-OHL-S-2.0](https://img.shields.io/badge/hardware-CERN--OHL--S--2.0-111827) ![Software: MIT](https://img.shields.io/badge/software-MIT-111827) [![DOI](https://zenodo.org/badge/1386353082.svg)](https://zenodo.org/badge/latestdoi/1386353082) [![REUSE compliant](https://github.com/BoujeeEnjinia1701/waterwatch/actions/workflows/reuse.yml/badge.svg)](https://github.com/BoujeeEnjinia1701/waterwatch/actions/workflows/reuse.yml) [![Archived in Software Heritage](https://archive.softwareheritage.org/badge/origin/https://github.com/BoujeeEnjinia1701/waterwatch/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/BoujeeEnjinia1701/waterwatch)
 
-**Area:** Water Security · **TRL:** 3 of 9 (proof of concept on paper) · **Value-engineering target:** USD 300 (estimated cost of the constructable design: USD 322) · **Difficulty:** 3 of 5
+**Area:** Water Security · **TRL:** 3 of 9 (proof of concept on paper) · **Value-engineering target:** USD 300 (estimated cost of the constructable design: USD 325) · **Difficulty:** 3 of 5
 
 Solar sentinel sensor that logs turbidity, free chlorine and temperature at a tap or tank and alerts over GSM or LoRa.
 
 ![WaterWatch: solar water quality sentinel for a village tap, product render](media/render-hero.png)
 
-[Exploded render](media/render-exploded.png) · [Detail render](media/render-detail.png) · [Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [General arrangement (PDF)](cad/drawings/WWT-DWG-001.pdf) · [Sizing calculations](docs/04-calcs/01-sizing.md) · [Prototype build plan](docs/05-build-plan.md) · [Design decisions](docs/06-design-decisions.md) · [Review note](docs/REVIEW.md)
+[Studio render](media/render-studio.png) · [Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [General arrangement WWT-DWG-001 (PDF)](cad/drawings/WWT-DWG-001.pdf) · [STEM check WWT-STM-001](docs/01b-stem-check.md) · [Concept options WWT-OPT-001](docs/02a-concept-options.md) · [Requirements WWT-PRS-001](docs/03-requirements.md) · [Traceability WWT-RTM-001](docs/03b-traceability.md) · [Sizing note WWT-CAL-001](docs/04-calcs/01-sizing.md) · [Prototype build plan](docs/05-build-plan.md) · [Decisions](docs/06-design-decisions.md) · [Review note](docs/REVIEW.md)
 
 ## Concept rationale
 
@@ -55,9 +55,19 @@ Rural water points go untested between rare lab visits, so a chlorinator that ru
 
 ## Concept
 
-A pole-mounted sentinel beside a village tapstand flushes a small sample through a dark flow-through cell once an hour, measures turbidity, free chlorine and temperature, logs the readings and sends them over cellular (LTE-M, NB-IoT or 2G; LoRaWAN as a variant). An SMS goes to the caretaker and operator when chlorine drops below 0.2 mg/L or turbidity passes 5 NTU. The TRL 3 calculations give 0.54 Wh per day, 28.5 days on battery without sun, 18 L per day of flushed water and an estimated USD 322 in parts for the constructable design, USD 22 over the USD 300 value-engineering target. Following Amish's decisions of 2026-09-25 (WWT-DDR-002), the chlorine accuracy target is ±0.2 mg/L or ±25 %, and sites above pH 7.5 or with a moving pH take a pH probe in a spare port of the cell; the error budget then meets the target before drift, but the low-cost sensor's long-term drift is unknown, so chlorine accuracy and the monthly maintenance interval remain at risk.
+A pole-mounted sentinel beside a village tapstand flushes a small sample through a dark flow-through cell once an hour, measures turbidity, free chlorine and temperature, logs the readings and sends them over cellular (LTE-M, NB-IoT or 2G; LoRaWAN as a variant). An SMS goes to the caretaker and operator when chlorine drops below 0.2 mg/L or turbidity passes 5 NTU. The TRL 3 calculations give 0.54 Wh per day, 28.5 days on battery without sun, 18 L per day of flushed water and an estimated USD 325 in parts for the constructable design, USD 25 over the USD 300 value-engineering target. Following Amish's decisions of 2026-09-25 (WWT-DDR-002), the chlorine accuracy target is ±0.2 mg/L or ±25 %, and sites above pH 7.5 or with a moving pH take a pH probe in a spare port of the cell; the error budget then meets the target at the 0.2 to 0.5 mg/L where alerts are set, but, as corrected after the independent review of the STEM check, not at 1.5 mg/L (a restated target above 1.0 mg/L is proposed, awaiting Amish), and the low-cost sensor's long-term drift is unknown, so the monthly maintenance interval remains at risk.
 
 Full design precis: [docs/02-concept.md](docs/02-concept.md)
+
+## STEM check
+
+Every physical, chemical and biological claim of the design was checked against known science ([WWT-STM-001](docs/01b-stem-check.md), `docs/04-calcs/stem_check.py`). Of option A's 37 claims, 27 are within known science, 9 are plausible, to confirm by test at TRL 4 (among them the sun shield's effect, the chlorine sensor's drift and its reference electrode, fouling and freezing), and 1 fails with a fix that needs Amish's decision: the corrected chlorine error budget misses the accuracy target at 1.5 mg/L by up to 0.017 mg/L, while it is met at the 0.2 to 0.5 mg/L where alerts are set (WWT-DEC-001 O5). One detail failed at the first check and was fixed under Amish's standing instruction of 2026-10-23: the battery was listed as two 32700 cells holding 6 Ah, but one such cell holds 6 Ah, so it is now one cell (WWT-DEC-001 F1). An independent reviewer then tried to refute every verdict; four more fixes followed (a longer flush at low-pressure sites, a valve rated for 4 bar, kept TLS sessions and a second check valve at the cell inlet, F5 to F8), recorded in the check.
+
+## Concept options
+
+The current design is option A of three, each with a different way of reading chlorine and each modelled in full detail ([WWT-OPT-001](docs/02a-concept-options.md)): A, a timed-flush flow cell with a reagent-free chlorine sensor on its own pole (196 of 245); B, a reagent colorimetric analyser that doses DPD into a cuvette (167); C, probes in a manifold cut into the riser that read while people draw water (155). Option A is recommended, with option B's best idea, a shared DPD photometer as the monthly reference, grafted on; Amish chose both on 2026-10-25 ([WWT-DDR-004](docs/decisions/0004-concept-selection.md)).
+
+![WaterWatch concept options A, B and C at one scale](media/options.png)
 
 ## Key components
 
@@ -68,13 +78,13 @@ Full design precis: [docs/02-concept.md](docs/02-concept.md)
 - Two aluminium back plates on U-bolts hold the enclosure and the flow cell to the pole
 - ESP32 controller with microSD logging
 - Cellular modem (LTE-M, NB-IoT, 2G fallback), LoRaWAN as a variant
-- 5 W solar panel and 3.2 V, 6 Ah LiFePO4 battery in an enclosure under a ventilated sun shield
+- 5 W solar panel and one 3.2 V, 6 Ah LiFePO4 cell in an enclosure under a ventilated sun shield
 
-The priced bill of materials is in [bom/bom.csv](bom/bom.csv). The parametric model is `cad/src/model.py`, with STEP files in `cad/step/`.
+The priced bill of materials is in [bom/bom.csv](bom/bom.csv). The parametric model is `cad/src/model.py`: every concept option is modelled to detail level D3 (real stock, every bolt, nut, washer and screw; option A has 215 parts, 120 of them fasteners) and checked by `python .kit/cad_check.py --export` (`cad/fidelity.json`), with a STEP file per part of option A in `cad/step/A/` and an assembly STEP per option.
 
 ## Building the prototype
 
-The prototype build plan ([docs/05-build-plan.md](docs/05-build-plan.md)) shows how to make and fit every component of the first proof-of-concept unit, with a making sketch for each made part, close-ups of the joints and a picture for every assembly step. Making it buildable changed the concept in places: the enclosure and the flow cell now hang on aluminium back plates held to the pole by U-bolts, every cable enters the box from below so the sun shield slides off, and the turbidity optics sit on three walls of the cell (decision record WWT-DDR-003, accepted by Amish on 2026-10-02). The plan is paper only; building and testing to it is TRL 4 work. The decisions, all made as of 2026-10-02, are in the [design decisions register](docs/06-design-decisions.md).
+The prototype build plan ([docs/05-build-plan.md](docs/05-build-plan.md)) shows how to make and fit every component of the first proof-of-concept unit, with a making sketch for each made part, close-ups of the joints and a picture for every assembly step. Making it buildable changed the concept in places: the enclosure and the flow cell now hang on aluminium back plates held to the pole by U-bolts, every cable enters the box from below so the sun shield slides off, and the turbidity optics sit on three walls of the cell (decision record WWT-DDR-003, accepted by Amish on 2026-10-02). The plan is paper only; building and testing to it is TRL 4 work. Decisions made and the five still open (concept choice, calibration reference, render layout, how water use counts event flushes, the chlorine target above 1 mg/L) are in the [design decisions register](docs/06-design-decisions.md).
 
 ![WaterWatch prototype: every component, pulled apart and numbered in build order](docs/05-build-plan/overview.png)
 
@@ -86,8 +96,8 @@ The prototype build plan ([docs/05-build-plan.md](docs/05-build-plan.md)) shows 
 
 | Folder | Contents |
 | --- | --- |
-| `docs/` | Problem, concept, requirements, calculations and design decisions |
-| `cad/src/` | build123d Python source, the source of truth for all geometry |
+| `docs/` | Problem, STEM check, concept options, user and product requirements, traceability, calculations, build plan, decisions, regulatory, feasibility, risk, market and plan |
+| `cad/src/` | build123d Python source, the source of truth for all geometry (`model.py` for every option, `wwt_parts.py` helpers, `product_model.py` for renders) |
 | `cad/step/`, `cad/stl/` | Exported models for FreeCAD, other CAD tools and printing |
 | `cad/drawings/` | 2D sketches and dimensioned drawings |
 | `bom/` | Bill of materials |
